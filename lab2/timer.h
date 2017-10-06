@@ -16,7 +16,7 @@
  * @param freq Frequency of the square wave to generate
  * @return Return 0 upon success and non-zero otherwise
  */
-int timer_set_square(unsigned long timer, unsigned long freq);
+int timer_set_frequency(unsigned char timer, unsigned long freq);
 
 /**
  * @brief Subscribes and enables Timer 0 interrupts
@@ -46,7 +46,7 @@ void timer_int_handler();
  * @param st    Address of memory position to be filled with the timer config
  * @return Return 0 upon success and non-zero otherwise
  */
-int timer_get_conf(unsigned long timer, unsigned char *st);
+int timer_get_conf(unsigned char timer, unsigned char *st);
 
 /**
  * @brief Shows timer configuration
@@ -70,7 +70,7 @@ int timer_display_conf(unsigned char conf);
  * @param freq Frequency of square wave to generate
  * @return Return 0 upon success and non-zero otherwise
  */
-int timer_test_square(unsigned long freq);
+int timer_test_time_base(unsigned long freq);
 
 /**
  * @brief Tests Timer 0 interrupt handling
@@ -91,6 +91,6 @@ int timer_test_int(unsigned long time);
  * @param timer Timer whose config to read (Ranges from 0 to 2)
  * @return Return 0 upon success and non-zero otherwise
  */
-int timer_test_config(unsigned long timer);
+int timer_test_config(unsigned char timer);
 
 #endif /* __TIMER_H */

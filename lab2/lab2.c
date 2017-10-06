@@ -32,6 +32,7 @@ static void print_usage(char **argv)
 static int proc_args(int argc, char **argv)
 {
 	unsigned long timer, freq, time;
+
 	if (strncmp(argv[1], "config", strlen("config")) == 0) {
 		if (argc != 3) {
 			printf("timer: wrong no. of arguments for timer_test_config()\n");
@@ -51,8 +52,8 @@ static int proc_args(int argc, char **argv)
 		freq = parse_ulong(argv[2], 10);						/* Parses string to unsigned long */
 		if (freq == ULONG_MAX)
 			return 1;
-		printf("timer::timer_test_square(%lu)\n", freq);
-		return timer_test_square(freq);
+		printf("timer::timer_test_time_base(%lu)\n", freq);
+		return timer_test_time_base(freq);
 	}
 	else if (strncmp(argv[1], "int", strlen("int")) == 0) {
 		if (argc != 3) {
