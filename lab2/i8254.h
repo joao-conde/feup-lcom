@@ -7,7 +7,7 @@
  * Constants for programming the i8254 Timer
  */
 
-#define TIMER_FREQ  1193182    /**< @brief clock frequency for timer in PC and AT */
+#define MAX_TIMER_FREQ  1193182    /**< @brief clock frequency for timer in PC and AT */
 #define TIMER0_DEFAULT_FREQ 60
 
 #define BIT(n) (0x01<<(n))
@@ -53,6 +53,28 @@
 #define TIMER_RB_COUNT_         BIT(5)
 #define TIMER_RB_STATUS_        BIT(4)
 #define TIMER_RB_SEL(n)         BIT((n)+1)
+
+
+/* ERROR CONTROL  */
+
+#define INVALID_ARGS  			-1  /**< @brief Invalid arguments */
+#define FAIL_WRITE_CW			-2  /**< @brief Error writing control word */
+#define FAIL_WRITE_LSB			-3	/**< @brief Error writing LSB */
+#define FAIL_WRITE_MSB			-4	/**< @brief Error writing MSB */
+#define FAIL_READ_CONF			-5  /**< @brief Error reading config of timer */
+#define FAIL_SET_POLICY			-6	/**< @brief Error setting policy */
+#define FAIL_ENABLE_IRQ			-7	/**< @brief Error enabling IRQ line */
+#define FAIL_REMOVE_POLICY		-8	/**< @brief Error removing policy */
+#define FAIL_DISABLE_IRQ			-9	/**< @brief Error disabling IRQ line */
+#define FAIL_SUB_INT			-10 /**< @brief Error subscribing interrupts */
+#define FAIL_UNSUB_INT			-11 /**< @brief Error unsubscribing interrupts */
+#define FAIL_SET_FREQ			-12 /**< @brief Error setting frequency  */
+#define FAIL_GET_CONF			-13 /**< @brief Error getting timer configuraton */
+#define FAIL_DISPLAY_CONF		-14 /**< @brief Error displaying timer configuration */
+
+/* CLEAR MACROS */
+#define CLEAR_LSB 		0xF0  /**< @brief Preserve MSB and reset LSB*/
+#define CLEAR_MSB		0x0F  /**< @brief Preserve LSB and reset MSB*/
 
 
 /**@}*/

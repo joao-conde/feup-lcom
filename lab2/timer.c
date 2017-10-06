@@ -14,25 +14,26 @@ int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
 	if(timer < 0 || timer > 2){
 		printf("Timer %lu does not exist. Select a timer from 0 to 2\n\n",timer);
-		return -1;
+		return INVALID_ARGS;
 	}
 
 
-	if(freq < 0){
-		printf("Invalid frequency - MUST NOT BE NEGATIVE\n");
-		return -1;
+	if(freq > MAX_TIMER_FREQ){
+		printf("Invalid frequency - HIGHER THAN MAX FREQUENCY\n");
+		return INVALID_ARGS;
 	}
 
 
 	unsigned long controlW, newFreq;
 	unsigned char status;
 
-	newFreq = TIMER_FREQ / freq;
+	newFreq = MAX_TIMER_FREQ / freq;
 
 	//reading timer configuration to maintain last 4 bits
 	timer_get_conf(timer, &status);
 	controlW = (unsigned long)status;
 
+	controlW &= CLEAR_MSB;
 
 	switch(timer){
 
@@ -41,17 +42,17 @@ int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
 		if(sys_outb(TIMER_CTRL, controlW) != OK){
 			printf("Error writing control word\n");
-			return -1;
+			return FAIL_WRITE_CW;
 		}
 
 		if(sys_outb(TIMER_0,newFreq) != OK){
 			printf("Error writing LSB\n");
-			return -1;
+			return FAIL_WRITE_LSB;
 		}
 
 		if(sys_outb(TIMER_0,(newFreq >> 8)) != OK){
 			printf("Error writing MSB\n");
-			return -1;
+			return FAIL_WRITE_MSB;
 		}
 
 		break;
@@ -61,17 +62,17 @@ int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
 		if(sys_outb(TIMER_CTRL, controlW) != OK){
 			printf("Error writing control word\n");
-			return -1;
+			return FAIL_WRITE_CW;
 		}
 
 		if(sys_outb(TIMER_1,newFreq) != OK){
 			printf("Error writing LSB\n");
-			return -1;
+			return FAIL_WRITE_LSB;
 		}
 
 		if(sys_outb(TIMER_1,(newFreq >> 8)) != OK){
 			printf("Error writing MSB\n");
-			return -1;
+			return FAIL_WRITE_MSB;
 		}
 
 		break;
@@ -81,24 +82,24 @@ int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
 		if(sys_outb(TIMER_CTRL, controlW) != OK){
 			printf("Error writing control word\n");
-			return -1;
+			return FAIL_WRITE_CW;
 		}
 
 		if(sys_outb(TIMER_2,newFreq) != OK){
 			printf("Error writing LSB\n");
-			return -1;
+			return FAIL_WRITE_LSB;
 		}
 
 		if(sys_outb(TIMER_2,(newFreq >> 8)) != OK){
 			printf("Error writing MSB\n");
-			return -1;
+			return FAIL_WRITE_MSB;
 		}
 
 		break;
 
 	}
 
-	return 0;
+	return OK;
 }
 
 int timer_subscribe_int(void) {
@@ -107,12 +108,12 @@ int timer_subscribe_int(void) {
 
 	if(sys_irqsetpolicy(TIMER0_IRQ,IRQ_REENABLE, &hookID) != OK){
 		printf("Failure setting policy\n");
-		return -1;
+		return FAIL_SET_POLICY;
 	}
 
 	if(sys_irqenable(&hookID) != OK){
 		printf("Failure enabling IRQ line\n");
-		return -1;
+		return FAIL_ENABLE_IRQ;
 	}
 
 	return BIT(TIMER0_IRQ);
@@ -123,15 +124,15 @@ int timer_unsubscribe_int() {
 
 	if(sys_irqdisable(&hookID) != OK){
 		printf("Failure disabling IRQ line\n");
-		return -1;
+		return FAIL_DISABLE_IRQ;
 	}
 
 	if(sys_irqrmpolicy(&hookID)!= OK){
 		printf("Failure removing policy\n");
-		return -1;
+		return FAIL_REMOVE_POLICY;
 	}
 
-	return 0;
+	return OK;
 }
 
 void timer_int_handler() {
@@ -152,17 +153,23 @@ int timer_get_conf(unsigned char timer, unsigned char *st)
 
                 controlWord |= TIMER_RB_CMD | TIMER_RB_COUNT_ | TIMER_RB_SEL(timer);
 
-                sys_outb(TIMER_CTRL, controlWord);
+                if(sys_outb(TIMER_CTRL, controlWord) != OK){
+                	printf("Error writing control word\n");
+                	return FAIL_WRITE_CW;
+                }
 
-                sys_inb(TIMER_0 + timer, &config);
+                if(sys_inb(TIMER_0 + timer, &config) != OK){
+                	printf("Error reading config of timer %d\n",timer);
+                	return FAIL_READ_CONF;
+                }
 
                 *st = (unsigned char) config;
 
-                return 0;
+                return OK;
 
         }
 
-        return -1;
+        return INVALID_ARGS;
 
 }
 
@@ -228,18 +235,18 @@ int timer_display_conf(unsigned char conf) {
 	else
 		printf("Counting Mode: Binary\n\n");
 
-	return 0;
+	return OK;
 }
 
 int timer_test_time_base(unsigned long freq) {
 	unsigned int timer = 0;
 
-	if(timer_set_frequency(timer,freq) != 0)
-		return -1;
+	if(timer_set_frequency(timer,freq) != OK)
+		return FAIL_SET_FREQ;
     else
     	printf("Frequency changed successfully\n");
 
-	return 0;
+	return OK;
 }
 
 int timer_test_int(unsigned long time) {
@@ -248,11 +255,11 @@ int timer_test_int(unsigned long time) {
 	message msg;
 
 	if((irq_set = timer_subscribe_int()) == -1)
-		return -1;
+		return FAIL_SUB_INT;
 
 	while(counter < time * TIMER0_DEFAULT_FREQ){
 
-		if ( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ){
+		if ( (r = driver_receive(ANY, &msg, &ipc_status)) != OK){
 			printf("driver_receive failed with: %d", r);
 			continue;
 		}
@@ -265,7 +272,7 @@ int timer_test_int(unsigned long time) {
 
 				if (msg.NOTIFY_ARG & irq_set){
 					timer_int_handler();
-					if((counter % TIMER0_DEFAULT_FREQ) == 0)
+					if((counter % TIMER0_DEFAULT_FREQ) == OK)
 						printf("One second elapsed\n");
 				}
 				break;
@@ -274,23 +281,23 @@ int timer_test_int(unsigned long time) {
 
 	}
 
-	if(timer_unsubscribe_int() != 0)
-		return -1;
+	if(timer_unsubscribe_int() != OK)
+		return FAIL_UNSUB_INT;
 	
-	return 0;
+	return OK;
 }
 
 int timer_test_config(unsigned char timer) {
 	
 	unsigned char config;
 
-	if(timer_get_conf(timer,&config) != 0)
-		return -1;
+	if(timer_get_conf(timer,&config) != OK)
+		return FAIL_GET_CONF;
 
-	if(timer_display_conf(config) != 0){
+	if(timer_display_conf(config) != OK){
 		printf("Error displaying timer configuration\n\n");
-		return -1;
+		return FAIL_DISPLAY_CONF;
 	}
 
-	return 0;
+	return OK;
 }
