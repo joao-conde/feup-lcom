@@ -9,7 +9,7 @@ unsigned int counter = 0;
 int hookID;
 
 
-int timer_set_square(unsigned long timer, unsigned long freq) {
+int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
 
 	if(timer < 0 || timer > 2){
@@ -138,7 +138,7 @@ void timer_int_handler() {
 	counter++;
 }
 
-int timer_get_conf(unsigned long timer, unsigned char *st)
+int timer_get_conf(unsigned char timer, unsigned char *st)
 
 {
 
@@ -231,10 +231,10 @@ int timer_display_conf(unsigned char conf) {
 	return 0;
 }
 
-int timer_test_square(unsigned long freq) {
+int timer_test_time_base(unsigned long freq) {
 	unsigned int timer = 0;
 
-	if(timer_set_square(timer,freq) != 0)
+	if(timer_set_frequency(timer,freq) != 0)
 		return -1;
     else
     	printf("Frequency changed successfully\n");
@@ -280,7 +280,7 @@ int timer_test_int(unsigned long time) {
 	return 0;
 }
 
-int timer_test_config(unsigned long timer) {
+int timer_test_config(unsigned char timer) {
 	
 	unsigned char config;
 
