@@ -8,12 +8,12 @@
  */
 
 /**
- * @brief Configures a timer to generate a square wave
+ * @brief Changes the operating frequency of a timer
  * 
- * Does not change the LSB (BCD/binary) of the timer's control word.
+ * Must not change the 3 LSBs (mode and BCD/binary) of the timer's control word.
  * 
  * @param timer Timer to configure. (Ranges from 0 to 2)
- * @param freq Frequency of the square wave to generate
+ * @param freq Timer operating frequency
  * @return Return 0 upon success and non-zero otherwise
  */
 int timer_set_frequency(unsigned char timer, unsigned long freq);
@@ -60,14 +60,12 @@ int timer_get_conf(unsigned char timer, unsigned char *st);
  */
 int timer_display_conf(unsigned char conf);
 
-
-
 /**
- * @brief Tests programming timer in square wave mode
+ * @brief Tests change of Timer O interrupt frequency
  *
- * Programs Timer 0 to generate square mode with input frequency
+ * Programs Timer 0 to generate interrupts with input frequency
  *
- * @param freq Frequency of square wave to generate
+ * @param freq Frequency of interrupts to generate
  * @return Return 0 upon success and non-zero otherwise
  */
 int timer_test_time_base(unsigned long freq);

@@ -10,9 +10,7 @@ static void print_usage(char **argv);
 
 int main(int argc, char **argv)
 {
-
 	sef_startup();
-
 	if (argc == 1) {					/* Prints usage of the program if no arguments are passed */
 		print_usage(argv);
 		return 0;
@@ -24,7 +22,7 @@ static void print_usage(char **argv)
 {
 	printf("Usage: one of the following:\n"
 			"\t service run %s -args \"config <decimal no.- timer>\"\n"
-			"\t service run %s -args \"square <decimal no. - frequency>\"\n"
+			"\t service run %s -args \"time <decimal no. - frequency>\"\n"
 			"\t service run %s -args \"int <decimal no. - time>\"\n",
 			argv[0], argv[0], argv[0]);
 }
@@ -32,7 +30,6 @@ static void print_usage(char **argv)
 static int proc_args(int argc, char **argv)
 {
 	unsigned long timer, freq, time;
-
 	if (strncmp(argv[1], "config", strlen("config")) == 0) {
 		if (argc != 3) {
 			printf("timer: wrong no. of arguments for timer_test_config()\n");
@@ -44,9 +41,9 @@ static int proc_args(int argc, char **argv)
 		printf("timer::timer_test_config(%lu)\n", timer);
 		return timer_test_config(timer);
 	}
-	else if (strncmp(argv[1], "square", strlen("square")) == 0) {
+	else if (strncmp(argv[1], "time", strlen("time")) == 0) {
 		if (argc != 3) {
-			printf("timer: wrong no. of arguments for timer_test_square()\n");
+			printf("timer: wrong no. of arguments for timer_test_time_base()\n");
 			return 1;
 		}
 		freq = parse_ulong(argv[2], 10);						/* Parses string to unsigned long */
