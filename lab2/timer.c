@@ -39,16 +39,19 @@ int timer_set_frequency(unsigned char timer, unsigned long freq) {
 	case 0:
 		controlW |= TIMER_SEL0 | TIMER_LSB_MSB;
 
+		//writes control word to timer control
 		if (sys_outb(TIMER_CTRL, controlW) != OK) {
 			printf("Error writing control word\n");
 			return FAIL_WRITE_CW;
 		}
 
+		//writes frequency LSB to timer
 		if (sys_outb(TIMER_0, newFreq) != OK) {
 			printf("Error writing LSB\n");
 			return FAIL_WRITE_LSB;
 		}
 
+		//writes frequency MSB to timer
 		if (sys_outb(TIMER_0, (newFreq >> 8)) != OK) {
 			printf("Error writing MSB\n");
 			return FAIL_WRITE_MSB;
@@ -103,7 +106,7 @@ int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
 int timer_subscribe_int(void) {
 
-	hookID = TIMER0_IRQ; //hookID set to timer 0 IRQ line
+	hookID = TIMER_BIT_ORDER;
 
 	/*
 	 * Subscribes a notification on every interrupt in timer 0 irq_line
@@ -120,7 +123,7 @@ int timer_subscribe_int(void) {
 		return FAIL_ENABLE_IRQ;
 	}
 
-	return BIT(TIMER0_IRQ);
+	return BIT(TIMER_BIT_ORDER);
 }
 
 int timer_unsubscribe_int() {
