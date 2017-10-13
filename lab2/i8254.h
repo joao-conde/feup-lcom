@@ -13,6 +13,7 @@
 #define BIT(n) (0x01<<(n))
 
 #define TIMER0_IRQ	        0    /**< @brief Timer 0 IRQ line */
+#define TIMER_BIT_ORDER    30    /**< @brief Bit order of timer interruption */
 
 /* I/O port addresses */
 
