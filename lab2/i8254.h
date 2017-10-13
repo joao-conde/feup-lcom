@@ -7,8 +7,8 @@
  * Constants for programming the i8254 Timer
  */
 
-#define MAX_TIMER_FREQ  1193182    /**< @brief clock frequency for timer in PC and AT */
-#define TIMER0_DEFAULT_FREQ 60
+#define MAX_TIMER_FREQ  1193182    /**< @brief max clock frequency for timer  */
+#define TIMER0_DEFAULT_FREQ 60	   /**< @brief default clock frequency for timer */
 
 #define BIT(n) (0x01<<(n))
 
@@ -21,27 +21,22 @@
 #define TIMER_2			0x42 /**< @brief Timer 2 count register */
 #define TIMER_CTRL		0x43 /**< @brief Control register */
 
-#define SPEAKER_CTRL		0x61 /**< @brief Register for speaker control  */
 
 /* Timer control */
 
 /* Timer selection: bits 7 and 6 */
 
-#define TIMER_SEL0		0x00     /**< @brief Control Word for Timer 0 */
-#define TIMER_SEL1		BIT(6)   /**< @brief Control Word for Timer 1 */
-#define TIMER_SEL2		BIT(7)   /**< @brief Control Word for Timer 2 */
-#define TIMER_RB_CMD		(BIT(7)|BIT(6))  /**< @brief Read Back Command */
+#define TIMER_SEL0		0x00    		 /**< @brief Control Word for Timer 0 */
+#define TIMER_SEL1		BIT(6)   		 /**< @brief Control Word for Timer 1 */
+#define TIMER_SEL2		BIT(7)   		 /**< @brief Control Word for Timer 2 */
+#define TIMER_RB_CMD	(BIT(7)|BIT(6))  /**< @brief Read Back Command */
 
 /* Register selection: bits 5 and 4 */
 
-#define TIMER_LSB		BIT(4)  /**< @brief Initialize Counter LSB only */
-#define TIMER_MSB		BIT(5)  /**< @brief Initialize Counter MSB only */
-#define TIMER_LSB_MSB		(TIMER_LSB | TIMER_MSB) /**< @brief Initialize LSB first and MSB afterwards */ 
+#define TIMER_LSB		BIT(4)  				/**< @brief Initialize Counter LSB only */
+#define TIMER_MSB		BIT(5) 	 				/**< @brief Initialize Counter MSB only */
+#define TIMER_LSB_MSB	(TIMER_LSB | TIMER_MSB) /**< @brief Initialize LSB first and MSB afterwards */
 
-/* Operating mode: bits 3, 2 and 1 */
-
-#define TIMER_SQR_WAVE		(BIT(2)|BIT(1)) /**< @brief Mode 3: square wave generator */
-#define TIMER_RATE_GEN		BIT(2)          /**< @brief Mode 2: rate generator */
 
 /* Counting mode: bit 0 */
 
@@ -65,7 +60,7 @@
 #define FAIL_SET_POLICY			-6	/**< @brief Error setting policy */
 #define FAIL_ENABLE_IRQ			-7	/**< @brief Error enabling IRQ line */
 #define FAIL_REMOVE_POLICY		-8	/**< @brief Error removing policy */
-#define FAIL_DISABLE_IRQ			-9	/**< @brief Error disabling IRQ line */
+#define FAIL_DISABLE_IRQ		 -9	/**< @brief Error disabling IRQ line */
 #define FAIL_SUB_INT			-10 /**< @brief Error subscribing interrupts */
 #define FAIL_UNSUB_INT			-11 /**< @brief Error unsubscribing interrupts */
 #define FAIL_SET_FREQ			-12 /**< @brief Error setting frequency  */

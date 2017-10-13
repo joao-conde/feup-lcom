@@ -10,10 +10,10 @@
 /**
  * @brief Changes the operating frequency of a timer
  * 
- * Must not change the 3 LSBs (mode and BCD/binary) of the timer's control word.
+ * Does not change the 3 LSBs (mode and BCD/binary) of the timer's control word.
  * 
  * @param timer Timer to configure. (Ranges from 0 to 2)
- * @param freq Timer operating frequency
+ * @param freq Timer operating frequency to be set
  * @return Return 0 upon success and non-zero otherwise
  */
 int timer_set_frequency(unsigned char timer, unsigned long freq);
@@ -52,8 +52,8 @@ int timer_get_conf(unsigned char timer, unsigned char *st);
  * @brief Shows timer configuration
  * 
  * Displays in a human friendly way, the configuration of a timer
- *  as read via the read-back command, by providing the values 
- *  (and meanings) of the different components of a timer configuration 
+ * as read via the read-back command, by providing the values
+ * (and meanings) of the different components of a timer configuration
  *
  * @param conf configuration to display in human friendly way
  * @return Return 0 upon success and non-zero otherwise
