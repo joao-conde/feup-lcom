@@ -60,7 +60,6 @@ int kbd_test_scan(unsigned short assembly) {
 
 int kbd_test_leds(unsigned short size, unsigned short *toggle) {
 
-	printf("Hello im test leds\n");
 	printf("Size parameter: %d\n", size);
 	int i = 0;
 	while (i < size) {
@@ -98,24 +97,11 @@ int kbd_test_leds(unsigned short size, unsigned short *toggle) {
 			case HARDWARE: /* hardware interrupt notification */
 
 				if (msg.NOTIFY_ARG & timer_irq_set){
-					counter++;}
+					counter++;
+				}
 
-				if ((counter % 60) == 0) { /* 1 second elapsed */
-
+				if (msg.NOTIFY_ARG & kbd_irq_set) {
 					kbc_toogle_led(2);
-					printf("test leds here\n");
-					kbc_toogle_led(2);
-					kbc_toogle_led(2);
-					kbc_toogle_led(2);
-					kbc_toogle_led(2);
-					kbc_toogle_led(2);
-					kbc_toogle_led(2);
-					kbc_toogle_led(2);
-					kbc_toogle_led(2);
-					kbc_toogle_led(2);
-					kbc_toogle_led(2);
-					kbc_toogle_led(2);
-
 				}
 				break;
 
