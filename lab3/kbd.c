@@ -44,11 +44,13 @@ int kbd_unsubscribe_int(void) {
 	return 0;
 }
 
+
+
 unsigned long kbc_read() {
 
 	unsigned long status, data;
-	int retry = 0;
 
+	int retry = 0;
 	while (retry < 5) {
 
 		if (sys_inb(STAT_REG, &status) != OK) {
@@ -74,20 +76,23 @@ unsigned long kbc_read() {
 		retry++;
 	}
 
+	return -5;
+
 }
 
 int kbc_write(unsigned long port, unsigned long word) {
 
 	unsigned long status;
+	int retry = 0;
 
-	while (1) {
+	while (retry < 5) {
 
 		if (sys_inb(STAT_REG, &status) != OK) {
 			printf("kbc_write(): Failure reading from status register\n");
 			return -1;
 		}
 
-		if (status & IBF) {
+		if (!(status & IBF)) {
 
 			if (sys_outb(port, word) != OK) {
 				printf("kbc_write(): Failure writing to port %lu\n", port);
@@ -98,15 +103,17 @@ int kbc_write(unsigned long port, unsigned long word) {
 		}
 
 		tickdelay(micros_to_ticks(DELAY_US));
-
+		retry++;
 	}
+
+
 
 }
 
 int kbc_write_cmd(unsigned long cmd, unsigned long word) {
-	/*kbc_write(KBC_CMD_REG, cmd);
-	kbc_write(INP_BUF, word);*/
-
+/*	kbc_write(KBC_CMD_REG, cmd);
+	kbc_write(INP_BUF, word);
+*/
 	unsigned long kbd_response;
 
 	while (1) {
@@ -118,6 +125,7 @@ int kbc_write_cmd(unsigned long cmd, unsigned long word) {
 		}
 
 		kbd_response = kbc_read();
+		printf("kbd_response: %x\n",kbd_response);
 
 		if (kbd_response == -1) {
 			printf("kbc_write_cmd(): failure writing command\n");
@@ -126,12 +134,12 @@ int kbc_write_cmd(unsigned long cmd, unsigned long word) {
 
 		if (kbd_response != RESEND && kbd_response != ACK
 				&& kbd_response != ERROR) {
-			printf("kbc_write_cmd(): unexpected kbd response\n");
+			printf("kbc_write_cmd(): unexpected kbd response outer loop\n");
 			continue;
 		}
 
 		if (kbd_response == ACK) {
-
+			printf("received ACK\n");
 			while (1) {
 				if (kbc_write(INP_BUF, word) != 0) {
 					printf(
@@ -148,7 +156,7 @@ int kbc_write_cmd(unsigned long cmd, unsigned long word) {
 
 				if (kbd_response != RESEND && kbd_response != ACK
 						&& kbd_response != ERROR) {
-					printf("kbc_write_cmd(): unexpected kbd response\n");
+					printf("kbc_write_cmd(): unexpected kbd response inner loop\n");
 					continue;
 				}
 
@@ -212,11 +220,8 @@ void switchLED(unsigned int id) {
 
 unsigned long kbc_toogle_led(unsigned int id) {
 
-	printf("Before kbc_read call\n");
 	unsigned char led_status = kbc_read();
-	printf("After kbc_read call\n");
 	switchLED(id);
-	printf("After switch led call\n");
 
 	if (capslock)
 		led_status |= BIT(2);
@@ -227,10 +232,7 @@ unsigned long kbc_toogle_led(unsigned int id) {
 	if (scroll_lock)
 		led_status |= BIT(0);
 
-	printf("Before writing led_toogle_cmd\n");
 	kbc_write_cmd(LED_TOGGLE_CMD, led_status);
-	printf("After writing led_toogle_cmd\n");
 
 	return 0;
-
 }
