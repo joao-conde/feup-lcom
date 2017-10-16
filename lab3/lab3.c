@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <string.h>
 #include <errno.h>
+#include <minix/syslib.h>
 
 static int proc_args(int argc, char **argv);
 static unsigned long parse_ulong(char *str, int base);
@@ -11,9 +12,7 @@ static void print_usage(char **argv);
 int main(int argc, char **argv) {
 
 	sef_startup();
-
-	/* Enable IO-sensitive operations for ourselves */
-	//sys_enable_iop(SELF);
+	sys_enable_iop(SELF);
 
 	if (argc == 1) { /* Prints usage of the program if no arguments are passed */
 		print_usage(argv);
@@ -25,14 +24,14 @@ int main(int argc, char **argv) {
 static void print_usage(char **argv) {
 	printf(
 			"Usage: one of the following:\n"
-					"\t service run %s -args \"scan <func written in assembly(1) or C(0) - asm>\"\n"
-					"\t service run %s -args \"leds <array length - n> <pointer to first element of array - toggle>\"\n"
-					"\t service run %s -args \"tscan <maximum waiting time - n>\"\n",
+					"\t service run %s -args \"scan <IH written in assembly(1) or C(0) - ass>\"\n"
+					"\t service run %s -args \"poll\"\n"
+					"\t service run %s -args \"tscan <maximum waiting time in between scancodes - n>\"\n",
 			argv[0], argv[0], argv[0]);
 }
 
 static int proc_args(int argc, char **argv) {
-	unsigned long assembly, time, array_length, to_read;
+	unsigned long assembly, time;
 
 	if (strncmp(argv[1], "scan", strlen("scan")) == 0) {
 
@@ -46,7 +45,7 @@ static int proc_args(int argc, char **argv) {
 
 		if (assembly != 1 && assembly != 0) {
 			printf(
-					"'asm' parameter must be 0 or 1, for C or assembly written code respectively (check function usage)...\n");
+					"'ass' parameter must be 0 or 1, for C or assembly written code respectively (check function prototype)\n");
 			return 1;
 		}
 
@@ -60,49 +59,24 @@ static int proc_args(int argc, char **argv) {
 			return 1;
 		}
 
-		time = parse_ulong(argv[2], 10);
 
-		if (time == ULONG_MAX)
+		if ((time = parse_ulong(argv[2], 10)) == ULONG_MAX)
 			return 1;
 
 		printf("kbd::kbd_test_timed_scan(%lu)\n", time);
 
 		return kbd_test_timed_scan(time);
-	} else if (strncmp(argv[1], "leds", strlen("leds")) == 0) {
+	} else if (strncmp(argv[1], "poll", strlen("poll")) == 0) {
 
-		array_length = parse_ulong(argv[2], 10);
-		to_read = argc - 3;
 
-		if (array_length <= 0) {
-			printf(
-					"kbd: Invalid array size for kbd_test_leds(). Must be positive value\n");
+		if (argc != 2) {
+			printf("kbd: kbd_test_timed_scan() has no arguments\n");
 			return 1;
 		}
 
-		if (array_length != to_read) {
-			printf(
-					"kbd: Invalid no. of LED toggle's for kbd_test_leds(). Must match array size\n");
-			return 1;
-		}
 
-		//reading the inputed values for LED toggle array
-		unsigned short toggle[array_length];
-
-		int i;
-		for (i = 0; i < to_read; i++) {
-			toggle[i] = (unsigned short) parse_ulong(argv[i + 3], 10);
-		}
-
-		//printing the size and array elements with function call
-		printf("kbd:kbd_test_leds(%lu, {", array_length);
-
-		for (i = 0; i < array_length; i++) {
-			printf(" %u ", toggle[i]);
-		}
-
-		printf("})\n");
-
-		return kbd_test_leds(array_length, toggle);
+		printf("kbd::kbd_test_poll()\n");
+		return kbd_test_poll();
 	} else {
 		printf("kbd: %s - no valid function!\n", argv[1]);
 		return 1;
