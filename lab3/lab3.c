@@ -70,13 +70,14 @@ static int proc_args(int argc, char **argv) {
 
 
 		if (argc != 2) {
-			printf("kbd: kbd_test_timed_scan() has no arguments\n");
+			printf("kbd: kbd_poll() has no arguments\n");
 			return 1;
 		}
 
 
 		printf("kbd::kbd_test_poll()\n");
 		return kbd_test_poll();
+
 	} else {
 		printf("kbd: %s - no valid function!\n", argv[1]);
 		return 1;
