@@ -32,6 +32,8 @@
 
 /* KBC CONTROL*/
 
+#define KBD_BIT_ORDER 25
+
 
 /* BIT MASKS for status control word */
 

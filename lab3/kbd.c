@@ -8,7 +8,7 @@ int hookID;
 
 int kbd_subscribe_int(void) {
 
-	//hookID = KBD_IRQ;
+
 	hookID = KBD_BIT_ORDER;
 
 	if (sys_irqsetpolicy(KBD_IRQ, IRQ_REENABLE | IRQ_EXCLUSIVE, &hookID)
