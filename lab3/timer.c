@@ -152,6 +152,7 @@ void timer_int_handler() {
 	counter++;
 }
 
+
 int timer_get_conf(unsigned char timer, unsigned char *st) {
 
 	unsigned long controlWord = 0, config = 0;
