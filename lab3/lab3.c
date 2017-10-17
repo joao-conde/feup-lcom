@@ -9,6 +9,7 @@ static int proc_args(int argc, char **argv);
 static unsigned long parse_ulong(char *str, int base);
 static void print_usage(char **argv);
 
+
 int main(int argc, char **argv) {
 
 	sef_startup();

@@ -13,11 +13,11 @@
  * Displays the scancodes received from the keyboard
  * Exits upon release of the ESC key
  * 
- * @param asm Which IH to use: if 0, in C, otherwise in assembly
+ * @param ass Which IH to use: if 0, in C, otherwise in assembly
  * 
  * @return Return 0 upon success and non-zero otherwise
  */
-int kbd_test_scan(unsigned short asm);
+int kbd_test_scan(unsigned short ass);
 
 /**
  * @brief To test reading of scancodes via polling
