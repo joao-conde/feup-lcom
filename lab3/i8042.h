@@ -14,7 +14,10 @@
 
 /* USEFUL MACROS */
 
-#define ESC_BREAK 0x81
+#define ESC_BREAK 		0x81
+#define SET2_SCANCODE	0xE0
+
+
 
 #define ACK   	0xFA
 #define RESEND	0xFE
@@ -42,10 +45,6 @@
 #define PAR_ERR BIT(7)
 #define TO_ERR BIT(6)
 
-
-/* COMMANDS */
-
-#define LED_TOGGLE_CMD	0xED
 
 
 
