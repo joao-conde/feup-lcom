@@ -3,11 +3,10 @@
 #include <minix/sysutil.h>
 #include <minix/drivers.h>
 
-
 int hookID;
+int twobytes = 0;
 
 int kbd_subscribe_int(void) {
-
 
 	hookID = KBD_BIT_ORDER;
 
@@ -40,9 +39,7 @@ int kbd_unsubscribe_int(void) {
 	return 0;
 }
 
-
-
-unsigned long kbc_read() {
+int kbc_read() {
 
 	unsigned long status, data;
 
@@ -62,9 +59,9 @@ unsigned long kbc_read() {
 				return -1;
 			}
 
-			if ((status & (PAR_ERR | TO_ERR)) == 0)
+			if ((status & (PAR_ERR | TO_ERR)) == 0) {
 				return data;
-			else
+			} else
 				return -1;
 		}
 
@@ -102,14 +99,13 @@ int kbc_write(unsigned long port, unsigned long word) {
 		retry++;
 	}
 
-
-
+	return -1;
 }
 
 int kbc_write_cmd(unsigned long cmd, unsigned long word) {
-/*	kbc_write(KBC_CMD_REG, cmd);
-	kbc_write(INP_BUF, word);
-*/
+	/*	kbc_write(KBC_CMD_REG, cmd);
+	 kbc_write(INP_BUF, word);
+	 */
 	unsigned long kbd_response;
 
 	while (1) {
@@ -121,7 +117,7 @@ int kbc_write_cmd(unsigned long cmd, unsigned long word) {
 		}
 
 		kbd_response = kbc_read();
-		printf("kbd_response: %x\n",kbd_response);
+		printf("kbd_response: %x\n", kbd_response);
 
 		if (kbd_response == -1) {
 			printf("kbc_write_cmd(): failure writing command\n");
@@ -145,23 +141,24 @@ int kbc_write_cmd(unsigned long cmd, unsigned long word) {
 
 				kbd_response = kbc_read();
 
-				if(kbd_response == -1){
+				if (kbd_response == -1) {
 					printf("kbc_write_cmd(): failure writing argument\n");
 					return -1;
 				}
 
 				if (kbd_response != RESEND && kbd_response != ACK
 						&& kbd_response != ERROR) {
-					printf("kbc_write_cmd(): unexpected kbd response inner loop\n");
+					printf(
+							"kbc_write_cmd(): unexpected kbd response inner loop\n");
 					continue;
 				}
 
-				if(kbd_response == RESEND)
+				if (kbd_response == RESEND)
 					continue;
-				if(kbd_response == ACK)
+				if (kbd_response == ACK)
 					return 0;
 
-				if(kbd_response == ERROR)
+				if (kbd_response == ERROR)
 					break;
 
 			}
@@ -172,8 +169,7 @@ int kbc_write_cmd(unsigned long cmd, unsigned long word) {
 	return -1;
 }
 
-
-void print_scancode(unsigned long scancode) {
+void print_set1code(unsigned long scancode) {
 
 	if (BIT(7) & scancode)
 		printf("Break Code: 0x%x\n", scancode);
@@ -182,3 +178,27 @@ void print_scancode(unsigned long scancode) {
 
 }
 
+void print_set2code(unsigned long scancode) {
+
+	if (BIT(7) & scancode)
+		printf("Break Code: 0xe0 0x%x\n", scancode);
+	else
+		printf("Make Code: 0xe0 0x%x\n", scancode);
+
+	twobytes = 0;
+
+}
+
+void print_scancode(unsigned long scancode){
+
+	if(scancode == SET2_SCANCODE){
+		twobytes = 1;
+		return;
+	}
+
+	if(twobytes)
+		print_set2code(scancode);
+	else
+		print_set1code(scancode);
+
+}

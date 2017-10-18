@@ -1,10 +1,15 @@
+#include "i8042.h"
+#include "i8254.h"
+#include "kbd.h"
+#include "timer.h"
+
 #include <minix/sysutil.h>
 #include <minix/drivers.h>
+#include <stdlib.h>
 
-#include "kbd.h"
-#include "i8042.h"
-#include "timer.h"
-#include "i8254.h"
+
+int sysinb_kernel_calls = 0;
+
 
 int kbd_test_scan(unsigned short ass) {
 
@@ -34,8 +39,10 @@ int kbd_test_scan(unsigned short ass) {
 
 					if (ass) {
 						//INVOKE ASSEMBLY INTERRUPT - collect code in "scancode"
-					} else
+					} else{
 						scancode = kbc_read();
+						sysinb_kernel_calls += 2; //2 sysinb calls per kbc_read()
+					}
 
 					print_scancode(scancode);
 
@@ -48,6 +55,9 @@ int kbd_test_scan(unsigned short ass) {
 		}
 	}
 
+
+	printf("NUMBER OF SYS_INB KERNEL CALLS: %d\n",sysinb_kernel_calls);
+
 	if (kbd_unsubscribe_int() == -1) {
 		printf("kbd_unsubscribe_int(): Failure\n");
 		return -1;
@@ -58,7 +68,18 @@ int kbd_test_scan(unsigned short ass) {
 }
 
 int kbd_test_poll() {
-	/* To be completed */
+
+	int scancode = 0;
+
+	while (scancode != ESC_BREAK) {
+		if((scancode = kbc_read()) >= 0)
+			print_scancode(scancode);
+		else
+			printf("Unsucessfull reading\n");
+	}
+
+	printf("kbd_test_scan(): exit\n");
+	return 0;
 }
 
 int kbd_test_timed_scan(unsigned short n) {
@@ -110,6 +131,8 @@ int kbd_test_timed_scan(unsigned short n) {
 		}
 	}
 
+	if(scancode == ESC_BREAK)
+		printf("ESC RELEASED\n");
 
 	if (timer_unsubscribe_int() == -1) {
 		printf("timer_unsubscribe_int(): Failure\n");

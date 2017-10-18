@@ -33,7 +33,7 @@ int kbd_unsubscribe_int(void);
  *
  * @return Return the byte read or negative value on failure
  */
-unsigned long kbc_read();
+int kbc_read();
 
 
 /**
@@ -63,6 +63,10 @@ int kbc_write_cmd(unsigned long cmd, unsigned long word);
  * @param scancode the scancode to be printed
  */
 void print_scancode(unsigned long scancode);
+
+void print_set1code(unsigned long scancode);
+
+void print_set2code(unsigned long scancode);
 
 
 
