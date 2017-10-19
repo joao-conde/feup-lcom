@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 
-int sysinb_kernel_calls = 0;
+int sysinb_counter = 0;
 
 
 int kbd_test_scan(unsigned short ass) {
@@ -17,6 +17,7 @@ int kbd_test_scan(unsigned short ass) {
 	message msg;
 
 	unsigned long scancode;
+	sysinb_counter = 0;
 
 	if (irq_set == -1) {
 		printf("kbd_subscribe_int(): Failure\n");
@@ -41,7 +42,7 @@ int kbd_test_scan(unsigned short ass) {
 						//INVOKE ASSEMBLY INTERRUPT - collect code in "scancode"
 					} else{
 						scancode = kbc_read();
-						sysinb_kernel_calls += 2; //2 sysinb calls per kbc_read()
+						sysinb_counter += kbc_get_sysinbcalls();
 					}
 
 					print_scancode(scancode);
@@ -56,7 +57,7 @@ int kbd_test_scan(unsigned short ass) {
 	}
 
 
-	printf("NUMBER OF SYS_INB KERNEL CALLS: %d\n",sysinb_kernel_calls);
+	printf("\nNUMBER OF SYS_INB KERNEL CALLS: %d\n", sysinb_counter);
 
 	if (kbd_unsubscribe_int() == -1) {
 		printf("kbd_unsubscribe_int(): Failure\n");
@@ -70,15 +71,20 @@ int kbd_test_scan(unsigned short ass) {
 int kbd_test_poll() {
 
 	int scancode = 0;
+	sysinb_counter = 0;
 
 	while (scancode != ESC_BREAK) {
-		if((scancode = kbc_read()) >= 0)
+		if((scancode = kbc_read()) >= 0){
 			print_scancode(scancode);
-		else
-			printf("Unsucessfull reading\n");
+			sysinb_counter += kbc_get_sysinbcalls();
+		}
+		/* else
+			printf("Unsuccessfull reading\n"); UNCOMMENT TO SEE HOW MANY CALLS TO KBC_READ() FAIL - POLLING*/
 	}
 
-	printf("kbd_test_scan(): exit\n");
+	printf("\nNUMBER OF SYS_INB KERNEL CALLS: %d\n", sysinb_counter);
+
+	printf("kbd_test_poll(): exit\n");
 	return 0;
 }
 

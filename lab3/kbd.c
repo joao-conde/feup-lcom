@@ -5,6 +5,7 @@
 
 int hookID;
 int twobytes = 0;
+int sysinb_calls = 0;
 
 int kbd_subscribe_int(void) {
 
@@ -42,6 +43,7 @@ int kbd_unsubscribe_int(void) {
 int kbc_read() {
 
 	unsigned long status, data;
+	sysinb_calls = 0;
 
 	int retry = 0;
 	while (retry < 5) {
@@ -50,6 +52,7 @@ int kbc_read() {
 			printf("kbc_read(): Failure reading status register of KBC\n");
 			return -1;
 		}
+		sysinb_calls++;
 
 		//loop while KBC output buffer is empty
 		if (status & OBF) {
@@ -58,6 +61,7 @@ int kbc_read() {
 				printf("kbc_read(): Failure reading output buffer of KBC\n");
 				return -1;
 			}
+			sysinb_calls++;
 
 			if ((status & (PAR_ERR | TO_ERR)) == 0) {
 				return data;
@@ -168,6 +172,12 @@ int kbc_write_cmd(unsigned long cmd, unsigned long word) {
 
 	return -1;
 }
+
+
+int kbc_get_sysinbcalls(){
+	return sysinb_calls;
+}
+
 
 void print_set1code(unsigned long scancode) {
 
