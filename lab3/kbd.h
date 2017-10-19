@@ -57,6 +57,8 @@ int kbc_write(unsigned long port, unsigned long word);
  */
 int kbc_write_cmd(unsigned long cmd, unsigned long word);
 
+int kbc_get_sysinbcalls();
+
 /**
  * @brief Prints a key scancode in an human friendly way
  *
