@@ -9,7 +9,6 @@
 #include <stdlib.h>
 
 
-int sysinb_counter = 0;
 unsigned long assIH();
 
 
@@ -19,7 +18,7 @@ int kbd_test_scan(unsigned short ass) {
 	message msg;
 
 	unsigned long scancode;
-	sysinb_counter = 0;
+
 
 	if (irq_set == -1) {
 		printf("kbd_subscribe_int(): Failure\n");
@@ -40,12 +39,11 @@ int kbd_test_scan(unsigned short ass) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
-					if (ass) {
+					if (ass)
 						scancode = assIH();
-					} else{
+					else
 						scancode = kbc_read();
-						sysinb_counter += kbc_get_sysinbcalls();
-					}
+
 
 					print_scancode(scancode);
 
@@ -59,32 +57,34 @@ int kbd_test_scan(unsigned short ass) {
 	}
 
 
-	printf("\nNUMBER OF SYS_INB KERNEL CALLS: %d\n", sysinb_counter);
+#ifdef LAB3
+	if(!ass) print_sysinb_calls();
+#endif
+
 
 	if (kbd_unsubscribe_int() == -1) {
 		printf("kbd_unsubscribe_int(): Failure\n");
 		return -1;
 	}
 
-	printf("kbd_test_scan(): exit\n");
+	printf("\nkbd_test_scan(): exit\n");
 	return 0;
 }
 
 int kbd_test_poll() {
 
 	int scancode = 0;
-	sysinb_counter = 0;
+
 
 	while (scancode != ESC_BREAK) {
 		if((scancode = kbc_read()) >= 0){
 			print_scancode(scancode);
-			sysinb_counter += kbc_get_sysinbcalls();
 		}
 		/* else
 			printf("Unsuccessfull reading\n"); UNCOMMENT TO SEE HOW MANY CALLS TO KBC_READ() FAIL - POLLING*/
 	}
 
-	printf("\nNUMBER OF SYS_INB KERNEL CALLS: %d\n", sysinb_counter);
+	print_sysinb_calls();
 
 	printf("kbd_test_poll(): exit\n");
 	return 0;

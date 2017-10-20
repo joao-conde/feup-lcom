@@ -3,9 +3,27 @@
 #include <minix/sysutil.h>
 #include <minix/drivers.h>
 
+#ifdef LAB3
+
+int sysinb_counter = 0;
+
+int sys_inb_cnt(port_t port, unsigned long *byte){
+	sysinb_counter++;
+	return sys_inb(port,byte);
+}
+
+void print_sysinb_calls(){
+	printf("no. of sys_inb() kernel calls: %d\n",sysinb_counter);
+}
+
+#else
+#define sys_inb_cnt(p,q) sys_inb(p,q)
+#endif
+
+
 int hookID;
 int twobytes = 0;
-int sysinb_calls = 0;
+
 
 int kbd_subscribe_int(void) {
 
@@ -43,25 +61,23 @@ int kbd_unsubscribe_int(void) {
 int kbc_read() {
 
 	unsigned long status, data;
-	sysinb_calls = 0;
 
 	int retry = 0;
 	while (retry < 5) {
 
-		if (sys_inb(STAT_REG, &status) != OK) {
+		if (sys_inb_cnt(STAT_REG, &status) != OK) {
 			printf("kbc_read(): Failure reading status register of KBC\n");
 			return -1;
 		}
-		sysinb_calls++;
 
 		//loop while KBC output buffer is empty
 		if (status & OBF) {
 
-			if (sys_inb(OUT_BUF, &data) != OK) {
+			if (sys_inb_cnt(OUT_BUF, &data) != OK) {
 				printf("kbc_read(): Failure reading output buffer of KBC\n");
 				return -1;
 			}
-			sysinb_calls++;
+
 
 			if ((status & (PAR_ERR | TO_ERR)) == 0) {
 				return data;
@@ -76,108 +92,6 @@ int kbc_read() {
 	return -5;
 
 }
-
-int kbc_write(unsigned long port, unsigned long word) {
-
-	unsigned long status;
-	int retry = 0;
-
-	while (retry < 5) {
-
-		if (sys_inb(STAT_REG, &status) != OK) {
-			printf("kbc_write(): Failure reading from status register\n");
-			return -1;
-		}
-
-		if (!(status & IBF)) {
-
-			if (sys_outb(port, word) != OK) {
-				printf("kbc_write(): Failure writing to port %lu\n", port);
-				return -1;
-			}
-
-			return 0;
-		}
-
-		tickdelay(micros_to_ticks(DELAY_US));
-		retry++;
-	}
-
-	return -1;
-}
-
-int kbc_write_cmd(unsigned long cmd, unsigned long word) {
-	/*	kbc_write(KBC_CMD_REG, cmd);
-	 kbc_write(INP_BUF, word);
-	 */
-	unsigned long kbd_response;
-
-	while (1) {
-
-		if (kbc_write(KBC_CMD_REG, cmd) != 0) {
-			printf(
-					"kbc_write_cmd(): Failure writing command to KBC command register\n");
-			return -1;
-		}
-
-		kbd_response = kbc_read();
-		printf("kbd_response: %x\n", kbd_response);
-
-		if (kbd_response == -1) {
-			printf("kbc_write_cmd(): failure writing command\n");
-			return -1;
-		}
-
-		if (kbd_response != RESEND && kbd_response != ACK
-				&& kbd_response != ERROR) {
-			printf("kbc_write_cmd(): unexpected kbd response outer loop\n");
-			continue;
-		}
-
-		if (kbd_response == ACK) {
-			printf("received ACK\n");
-			while (1) {
-				if (kbc_write(INP_BUF, word) != 0) {
-					printf(
-							"kbc_write_cmd(): failure writing word to the KBC input buffer\n");
-					return -1;
-				}
-
-				kbd_response = kbc_read();
-
-				if (kbd_response == -1) {
-					printf("kbc_write_cmd(): failure writing argument\n");
-					return -1;
-				}
-
-				if (kbd_response != RESEND && kbd_response != ACK
-						&& kbd_response != ERROR) {
-					printf(
-							"kbc_write_cmd(): unexpected kbd response inner loop\n");
-					continue;
-				}
-
-				if (kbd_response == RESEND)
-					continue;
-				if (kbd_response == ACK)
-					return 0;
-
-				if (kbd_response == ERROR)
-					break;
-
-			}
-		}
-
-	}
-
-	return -1;
-}
-
-
-int kbc_get_sysinbcalls(){
-	return sysinb_calls;
-}
-
 
 void print_set1code(unsigned long scancode) {
 

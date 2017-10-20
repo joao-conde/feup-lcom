@@ -7,10 +7,10 @@
 _assIH:
 	xor %eax,%eax //setting eax to 0
 
-	KBD6:
+	ciclo:
 	inb $STAT_REG
-	test KBD_IRQ, %al
-	loopz KBD6
+	test $OUTBUF_FULL_ASS, %al
+	loopz ciclo
 
 	inb $OUT_BUF
 	ret
