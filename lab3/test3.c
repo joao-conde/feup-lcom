@@ -12,17 +12,17 @@
 unsigned long assIH();
 
 
-int kbd_test_scan(unsigned short ass) {
+int kbd_test_scan(unsigned short assembly) {
 
 	int ipc_status, r, irq_set = kbd_subscribe_int();
 	message msg;
 
-	unsigned long scancode;
+	unsigned long scancode = 0;
 
 
 	if (irq_set == -1) {
 		printf("kbd_subscribe_int(): Failure\n");
-		return -1;
+		return FAIL_SUB_INT;
 	}
 
 	while (scancode != ESC_BREAK) {
@@ -39,7 +39,7 @@ int kbd_test_scan(unsigned short ass) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
-					if (ass)
+					if (assembly)
 						scancode = assIH();
 					else
 						scancode = kbc_read();
@@ -58,36 +58,32 @@ int kbd_test_scan(unsigned short ass) {
 
 
 #ifdef LAB3
-	if(!ass) print_sysinb_calls();
+	if(!assembly) print_sysinb_calls();
 #endif
 
 
 	if (kbd_unsubscribe_int() == -1) {
 		printf("kbd_unsubscribe_int(): Failure\n");
-		return -1;
+		return FAIL_UNSUB_INT;
 	}
 
 	printf("\nkbd_test_scan(): exit\n");
-	return 0;
+	return OK;
 }
 
 int kbd_test_poll() {
 
 	int scancode = 0;
 
-
 	while (scancode != ESC_BREAK) {
-		if((scancode = kbc_read()) >= 0){
-			print_scancode(scancode);
-		}
-		/* else
-			printf("Unsuccessfull reading\n"); UNCOMMENT TO SEE HOW MANY CALLS TO KBC_READ() FAIL - POLLING*/
+		scancode = kbc_polling();
+		print_scancode(scancode);
 	}
 
 	print_sysinb_calls();
 
 	printf("kbd_test_poll(): exit\n");
-	return 0;
+	return OK;
 }
 
 int kbd_test_timed_scan(unsigned short n) {
@@ -102,13 +98,14 @@ int kbd_test_timed_scan(unsigned short n) {
 
 	if (kbd_irq_set == -1) {
 		printf("kbd_subscribe_int(): Failure\n");
-		return -1;
+		return FAIL_SUB_INT;
 	}
 
 	if (timer_irq_set == -1) {
 		printf("timer_subscribe_int(): Failure\n");
-		return -1;
+		return FAIL_SUB_INT;
 	}
+
 
 	while (scancode != ESC_BREAK && (counter < (n * TIMER0_DEFAULT_FREQ))) {
 
@@ -122,6 +119,7 @@ int kbd_test_timed_scan(unsigned short n) {
 			switch (_ENDPOINT_P(msg.m_source)) {
 
 			case HARDWARE: /* hardware interrupt notification */
+
 				if (msg.NOTIFY_ARG & kbd_irq_set) { /* subscribed keyboard interrupt */
 					scancode = kbc_read();
 					print_scancode(scancode);
@@ -141,17 +139,20 @@ int kbd_test_timed_scan(unsigned short n) {
 
 	if(scancode == ESC_BREAK)
 		printf("ESC RELEASED\n");
+	else
+		printf("TIMEOUT\n");
+
 
 	if (timer_unsubscribe_int() == -1) {
 		printf("timer_unsubscribe_int(): Failure\n");
-		return -1;
+		return FAIL_UNSUB_INT;
 	}
 
 	if (kbd_unsubscribe_int() == -1) {
 		printf("kbd_unsubscribe_int(): Failure\n");
-		return -1;
+		return FAIL_UNSUB_INT;
 	}
 
 	printf("kbd_test_timed_scan(): exit\n");
-	return 0;
+	return OK;
 }

@@ -1,6 +1,8 @@
 #ifndef __TIMER_H
 #define __TIMER_H
 
+#include "i8254.h"
+
 /** @defgroup timer timer
  * @{
  *

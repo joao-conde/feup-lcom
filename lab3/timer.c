@@ -7,7 +7,7 @@
 #include "timer.h"
 
 unsigned int counter = 0;
-int hookID;
+int timer_hookID;
 
 int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
@@ -108,19 +108,19 @@ int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
 int timer_subscribe_int(void) {
 
-	hookID = TIMER_BIT_ORDER;
+	timer_hookID = TIMER_BIT_ORDER;
 
 	/*
 	 * Subscribes a notification on every interrupt in timer 0 irq_line
 	 * hook_id argument is used both for input to the call and output from the call, used in other calls
 	 */
-	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hookID) != OK) {
+	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &timer_hookID) != OK) {
 		printf("Failure setting policy\n");
 		return FAIL_SET_POLICY;
 	}
 
 	//enables interrupts on the timer 0 IRQ line
-	if (sys_irqenable(&hookID) != OK) {
+	if (sys_irqenable(&timer_hookID) != OK) {
 		printf("Failure enabling IRQ line\n");
 		return FAIL_ENABLE_IRQ;
 	}
@@ -136,13 +136,13 @@ int timer_unsubscribe_int() {
 	 */
 
 	//disables interrupts on the timer 0 IRQ line
-	if (sys_irqdisable(&hookID) != OK) {
+	if (sys_irqdisable(&timer_hookID) != OK) {
 		printf("Failure disabling IRQ line\n");
 		return FAIL_DISABLE_IRQ;
 	}
 
 	//Unsubscribes notifications in timer 0 irq_line
-	if (sys_irqrmpolicy(&hookID) != OK) {
+	if (sys_irqrmpolicy(&timer_hookID) != OK) {
 		printf("Failure removing policy\n");
 		return FAIL_REMOVE_POLICY;
 	}
