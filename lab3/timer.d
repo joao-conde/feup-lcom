@@ -15,11 +15,13 @@ timer.o:	/usr/include/minix/const.h
 timer.o:	/usr/include/minix/devio.h
 timer.o:	/usr/include/minix/dir.h
 timer.o:	/usr/include/minix/dmap.h
+timer.o:	/usr/include/minix/driver.h
 timer.o:	/usr/include/minix/drivers.h
 timer.o:	/usr/include/minix/endpoint.h
 timer.o:	/usr/include/minix/ipc.h
 timer.o:	/usr/include/minix/ipcconst.h
 timer.o:	/usr/include/minix/limits.h
+timer.o:	/usr/include/minix/partition.h
 timer.o:	/usr/include/minix/safecopies.h
 timer.o:	/usr/include/minix/sef.h
 timer.o:	/usr/include/minix/spin.h

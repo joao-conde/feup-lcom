@@ -15,11 +15,13 @@ test3.o:	/usr/include/minix/const.h
 test3.o:	/usr/include/minix/devio.h
 test3.o:	/usr/include/minix/dir.h
 test3.o:	/usr/include/minix/dmap.h
+test3.o:	/usr/include/minix/driver.h
 test3.o:	/usr/include/minix/drivers.h
 test3.o:	/usr/include/minix/endpoint.h
 test3.o:	/usr/include/minix/ipc.h
 test3.o:	/usr/include/minix/ipcconst.h
 test3.o:	/usr/include/minix/limits.h
+test3.o:	/usr/include/minix/partition.h
 test3.o:	/usr/include/minix/safecopies.h
 test3.o:	/usr/include/minix/sef.h
 test3.o:	/usr/include/minix/spin.h

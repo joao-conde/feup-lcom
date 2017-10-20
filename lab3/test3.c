@@ -5,10 +5,12 @@
 
 #include <minix/sysutil.h>
 #include <minix/drivers.h>
+#include <minix/driver.h>
 #include <stdlib.h>
 
 
 int sysinb_counter = 0;
+unsigned long assIH();
 
 
 int kbd_test_scan(unsigned short ass) {
@@ -39,7 +41,7 @@ int kbd_test_scan(unsigned short ass) {
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
 					if (ass) {
-						//INVOKE ASSEMBLY INTERRUPT - collect code in "scancode"
+						scancode = assIH();
 					} else{
 						scancode = kbc_read();
 						sysinb_counter += kbc_get_sysinbcalls();

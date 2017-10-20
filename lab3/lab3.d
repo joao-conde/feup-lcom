@@ -27,9 +27,11 @@ lab3.o:	/usr/include/sys/null.h
 lab3.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/ansi.h
 lab3.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/limits.h
 lab3.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdio.h
+lab3.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdlib.h
 lab3.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/string.h
 lab3.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/syslimits.h
 lab3.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 lab3.o:	i8042.h
 lab3.o:	kbd.h
 lab3.o:	lab3.c
+lab3.o:	test3.h

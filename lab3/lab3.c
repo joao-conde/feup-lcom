@@ -1,6 +1,8 @@
 #include "kbd.h"
 #include "i8042.h"
+#include "test3.h"
 
+#include <stdlib.h>
 #include <limits.h>
 #include <string.h>
 #include <errno.h>
