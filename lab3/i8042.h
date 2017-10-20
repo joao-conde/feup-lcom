@@ -16,6 +16,7 @@
 
 #define ESC_BREAK 		0x81
 #define SET2_SCANCODE	0xE0
+#define OUTBUF_FULL_ASS 1
 
 
 
