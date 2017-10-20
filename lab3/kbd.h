@@ -35,6 +35,14 @@ int kbd_unsubscribe_int(void);
  */
 int kbc_read();
 
+/**
+ * @brief Reads the KBC output buffer in a polling mode
+ *
+ * Tests whether or not there is something to read and if the read was successful or not
+ *
+ * @return Return the byte read or negative value on failure
+ */
+int kbc_polling();
 
 /**
  * @brief Prints a key scancode in an human friendly way

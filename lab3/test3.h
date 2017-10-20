@@ -17,7 +17,7 @@
  * 
  * @return Return 0 upon success and non-zero otherwise
  */
-int kbd_test_scan(unsigned short ass);
+int kbd_test_scan(unsigned short assembly);
 
 /**
  * @brief To test reading of scancodes via polling
