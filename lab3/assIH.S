@@ -1,6 +1,7 @@
 #include "i8042.h"
 
-.globl _assIH
+.global _assIH
+.global _scancode
 
 .text
 
@@ -13,4 +14,7 @@ _assIH:
 	loopz ciclo
 
 	inb $OUT_BUF
+
+	mov %eax, _scancode
+
 	ret
