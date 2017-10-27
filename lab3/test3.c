@@ -48,7 +48,7 @@ int kbd_test_scan(unsigned short assembly) {
 
 					}
 					else
-						kbc_handler();
+						kbc_int_handler();
 
 
 					print_scancode(scancode);
