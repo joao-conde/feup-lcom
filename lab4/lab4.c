@@ -1,3 +1,9 @@
+#include <stdlib.h>
+#include <limits.h>
+#include <string.h>
+#include <errno.h>
+#include <minix/syslib.h>
+
 static int proc_args(int argc, char **argv);
 static unsigned long parse_ulong(char *str, int base);
 static void print_usage(char **argv);
@@ -31,7 +37,7 @@ static int proc_args(int argc, char **argv) {
 
 		printf("mouse::mouse_test_packet()\n");
 
-		return mouse_test_packet();
+		return mouse_test_packet(1);
 	}
 
 	/*else if (strncmp(argv[1], "tscan", strlen("tscan")) == 0) {
