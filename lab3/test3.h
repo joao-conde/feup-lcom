@@ -7,6 +7,14 @@
  * Functions for testing the kbd code
  */
 
+/**
+ * @brief kbc interrupt handler
+ *
+ * Sets global variable 'scancode' to the word read from KBC
+ *
+ */
+void kbc_int_handler();
+
 /** 
  * @brief To test reading of scancode via KBD interrupts 
  * 

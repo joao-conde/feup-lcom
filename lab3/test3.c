@@ -11,13 +11,17 @@
 
 unsigned long assIH();
 
+unsigned long scancode = 0;
+
+void kbc_int_handler(){
+	scancode = kbc_read();
+}
 
 int kbd_test_scan(unsigned short assembly) {
 
 	int ipc_status, r, irq_set = kbd_subscribe_int();
 	message msg;
 
-	unsigned long scancode = 0;
 
 
 	if (irq_set == -1) {
@@ -39,10 +43,12 @@ int kbd_test_scan(unsigned short assembly) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
-					if (assembly)
-						scancode = assIH();
+					if (assembly){
+						assIH();
+
+					}
 					else
-						scancode = kbc_read();
+						kbc_handler();
 
 
 					print_scancode(scancode);
