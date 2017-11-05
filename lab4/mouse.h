@@ -31,5 +31,13 @@ int kbc_write(unsigned long port, unsigned long word);
 
 int kbc_write_cmd(unsigned long cmd, unsigned long word);
 
+void synch_packet(long byte);
+
+long mouse_readOBF();
+
+void mouseIH();
+
+void display_packet(long *packet);
+
 
 #endif

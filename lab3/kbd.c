@@ -90,7 +90,6 @@ int kbc_read() {
 	}
 
 	return TRIES_EXCEED;
-
 }
 
 int kbc_polling() {
