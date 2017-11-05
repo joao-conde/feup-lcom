@@ -22,6 +22,8 @@
 #define KBD_IRQ			1
 #define MOUSE_IRQ		12
 
+
+
 /* I/O port addresses */
 
 #define STAT_REG 0x64
@@ -51,6 +53,10 @@
 #define PAR_ERR BIT(7)
 #define TO_ERR BIT(6)
 
+
+#define FIRSTBYTE    BIT(3)
+#define TRUE 1
+#define FALSE 0
 
 
 #define DELAY_US   20000
