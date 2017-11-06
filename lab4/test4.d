@@ -55,3 +55,4 @@ test4.o:	i8254.h
 test4.o:	mouse.h
 test4.o:	test4.c
 test4.o:	test4.h
+test4.o:	timer.h
