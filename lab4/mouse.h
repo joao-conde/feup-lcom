@@ -29,7 +29,7 @@ void read_packet();
 
 int kbc_write(unsigned long port, unsigned long word);
 
-int kbc_write_cmd(unsigned long cmd, unsigned long word);
+int mouse_write_cmd(unsigned long cmd, unsigned long word);
 
 void synch_packet(long byte);
 
@@ -38,6 +38,20 @@ long mouse_readOBF();
 void mouseIH();
 
 void display_packet(long *packet);
+
+void enable_DataReporting();
+
+void enable_mouse();
+
+int mouse_kbc_polling();
+
+void setRemoteMode();
+
+void setStreamMode();
+
+unsigned long* create_remotePacket(unsigned long period);
+
+void disable_DataReporting();
 
 
 #endif

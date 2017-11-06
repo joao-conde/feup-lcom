@@ -22,13 +22,19 @@
 #define KBD_IRQ			1
 #define MOUSE_IRQ		12
 
+/* MOUSE COMMANDS */
 
+#define WRITE_BYTE  0xD4
+#define ENABLE_DATAREPORT 0xF4
+#define ENABLE_MOUSE 0xA8
+#define DISABLE_DATAREPORT 0xF5
+#define ENABLE_REMOTE	0xF0
+#define ENABLE_STREAM	0xEA
 
 /* I/O port addresses */
 
 #define STAT_REG 0x64
 #define OUT_BUF  0x60
-#define KBC_CMD_REG 0x64
 #define INP_BUF 0x60
 
 
@@ -60,6 +66,7 @@
 
 
 #define DELAY_US   20000
+#define MS_TO_MICRO 1000
 
 
 /**@}*/

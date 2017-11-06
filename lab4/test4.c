@@ -2,8 +2,7 @@
 #include "i8042.h"
 #include "test4.h"
 #include "mouse.h"
-
-
+#include "timer.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +14,7 @@ int mouse_test_packet(unsigned short cnt) {
 
 	extern unsigned int packet_index;
 	extern unsigned long packet[3];
+	extern int synched;
 
 	int ipc_status, r, irq_set = mouse_subscribe_int();
 	message msg;
@@ -24,15 +24,11 @@ int mouse_test_packet(unsigned short cnt) {
 		return FAIL_SUB_INT;
 	}
 
+	enable_mouse();
+	enable_DataReporting();
 
-	if (sys_outb(STAT_REG, 0xA8) != OK)
-		printf("\nERRO na primeira escrita\n");
-	if (sys_outb(STAT_REG, 0xD4) != OK)
-		printf("\nERRO na segunda escrita\n");
-	if (sys_outb(INP_BUF, 0xF4) != OK)
-		printf("\nERRO na terceira escrita\n");
-
-	while (1) {
+	int i = 0;
+	while (i < cnt) {
 
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("driver_receive failed with: %d", r);
@@ -46,10 +42,12 @@ int mouse_test_packet(unsigned short cnt) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
-					mouseIH();
-
-					if(packet_index == 2)
+					if (packet_index > 2 && synched) {
 						display_packet(packet);
+						i++;
+					}
+
+					mouseIH();
 				}
 				break;
 
@@ -59,8 +57,7 @@ int mouse_test_packet(unsigned short cnt) {
 		}
 	}
 
-	if(sys_outb(STAT_REG, 0xD4)!=OK) printf("ERROR on writing to 0x64");
-	if(sys_outb(INP_BUF,0xF5)!=OK) printf("ERROR on writing to 0x60");
+	disable_DataReporting();
 
 	if (mouse_unsubscribe_int() == -1) {
 		printf("kbd_unsubscribe_int(): Failure\n");
@@ -72,14 +69,103 @@ int mouse_test_packet(unsigned short cnt) {
 }
 
 int mouse_test_async(unsigned short idle_time) {
-	printf("\nHELLO IM MOUSE_TEST_ASYNC()\n");
-	printf("\nARGUMENT IDLE_TIME: %lu\n", idle_time);
+	extern unsigned int packet_index;
+	extern unsigned long packet[3];
+	extern int synched;
+
+	int ipc_status, r, mouse_irq_set, timer_irq_set;
+
+	unsigned long counter = 0;
+
+	mouse_irq_set = mouse_subscribe_int();
+	timer_irq_set = timer_subscribe_int();
+
+	message msg;
+
+	if (mouse_irq_set == -1) {
+		printf("mouse_subscribe_int(): Failure\n");
+		return FAIL_SUB_INT;
+	}
+
+	if (timer_irq_set == -1) {
+		printf("timer_subscribe_int(): Failure\n");
+		return FAIL_SUB_INT;
+	}
+
+	enable_mouse();
+	enable_DataReporting();
+
+	int i = 0;
+	while (counter < (idle_time * TIMER0_DEFAULT_FREQ)){
+
+		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+			printf("driver_receive failed with: %d", r);
+			continue;
+		}
+
+		if (is_ipc_notify(ipc_status)) { /* received notification */
+
+			switch (_ENDPOINT_P(msg.m_source)) {
+
+			case HARDWARE: /* hardware interrupt notification */
+				if (msg.NOTIFY_ARG & mouse_irq_set) { /* subscribed interrupt */
+					counter = 0;
+
+					if (packet_index > 2 && synched) {
+						display_packet(packet);
+						i++;
+					}
+
+					mouseIH();
+				}
+
+				if (msg.NOTIFY_ARG & timer_irq_set) { /* subscribed interrupt */
+					counter++;
+				}
+				break;
+
+			default:
+				break; /* no other notifications expected: do*/
+			}
+		}
+	}
+
+	disable_DataReporting();
+
+	if (mouse_unsubscribe_int() == -1) {
+		printf("mouse_unsubscribe_int(): Failure\n");
+		return FAIL_UNSUB_INT;
+	}
+
+	if (timer_unsubscribe_int() == -1) {
+		printf("timer_unsubscribe_int(): Failure\n");
+		return FAIL_UNSUB_INT;
+	}
+
+	printf("\nmouse_test_async(): exit\n");
+	return OK;
 }
 
 int mouse_test_remote(unsigned long period, unsigned short cnt) {
-	printf("\nHELLO IM MOUSE_TEST_REMOTE()\n");
-	printf("\nARGUMENT PERIOD: %lu\n", period);
-	printf("\nARGUMENT CNT: %lu\n", cnt);
+	mouse_subscribe_int();
+
+	unsigned long* remote_packet;
+
+	disable_DataReporting();
+	setRemoteMode();
+
+	int i = 0;
+	while (i < cnt) {
+
+		remote_packet = create_remotePacket(period);
+		display_packet(remote_packet);
+		i++;
+	}
+
+	setStreamMode();
+	disable_DataReporting();
+
+	mouse_unsubscribe_int();
 }
 
 int mouse_test_gesture(short length) {
