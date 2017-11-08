@@ -37,13 +37,13 @@ long mouse_readOBF();
 
 void mouseIH();
 
-void display_packet(long *packet);
+void display_packet(unsigned long *packet);
 
 void enable_DataReporting();
 
 void enable_mouse();
 
-int mouse_kbc_polling();
+long mouse_kbc_polling();
 
 void setRemoteMode();
 

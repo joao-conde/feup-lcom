@@ -9,7 +9,7 @@
 
 int mouse_hookID;
 
-unsigned long packet[3];
+unsigned long packet[PACKET_SIZE];
 unsigned int packet_index = 0;
 int synched = FALSE;
 
@@ -73,12 +73,12 @@ long mouse_readOBF() {
 
 
 
-int mouse_kbc_polling(unsigned long period) {
+long mouse_kbc_polling(unsigned long period) {
 
 	unsigned long status, data;
 
-	//add retrys
-	while (1) {
+	int retry = 0;
+	while (retry < 5) {
 
 		if (sys_inb(STAT_REG, &status) != OK) {
 			printf("kbc_read(): Failure reading status register of KBC\n");
@@ -100,12 +100,16 @@ int mouse_kbc_polling(unsigned long period) {
 		}
 
 		tickdelay(micros_to_ticks(period*MS_TO_MICRO));
+		retry++;
 	}
+
+	return -1;
 }
 
 unsigned long* create_remotePacket(unsigned long period){
 
-	unsigned long byte, *packet;
+	unsigned long byte;
+	unsigned long* packet = malloc(sizeof(unsigned long)*PACKET_SIZE);
 
 	mouse_write_cmd(WRITE_BYTE,0xEB);
 
@@ -114,7 +118,7 @@ unsigned long* create_remotePacket(unsigned long period){
 		byte = mouse_kbc_polling(period);
 		tickdelay(micros_to_ticks(period*MS_TO_MICRO));
 
-		if(byte != -1){
+		if(byte > 0){
 			*(packet+i) = byte;
 			i++;
 		}
@@ -158,7 +162,7 @@ void synch_packet(long byte) {
 }
 
 
-void display_packet(long *packet) {
+void display_packet(unsigned long *packet) {
 
 	printf("B1=%02x ", *packet);
 	printf("B2=%02x ", *(packet + 1));
@@ -208,12 +212,17 @@ int kbc_write(unsigned long port, unsigned long word) {
 		retry++;
 	}
 
+	return -1;
 }
 
 int mouse_write_cmd(unsigned long cmd, unsigned long word) {
+
 	kbc_write(STAT_REG, cmd);
 	kbc_write(INP_BUF, word);
+
+	return OK;
 }
+
 
 void enable_DataReporting() {
 	mouse_write_cmd(WRITE_BYTE,ENABLE_DATAREPORT);
