@@ -53,6 +53,7 @@ test4.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 test4.o:	i8042.h
 test4.o:	i8254.h
 test4.o:	mouse.h
+test4.o:	state.h
 test4.o:	test4.c
 test4.o:	test4.h
 test4.o:	timer.h

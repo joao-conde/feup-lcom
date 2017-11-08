@@ -21,6 +21,8 @@
 #define BREAKCODE		BIT(7)
 #define KBD_IRQ			1
 #define MOUSE_IRQ		12
+#define PACKET_SIZE     3
+#define RB_DOWN         BIT(1)
 
 /* MOUSE COMMANDS */
 
