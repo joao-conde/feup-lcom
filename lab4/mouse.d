@@ -50,7 +50,6 @@ mouse.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/unistd.h
 mouse.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 mouse.o:	i8042.h
 mouse.o:	i8254.h
-mouse.o:	kbd.h
 mouse.o:	mouse.c
 mouse.o:	mouse.h
 mouse.o:	timer.h

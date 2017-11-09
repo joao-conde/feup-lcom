@@ -66,6 +66,10 @@
 #define TRUE 1
 #define FALSE 0
 
+#define ACK 0xFA
+#define ERROR 0xFC
+#define NACK 0xFE
+
 
 #define DELAY_US   20000
 #define MS_TO_MICRO 1000
