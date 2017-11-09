@@ -39,19 +39,19 @@ void mouseIH();
 
 void display_packet(unsigned long *packet);
 
-void enable_DataReporting();
+int enable_DataReporting();
 
-void enable_mouse();
+int enable_mouse();
 
 long mouse_kbc_polling();
 
-void setRemoteMode();
+int setRemoteMode();
 
-void setStreamMode();
+int setStreamMode();
 
 unsigned long* create_remotePacket(unsigned long period);
 
-void disable_DataReporting();
+int disable_DataReporting();
 
 
 #endif

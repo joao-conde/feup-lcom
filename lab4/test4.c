@@ -178,10 +178,6 @@ int mouse_test_remote(unsigned long period, unsigned short cnt) {
 
 int mouse_test_gesture(short length) {
 
-	/*extern unsigned int packet_index;
-	 extern unsigned long packet[PACKET_SIZE];
-	 extern int synched;*/
-
 	int ipc_status, r, irq_set = mouse_subscribe_int();
 	message msg;
 
@@ -230,6 +226,9 @@ int mouse_test_gesture(short length) {
 		printf("mouse_unsubscribe_int(): Failure\n");
 		return FAIL_UNSUB_INT;
 	}
+
+	//cleaning KBC's output buffer of an eventual non-read byte
+	mouse_readOBF();
 
 	printf("\nmouse_test_gesture(): exit\n");
 	return OK;
