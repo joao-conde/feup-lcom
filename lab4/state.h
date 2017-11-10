@@ -1,5 +1,6 @@
 #include "i8042.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 /*
  * STATE MACHINE TO WORK IN MOUSE_TEST_GESTURE()
@@ -51,22 +52,23 @@ state_data_t validateMouseMovement(unsigned long* packet, short length){
 
 	int x,y;
 
+	x = *((int*)packet+1);
+	y = *((int*)packet+2);
+
 	//from a negative number in 2's complement to regular decimal
-	if (BIT(7) & *(packet + 1)) {
-		*(packet + 1) = *(packet + 1) ^ 255;
-		*(packet + 1) = -*(packet + 1);
+	if (BIT(4) & *packet) {
+		x = (*(packet + 1) ^= BYTE_MINUS1) + 1;
+		x= x - 256;
 	}
 
-	if (BIT(7) & *(packet + 2)) {
-		*(packet + 2) = *(packet + 2) ^ 255;
-		*(packet + 2) = -*(packet + 2);
+	if (BIT(5) & *packet) {
+		y= (*(packet + 2) ^= BYTE_MINUS1) + 1;
+		y= y - 256;
 	}
-
-	x = *(packet+1);
-	y = *(packet+2);
 
 	//both negative or both positive = positive slope
 	if((x < 0 && y < 0) || (x > 0 && y > 0)){
+
 		x = abs(x);
 		y = abs(y);
 

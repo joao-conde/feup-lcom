@@ -11,9 +11,9 @@
 #include <minix/drivers.h>
 #include <minix/driver.h>
 
-extern unsigned int packet_index;
-extern unsigned long packet[PACKET_SIZE];
-extern int synched;
+extern unsigned int g_packet_index;
+extern unsigned long g_packet[PACKET_SIZE];
+extern int g_synched;
 
 int mouse_test_packet(unsigned short cnt) {
 
@@ -44,8 +44,8 @@ int mouse_test_packet(unsigned short cnt) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
-					if (packet_index > 2 && synched) {
-						display_packet(packet);
+					if (g_packet_index > 2 && g_synched) {
+						display_packet(g_packet);
 						i++;
 					}
 
@@ -70,7 +70,7 @@ int mouse_test_packet(unsigned short cnt) {
 	//cleaning KBC's output buffer of an eventual non-read byte
 	cleanOBF();
 
-	printf("\nmouse_test_packet(): exit\n");
+	printf("\nmouse_test_g_packet(): exit\n");
 	return OK;
 }
 
@@ -117,8 +117,8 @@ int mouse_test_async(unsigned short idle_time) {
 
 					counter = 0;
 
-					if (packet_index > 2 && synched) {
-						display_packet(packet);
+					if (g_packet_index > 2 && g_synched) {
+						display_packet(g_packet);
 						i++;
 					}
 
@@ -157,6 +157,9 @@ int mouse_test_remote(unsigned long period, unsigned short cnt) {
 
 	mouse_subscribe_int();
 
+	/*	Although it makes no sense to enable and then immediately disable data reporting
+	 *  it doesn't work otherwise and by trial and error this solution was found
+	 */
 	enable_DataReporting();
 	disable_DataReporting();
 	setRemoteMode();
@@ -164,14 +167,15 @@ int mouse_test_remote(unsigned long period, unsigned short cnt) {
 	int i = 0;
 	while (i < cnt) {
 
-		mouse_write_cmd(WRITE_BYTE, 0xEB);
-		if (packet_index > 2 && synched) {
-			display_packet(packet);
-			packet_index = 0;
+		mouse_write_cmd(WRITE_BYTE, READ_DATA);
+
+		if (g_packet_index > 2 && g_synched) {
+			display_packet(g_packet);
+			g_packet_index = 0;
 			i++;
 		}
 
-		while (packet_index < 3)
+		while (g_packet_index < 3)
 			mouseIH();
 
 		tickdelay(micros_to_ticks(period * MS_TO_MICRO));
@@ -181,9 +185,6 @@ int mouse_test_remote(unsigned long period, unsigned short cnt) {
 	disable_DataReporting();
 
 	mouse_unsubscribe_int();
-
-	//cleaning KBC's output buffer of an eventual non-read byte
-	//printf("cleaned byte: 0x%x\n", cleanOBF());
 
 	printf("\nmouse_test_remote(): exit\n");
 	return OK;
@@ -217,10 +218,12 @@ int mouse_test_gesture(short length) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
-					if (packet_index > 2 && synched) {
-						display_packet(packet);
+					if (g_packet_index > 2 && g_synched) {
+
+						display_packet(g_packet);
+
 						//state machine processing input from mouse
-						processMouseInput(analyzePacket(packet, length));
+						processMouseInput(analyzePacket(g_packet, length));
 					}
 
 					mouseIH();
