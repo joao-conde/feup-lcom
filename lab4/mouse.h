@@ -49,12 +49,10 @@ int setRemoteMode();
 
 int setStreamMode();
 
-unsigned long* create_remotePacket(unsigned long period);
+
 
 int disable_DataReporting();
 
-int doSomething();
-int doSomething2();
 
 
 #endif

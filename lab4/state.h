@@ -65,7 +65,6 @@ state_data_t validateMouseMovement(unsigned long* packet, short length){
 	x = *(packet+1);
 	y = *(packet+2);
 
-
 	//both negative or both positive = positive slope
 	if((x < 0 && y < 0) || (x > 0 && y > 0)){
 		x = abs(x);
