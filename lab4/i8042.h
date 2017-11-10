@@ -23,6 +23,7 @@
 #define MOUSE_IRQ		12
 #define PACKET_SIZE     3
 #define RB_DOWN         BIT(1)
+#define BYTE_MINUS1	0xFF
 
 /* MOUSE COMMANDS */
 
@@ -32,6 +33,7 @@
 #define DISABLE_DATAREPORT 0xF5
 #define ENABLE_REMOTE	0xF0
 #define ENABLE_STREAM	0xEA
+#define READ_DATA	0xEB
 
 /* I/O port addresses */
 
@@ -47,6 +49,8 @@
 #define FAIL_READ_OUTBUF		-16  /**< @brief Error reading output buffer */
 #define TRIES_EXCEED			-17 /**< @brief Maximum number of tries exceeded */
 #define ERROR_STATUS			-18 /**< @brief Status byte read with errors */
+#define FAIL_READ_PORT			-19
+#define FAIL_WRITE_CMD			-20
 
 
 /* KBC CONTROL*/

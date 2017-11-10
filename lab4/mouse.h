@@ -25,8 +25,6 @@ int mouse_subscribe_int(void);
  */
 int mouse_unsubscribe_int(void);
 
-void read_packet();
-
 int kbc_write(unsigned long port, unsigned long word);
 
 int mouse_write_cmd(unsigned long cmd, unsigned long word);
@@ -42,8 +40,6 @@ void display_packet(unsigned long *packet);
 int enable_DataReporting();
 
 int enable_mouse();
-
-long mouse_kbc_polling();
 
 int setRemoteMode();
 
