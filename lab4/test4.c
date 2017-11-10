@@ -68,7 +68,7 @@ int mouse_test_packet(unsigned short cnt) {
 	}
 
 	//cleaning KBC's output buffer of an eventual non-read byte
-	printf("cleaned byte: 0x%x\n", mouse_readOBF());
+	cleanOBF();
 
 	printf("\nmouse_test_packet(): exit\n");
 	return OK;
@@ -148,8 +148,6 @@ int mouse_test_async(unsigned short idle_time) {
 		return FAIL_UNSUB_INT;
 	}
 
-	//cleaning KBC's output buffer of an eventual non-read byte
-	//printf("cleaned byte: 0x%x\n", mouse_readOBF());
 
 	printf("\nmouse_test_async(): exit\n");
 	return OK;
@@ -158,9 +156,6 @@ int mouse_test_async(unsigned short idle_time) {
 int mouse_test_remote(unsigned long period, unsigned short cnt) {
 
 	mouse_subscribe_int();
-
-	//doSomething2();
-
 
 	enable_DataReporting();
 	disable_DataReporting();
@@ -187,6 +182,10 @@ int mouse_test_remote(unsigned long period, unsigned short cnt) {
 
 	mouse_unsubscribe_int();
 
+	//cleaning KBC's output buffer of an eventual non-read byte
+	//printf("cleaned byte: 0x%x\n", cleanOBF());
+
+	printf("\nmouse_test_remote(): exit\n");
 	return OK;
 }
 
@@ -200,9 +199,9 @@ int mouse_test_gesture(short length) {
 		return FAIL_SUB_INT;
 	}
 
+	enable_mouse();
 	enable_DataReporting();
-	disable_DataReporting();
-	setRemoteMode();
+	setStreamMode();
 
 	while (state != COMPLETE) {
 
@@ -243,7 +242,7 @@ int mouse_test_gesture(short length) {
 	}
 
 	//cleaning KBC's output buffer of an eventual non-read byte
-	mouse_readOBF();
+	cleanOBF();
 
 	printf("\nmouse_test_gesture(): exit\n");
 	return OK;
