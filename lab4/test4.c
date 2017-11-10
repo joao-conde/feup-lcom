@@ -25,8 +25,10 @@ int mouse_test_packet(unsigned short cnt) {
 		return FAIL_SUB_INT;
 	}
 
-	enable_mouse();
-	enable_DataReporting();
+
+	//enable_mouse();
+	//enable_DataReporting();
+	setStreamMode();
 
 	int i = 0;
 	while (i < cnt) {
@@ -58,7 +60,7 @@ int mouse_test_packet(unsigned short cnt) {
 		}
 	}
 
-	disable_DataReporting();
+	//disable_DataReporting();
 
 	if (mouse_unsubscribe_int() == -1) {
 		printf("kbd_unsubscribe_int(): Failure\n");
@@ -66,7 +68,7 @@ int mouse_test_packet(unsigned short cnt) {
 	}
 
 	//cleaning KBC's output buffer of an eventual non-read byte
-	mouse_readOBF();
+	printf("cleaned byte: 0x%x\n", mouse_readOBF());
 
 	printf("\nmouse_test_packet(): exit\n");
 	return OK;
@@ -93,8 +95,10 @@ int mouse_test_async(unsigned short idle_time) {
 		return FAIL_SUB_INT;
 	}
 
-	enable_mouse();
-	enable_DataReporting();
+
+	//enable_mouse();
+	//enable_DataReporting();
+	setStreamMode();
 
 	int i = 0;
 	while (counter < (idle_time * TIMER0_DEFAULT_FREQ)) {
@@ -110,6 +114,7 @@ int mouse_test_async(unsigned short idle_time) {
 
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & mouse_irq_set) { /* subscribed interrupt */
+
 					counter = 0;
 
 					if (packet_index > 2 && synched) {
@@ -131,7 +136,8 @@ int mouse_test_async(unsigned short idle_time) {
 		}
 	}
 
-	disable_DataReporting();
+
+	//disable_DataReporting();
 
 	if (mouse_unsubscribe_int() == -1) {
 		printf("mouse_unsubscribe_int(): Failure\n");
@@ -144,35 +150,37 @@ int mouse_test_async(unsigned short idle_time) {
 	}
 
 	//cleaning KBC's output buffer of an eventual non-read byte
-	mouse_readOBF();
+	//printf("cleaned byte: 0x%x\n", mouse_readOBF());
 
 	printf("\nmouse_test_async(): exit\n");
 	return OK;
 }
 
 int mouse_test_remote(unsigned long period, unsigned short cnt) {
-	mouse_subscribe_int();
 
 	unsigned long* remote_packet;
 
+	mouse_subscribe_int();
+
+	enable_DataReporting();
 	disable_DataReporting();
 	setRemoteMode();
 
 	int i = 0;
 	while (i < cnt) {
-
 		remote_packet = create_remotePacket(period);
 		display_packet(remote_packet);
 		i++;
+		tickdelay(micros_to_ticks(period * MS_TO_MICRO));
 	}
+
 
 	setStreamMode();
 	disable_DataReporting();
 
 	mouse_unsubscribe_int();
-
 	//cleaning KBC's output buffer of an eventual non-read byte
-	mouse_readOBF();
+	//mouse_readOBF();
 	return OK;
 }
 
