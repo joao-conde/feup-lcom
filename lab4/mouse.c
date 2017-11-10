@@ -72,16 +72,16 @@ long mouse_readOBF() {
 			tickdelay(micros_to_ticks(DELAY_US));
 		}
 	}
-	printf("EXCEED TRIES\n");
+
 	return -1;
 }
 
-long mouse_kbc_polling(unsigned long period) {
+long mouse_kbc_polling() {
 
 	unsigned long status, data;
 
 	int retry = 0;
-	while (retry < 5) {
+	while (1) {
 
 		if (sys_inb(STAT_REG, &status) != OK) {
 			printf("kbc_read(): Failure reading status register of KBC\n");
@@ -106,35 +106,14 @@ long mouse_kbc_polling(unsigned long period) {
 		retry++;
 	}
 
+	printf("failure polling\n");
 	return -1;
 }
 
-unsigned long* create_remotePacket(unsigned long period) {
-
-	long byte;
-	unsigned long* packet = malloc(sizeof(unsigned long) * PACKET_SIZE);
-
-	mouse_write_cmd(WRITE_BYTE, 0xEB);
-
-	int i = 0;
-	while (i < 3) {
-		byte = mouse_kbc_polling(period);
-		//tickdelay(micros_to_ticks(period * MS_TO_MICRO));
-
-		if (byte > 0) {
-			*(packet + i) = byte;
-			printf("0x%x\n",byte);
-			i++;
-		}
-	}
-
-	return packet;
-}
 
 void mouseIH() {
 
 	long byte = mouse_readOBF();
-
 	if (byte == -1)
 		return;
 
@@ -263,38 +242,6 @@ int setRemoteMode() {
 
 int setStreamMode() {
 	mouse_write_cmd(WRITE_BYTE, ENABLE_STREAM);
-	return OK;
-}
-
-//disable minix IH for mouse
-int doSomething() {
-
-	unsigned long byte;
-
-	kbc_write(STAT_REG, 0x20); //resposta no outbuf
-	byte = mouse_readOBF();
-	printf("BYTE: 0x%x\n", byte);
-
-	byte ^= BIT(1); //disable mouse
-	kbc_write(STAT_REG, 0x60);
-	kbc_write(STAT_REG, byte);
-
-	return OK;
-}
-
-//disable minix IH for mouse
-int doSomething2() {
-
-	unsigned long byte;
-
-	kbc_write(STAT_REG, 0x20); //resposta no outbuf
-	byte = mouse_readOBF();
-	printf("BYTE: 0x%x\n", byte);
-
-	byte |= BIT(1); //disable mouse
-	kbc_write(STAT_REG, 0x60);
-	kbc_write(STAT_REG, byte);
-
 	return OK;
 }
 

@@ -25,9 +25,8 @@ int mouse_test_packet(unsigned short cnt) {
 		return FAIL_SUB_INT;
 	}
 
-
-	//enable_mouse();
-	//enable_DataReporting();
+	enable_mouse();
+	enable_DataReporting();
 	setStreamMode();
 
 	int i = 0;
@@ -51,6 +50,7 @@ int mouse_test_packet(unsigned short cnt) {
 					}
 
 					mouseIH();
+
 				}
 				break;
 
@@ -60,7 +60,7 @@ int mouse_test_packet(unsigned short cnt) {
 		}
 	}
 
-	//disable_DataReporting();
+	disable_DataReporting();
 
 	if (mouse_unsubscribe_int() == -1) {
 		printf("kbd_unsubscribe_int(): Failure\n");
@@ -95,10 +95,10 @@ int mouse_test_async(unsigned short idle_time) {
 		return FAIL_SUB_INT;
 	}
 
-
-	//enable_mouse();
-	//enable_DataReporting();
+	enable_mouse();
+	enable_DataReporting();
 	setStreamMode();
+
 
 	int i = 0;
 	while (counter < (idle_time * TIMER0_DEFAULT_FREQ)) {
@@ -136,8 +136,7 @@ int mouse_test_async(unsigned short idle_time) {
 		}
 	}
 
-
-	//disable_DataReporting();
+	disable_DataReporting();
 
 	if (mouse_unsubscribe_int() == -1) {
 		printf("mouse_unsubscribe_int(): Failure\n");
@@ -158,9 +157,10 @@ int mouse_test_async(unsigned short idle_time) {
 
 int mouse_test_remote(unsigned long period, unsigned short cnt) {
 
-	unsigned long* remote_packet;
-
 	mouse_subscribe_int();
+
+	//doSomething2();
+
 
 	enable_DataReporting();
 	disable_DataReporting();
@@ -168,19 +168,25 @@ int mouse_test_remote(unsigned long period, unsigned short cnt) {
 
 	int i = 0;
 	while (i < cnt) {
-		remote_packet = create_remotePacket(period);
-		display_packet(remote_packet);
-		i++;
+
+		mouse_write_cmd(WRITE_BYTE, 0xEB);
+		if (packet_index > 2 && synched) {
+			display_packet(packet);
+			packet_index = 0;
+			i++;
+		}
+
+		while (packet_index < 3)
+			mouseIH();
+
 		tickdelay(micros_to_ticks(period * MS_TO_MICRO));
 	}
-
 
 	setStreamMode();
 	disable_DataReporting();
 
 	mouse_unsubscribe_int();
-	//cleaning KBC's output buffer of an eventual non-read byte
-	//mouse_readOBF();
+
 	return OK;
 }
 
@@ -194,8 +200,9 @@ int mouse_test_gesture(short length) {
 		return FAIL_SUB_INT;
 	}
 
-	enable_mouse();
 	enable_DataReporting();
+	disable_DataReporting();
+	setRemoteMode();
 
 	while (state != COMPLETE) {
 

@@ -1,4 +1,4 @@
-service lab3
+service lab4
 {
         system
                 DEVIO
