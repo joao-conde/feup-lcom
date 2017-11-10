@@ -46,25 +46,33 @@ int mouse_unsubscribe_int(void) {
 }
 
 long mouse_readOBF() {
+
 	unsigned long byte, status;
 	int retry = 0;
-
 	while (retry < 5) {
 
-		if (sys_inb(STAT_REG, &status) != OK)
+		if (sys_inb(STAT_REG, &status) != OK) {
+			printf("mouse_readOBF(): failure to read STAT_REG\n");
 			return -1;
-
-		if (status & OBF) {
-			if (sys_inb(OUT_BUF, &byte) != OK)
-				return -1;
-
-			return byte;
 		}
 
-		retry++;
-		tickdelay(micros_to_ticks(DELAY_US));
-	}
+		if (status & OBF) {
 
+			if (sys_inb(OUT_BUF, &byte) != OK) {
+				printf("mouse_readOBF(): failure to read OUT_BUF\n");
+				return -1;
+			}
+
+			if ((status & (PAR_ERR | TO_ERR)) == 0) {
+				return byte;
+			} else
+				return ERROR_STATUS;
+
+			retry++;
+			tickdelay(micros_to_ticks(DELAY_US));
+		}
+	}
+	printf("EXCEED TRIES\n");
 	return -1;
 }
 
@@ -88,12 +96,13 @@ long mouse_kbc_polling(unsigned long period) {
 			}
 
 			if ((status & (PAR_ERR | TO_ERR)) == 0) {
+				tickdelay(micros_to_ticks(DELAY_US));
 				return data;
 			} else
 				return ERROR_STATUS;
 		}
 
-		tickdelay(micros_to_ticks(period * MS_TO_MICRO));
+		tickdelay(micros_to_ticks(DELAY_US));
 		retry++;
 	}
 
@@ -102,7 +111,7 @@ long mouse_kbc_polling(unsigned long period) {
 
 unsigned long* create_remotePacket(unsigned long period) {
 
-	unsigned long byte;
+	long byte;
 	unsigned long* packet = malloc(sizeof(unsigned long) * PACKET_SIZE);
 
 	mouse_write_cmd(WRITE_BYTE, 0xEB);
@@ -110,10 +119,11 @@ unsigned long* create_remotePacket(unsigned long period) {
 	int i = 0;
 	while (i < 3) {
 		byte = mouse_kbc_polling(period);
-		tickdelay(micros_to_ticks(period * MS_TO_MICRO));
+		//tickdelay(micros_to_ticks(period * MS_TO_MICRO));
 
 		if (byte > 0) {
 			*(packet + i) = byte;
+			printf("0x%x\n",byte);
 			i++;
 		}
 	}
@@ -209,31 +219,26 @@ int kbc_write(unsigned long port, unsigned long word) {
 }
 
 int mouse_write_cmd(unsigned long cmd, unsigned long word) {
-	/*
-	 long response = -1;
 
-	 while (response != ACK) {
-	 if(response == ERROR) return -1;
-
-	 kbc_write(STAT_REG, cmd);
-	 response = mouse_readOBF();
-	 }
-
-	 response = -1;
-
-	 while (response != ACK) {
-	 if(response == ERROR) return -1;
+	unsigned long response = 0;
+	int retries = 10;
 
 
-	 kbc_write(INP_BUF, word);
-	 response = mouse_readOBF();
-	 }
+	do {
+		kbc_write(STAT_REG, cmd);
+		kbc_write(INP_BUF, word);
+		//tickdelay(micros_to_ticks(DELAY_US));
 
-	 */
-	kbc_write(STAT_REG, cmd);
-	kbc_write(INP_BUF, word);
+		response = mouse_readOBF();
+		retries--;
 
-	return OK;
+	} while (response != ACK);
+
+	if (response == ACK)
+		return OK;
+
+	return -1;
+
 }
 
 int enable_DataReporting() {
@@ -264,14 +269,31 @@ int setStreamMode() {
 //disable minix IH for mouse
 int doSomething() {
 
-	long byte;
+	unsigned long byte;
 
-	kbc_write(STAT_REG,0x20); //resposta no outbuf
+	kbc_write(STAT_REG, 0x20); //resposta no outbuf
 	byte = mouse_readOBF();
+	printf("BYTE: 0x%x\n", byte);
 
-	byte = byte & BIT(5); //disable mouse
+	byte ^= BIT(1); //disable mouse
+	kbc_write(STAT_REG, 0x60);
+	kbc_write(STAT_REG, byte);
 
-	kbc_write(STAT_REG,byte);
+	return OK;
+}
+
+//disable minix IH for mouse
+int doSomething2() {
+
+	unsigned long byte;
+
+	kbc_write(STAT_REG, 0x20); //resposta no outbuf
+	byte = mouse_readOBF();
+	printf("BYTE: 0x%x\n", byte);
+
+	byte |= BIT(1); //disable mouse
+	kbc_write(STAT_REG, 0x60);
+	kbc_write(STAT_REG, byte);
 
 	return OK;
 }
