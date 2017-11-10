@@ -49,7 +49,7 @@ int setRemoteMode();
 
 int setStreamMode();
 
-
+int cleanOBF();
 
 int disable_DataReporting();
 

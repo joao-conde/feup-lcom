@@ -12,6 +12,10 @@ unsigned long packet[PACKET_SIZE];
 unsigned int packet_index = 0;
 int synched = FALSE;
 
+int cleanOBF() {
+	return mouse_readOBF();
+}
+
 int mouse_subscribe_int(void) {
 
 	mouse_hookID = MOUSE_BIT_ORDER;
@@ -46,7 +50,6 @@ int mouse_unsubscribe_int(void) {
 }
 
 long mouse_readOBF() {
-
 	unsigned long byte, status;
 	int retry = 0;
 	while (retry < 5) {
@@ -109,7 +112,6 @@ long mouse_kbc_polling() {
 	printf("failure polling\n");
 	return -1;
 }
-
 
 void mouseIH() {
 
@@ -201,7 +203,6 @@ int mouse_write_cmd(unsigned long cmd, unsigned long word) {
 
 	unsigned long response = 0;
 	int retries = 10;
-
 
 	do {
 		kbc_write(STAT_REG, cmd);
