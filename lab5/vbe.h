@@ -2,6 +2,7 @@
 #define __VBE_H
 
 #include <stdint.h>
+#include <minix/type.h>
 
 /** @defgroup vbe vbe
  * @{
