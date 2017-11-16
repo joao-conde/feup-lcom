@@ -6,9 +6,13 @@
 
 int video_test_init(unsigned short mode, unsigned short delay) {
 	
-	vg_init(mode);
+	if(vg_init(mode) == NULL)
+		return -1;
+
 	sleep(delay);
-	vg_exit();
+
+	if(vg_exit() != 0)
+		return -1;
 
 	return 0;
 }
@@ -17,7 +21,20 @@ int video_test_init(unsigned short mode, unsigned short delay) {
 int video_test_square(unsigned short x, unsigned short y, unsigned short size, unsigned long color) {
 	
 	vg_init(0x105);
-	sleep(3);
+
+	int i, j;
+
+	for (i = 0; i < size; i++) {
+
+		for (j = 0; j < size; j++) {
+			paintPixel(x + i, y + j, color);
+		}
+	}
+
+
+	sleep(5);
+
+
 	vg_exit();
 
 	return 0;

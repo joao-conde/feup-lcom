@@ -43,8 +43,12 @@ void *vg_init(unsigned short mode) {
 	struct mem_range mr;
 
 	/* Allow memory mapping */
-	mr.mr_base = (phys_bytes) vbe_mode.PhysBasePtr;
+	//mr.mr_base = (phys_bytes) vbe_mode.PhysBasePtr;
+	//mr.mr_limit = mr.mr_base + vram_size;
+
+	mr.mr_base = (phys_bytes) VRAM_PHYS_ADDR;
 	mr.mr_limit = mr.mr_base + vram_size;
+
 	if (OK != (r = sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr)))
 		panic("sys_privctl (ADD_MEM) failed: %d\n", r);
 
