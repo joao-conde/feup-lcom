@@ -4,9 +4,10 @@
 #include <sys/mman.h>
 #include <sys/types.h>
 
+#include "video_gr.h"
 #include "vbe.h"
 
-
+//#define ABS(a)	((a) >= 0 ? (a) : -(a)) dx = ABS(x2 - x1)
 
 /* Private global variables */
 
@@ -71,18 +72,109 @@ int vg_exit() {
 		return 0;
 }
 
-
 int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
 
-	/*if ((x < 0 || x >= h_res) || (y < 0 || y >= v_res)) // input check
+	if (x < 0 || x >= h_res)
 		return -1;
-	*/
-	char *ptr = video_mem;
 
-	//contas
-	ptr += (x + h_res * y) * (bits_per_pixel / 8);
+	if (y < 0 || y >= v_res)
+		return -1;
 
-	*ptr = color;
+	char *virtualvramptr = video_mem;
+
+	virtualvramptr += (x + h_res * y) * (bits_per_pixel / 8);
+
+	*virtualvramptr = color;
+
 	return 0;
 
+}
+
+void drawLine(int x1, int y1, int x2, int y2, int color) {
+
+	int d; /*	Decision variable	*/
+	int dx, dy; /*	Dx and Dy values for the line	*/
+	int Eincr, NEincr; /*	Decision variable increments	*/
+	int yincr; /*	Increment for y values	*/
+	int t; /*	Counters etc.	*/
+
+	dx = abs(x2 - x1);
+	dy = abs(y2 - y1);
+
+	if (dy <= dx) {
+		/* We have a line with a slope between -1 and 1
+		 *
+		 Ensure that we are always scan converting the line from left to
+		 right to ensure that we produce the same line from P1 to P0 as the
+		 line from P0 to P1.
+		 */
+		if (x2 < x1) {
+			t = x2;
+			x2 = x1;
+			x1 = t; /*Swap X coordinates*/
+			t = y2;
+			y2 = y1;
+			y1 = t;/*Swap Y coordinates*/
+
+		}
+		if (y2 > y1)
+			yincr = 1;
+		else
+			yincr = -1;
+
+		d = 2 * dy - dx; /* Initial decision variable value	*/
+
+		Eincr = 2 * dy; /* Increment to move to E pixel */
+		NEincr = 2 * (dy - dx); /* Increment to move to NE pixel */
+		paintPixel(x1, y1, color); /* Draw the first point at (x1,y1) */
+
+		/* Incrementally determine the positions of the remaining pixels */
+		for (x1++; x1 <= x2; x1++) {
+			if (d < 0)
+				d += Eincr; /* Choose the Eastern Pixel	*/
+			else {
+				d += NEincr; /*Choose the North	Eastern	Pixel*/
+				y1 += yincr;/* or SE pixel for	dx/dy <	0!)	*/
+			}
+
+			paintPixel(x1, y1, color); /* Draw the point	*/
+		}
+	}
+	else{
+
+		/* We have a line with a slope between -1 and 1 (ie: includes
+		vertical lines). We must swap our x and y coordinates for this.
+		*
+		Ensure that we are always scan converting the line from left to
+		right to ensure that we produce the same line from P1 to P0 as the
+		line from P0 to P1.
+		*/
+		if (y2 < y1){
+			t = x2; x2 = x1;
+			x1=t; /*Swap X coordinates*/
+			t = y2; y2 = y1;y1 = t;	/*	Swap Y coordinates	*/
+		}
+		if (x2 > x1)
+			yincr = 1;
+		else
+			yincr = -1;
+
+		d = 2*dx - dy;	/* Initial decision variable value	*/
+		Eincr = 2*dx;	/* Increment to move to E pixel */
+		NEincr = 2*(dx - dy); /* Increment to move to NE pixel */
+		paintPixel(x1,y1,color);  /* Draw the first point at (x1,y1) */
+
+
+		/* Incrementally determine the positions of the remaining pixels */
+		for (y1++; y1 <= y2; y1++){
+
+			if (d < 0)
+				d += Eincr;	/* Choose the Eastern Pixel	*/
+			else{
+				d += NEincr;/*Choose the North	Eastern	Pixel*/
+				x1 += yincr;/* (or SE pixel for	dx/dy <	0!)*/
+			}
+			paintPixel(x1,y1,color);
+		}
+	}
 }
