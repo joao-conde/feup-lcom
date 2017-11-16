@@ -1,6 +1,7 @@
 #include "video_gr.h"
-#include <unistd.h>
 #include "test5.h"
+
+#include <unistd.h>
 
 
 int video_test_init(unsigned short mode, unsigned short delay) {
@@ -27,7 +28,7 @@ int video_test_line(unsigned short xi, unsigned short yi,
 	
 	
 	vg_init(0x105);
-	paintPixel(200,200,0x13);
+	drawLine(0, 0, 400, 200, 0x10);
 	sleep(3);
 	vg_exit();
 
@@ -37,18 +38,18 @@ int video_test_line(unsigned short xi, unsigned short yi,
 int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
 	
 	/* To be completed */
-	
+	return 0;
 }	
 
 int test_move(char *xpm[], unsigned short xi, unsigned short yi, unsigned short xf, unsigned short yf, short s, unsigned short f) {
 
 	/* To be completed */
-	
+	return 0;
 }	
 
 int test_controller() {
 
 	/* To be completed */
-	
+	return 0;
 }	
 	

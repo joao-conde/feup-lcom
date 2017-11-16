@@ -52,3 +52,4 @@ video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/unistd.h
 video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 video_gr.o:	vbe.h
 video_gr.o:	video_gr.c
+video_gr.o:	video_gr.h
