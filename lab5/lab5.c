@@ -44,10 +44,10 @@ static int proc_args(int argc, char **argv) {
 			return 1;
 		}
 
-		mode = *argv[2];
-		delay = *argv[3];
+		mode = parse_ulong(argv[2],16);
+		delay = parse_ulong(argv[3],10);
 
-		printf("vbe::video_test_init(%hu,%hu)\n", mode, delay);
+		printf("vbe::video_test_init(0x%x,%lu)\n", mode, delay);
 		return video_test_init(mode, delay);
 	}
 
