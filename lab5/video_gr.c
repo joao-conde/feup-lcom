@@ -17,28 +17,27 @@ static unsigned h_res; /* Horizontal screen resolution in pixels */
 static unsigned v_res; /* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 
+unsigned vg_getHRES(){return h_res;}
+unsigned vg_getVRES(){return v_res;}
+
 void *vg_init(unsigned short mode) {
-/*
+
 	vbe_mode_info_t vbe_mode;
 	vbe_get_mode_info(mode, &vbe_mode);
-*/
-	/*
+
+
 	v_res = vbe_mode.YResolution;
 	h_res = vbe_mode.XResolution;
 	bits_per_pixel = vbe_mode.BitsPerPixel;
-	*/
 
-	v_res = V_RES;
-	h_res = H_RES;
-	bits_per_pixel = BITS_PER_PIXEL;
 
-	unsigned int vram_size = h_res * v_res * (bits_per_pixel / 8);
+	unsigned int vram_size = h_res * v_res * (bits_per_pixel/BITS_PER_BYTE);
 
 	int r;
 	struct mem_range mr;
 
 	/* Allow memory mapping */
-	mr.mr_base = (phys_bytes) VRAM_PHYS_ADDR;
+	mr.mr_base = (phys_bytes) vbe_mode.PhysBasePtr;
 	mr.mr_limit = mr.mr_base + vram_size;
 
 	if (OK != (r = sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr)))
@@ -53,12 +52,13 @@ void *vg_init(unsigned short mode) {
 	reg.u.w.ax = 0x4F02; // VBE call, function 02 -- set VBE mode
 	reg.u.w.bx = 1 << 14 | mode; // set bit 14: linear framebuffer
 	reg.u.b.intno = 0x10;
+
 	if (sys_int86(&reg) != OK) {
 		printf("set_vbe_mode: sys_int86() failed \n");
 		return NULL;
 	}
 
-	return (void*) VRAM_PHYS_ADDR;
+	return (void*) vbe_mode.PhysBasePtr;
 }
 
 
@@ -79,15 +79,15 @@ int vg_exit() {
 
 int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
 
-	if (x < 0 || x >= h_res)
+	if (x >= h_res)
 		return -1;
 
-	if (y < 0 || y >= v_res)
+	if (y >= v_res)
 		return -1;
 
 	char *virtualvramptr = video_mem;
 
-	virtualvramptr += (x + h_res * y) * (bits_per_pixel / 8);
+	virtualvramptr += x + h_res * y;
 
 	*virtualvramptr = color;
 
@@ -101,7 +101,6 @@ void drawLine(int x1, int y1, int x2, int y2, int color) {
 	 * Digital Differential Analyzer (DDA) algorithm
 	 * Based on: www.tutorialspoint.com/computer_graphics/line_generation_algorithm.htm
 	 */
-
 
 	int d; /*	Decision variable	*/
 	int dx, dy; /*	Dx and Dy values for the line	*/
@@ -190,6 +189,8 @@ void drawLine(int x1, int y1, int x2, int y2, int color) {
 		}
 	}
 }
+
+
 
 int draw_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
 
