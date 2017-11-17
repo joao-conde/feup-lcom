@@ -47,6 +47,9 @@ int paintPixel(unsigned short x, unsigned short y, unsigned long color);
 
 void drawLine(int x1,int y1,int x2,int y2,int color);
 
+int draw_xpm(unsigned short xi, unsigned short yi, char *xpm[]);
+
+int erase_xpm(unsigned short xi, unsigned short yi, char *xpm[]);
 
  /** @} end of video_gr */
  

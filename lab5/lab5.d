@@ -32,5 +32,6 @@ lab5.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/string.h
 lab5.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/syslimits.h
 lab5.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 lab5.o:	lab5.c
+lab5.o:	pixmap.h
 lab5.o:	test5.h
 lab5.o:	vbe.h

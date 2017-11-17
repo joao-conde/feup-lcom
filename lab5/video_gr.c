@@ -6,6 +6,7 @@
 
 #include "video_gr.h"
 #include "vbe.h"
+#include "read_xpm.h"
 
 //#define ABS(a)	((a) >= 0 ? (a) : -(a)) dx = ABS(x2 - x1)
 
@@ -19,7 +20,7 @@ static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 
 void *vg_init(unsigned short mode) {
 
-	vbe_mode_info_t vbe_mode;
+	//vbe_mode_info_t vbe_mode;
 
 	v_res = V_RES;
 	h_res = H_RES;
@@ -28,24 +29,12 @@ void *vg_init(unsigned short mode) {
 	unsigned int vram_size; /* VRAM's size, but you can use
 	 the frame-buffer size, instead */
 
-	struct reg86u reg;
-	reg.u.w.ax = 0x4F02; // VBE call, function 02 -- set VBE mode
-	reg.u.w.bx = 1 << 14 | mode; // set bit 14: linear framebuffer
-	reg.u.b.intno = 0x10;
-	if (sys_int86(&reg) != OK) {
-		printf("set_vbe_mode: sys_int86() failed \n");
-		return NULL;
-	}
-
 	vram_size = h_res * v_res * (bits_per_pixel / 8);
 
 	int r;
 	struct mem_range mr;
 
 	/* Allow memory mapping */
-	//mr.mr_base = (phys_bytes) vbe_mode.PhysBasePtr;
-	//mr.mr_limit = mr.mr_base + vram_size;
-
 	mr.mr_base = (phys_bytes) VRAM_PHYS_ADDR;
 	mr.mr_limit = mr.mr_base + vram_size;
 
@@ -56,6 +45,15 @@ void *vg_init(unsigned short mode) {
 	video_mem = vm_map_phys(SELF, (void *) mr.mr_base, vram_size);
 	if (video_mem == MAP_FAILED)
 		panic("couldn't map video memory");
+
+	struct reg86u reg;
+	reg.u.w.ax = 0x4F02; // VBE call, function 02 -- set VBE mode
+	reg.u.w.bx = 1 << 14 | mode; // set bit 14: linear framebuffer
+	reg.u.b.intno = 0x10;
+	if (sys_int86(&reg) != OK) {
+		printf("set_vbe_mode: sys_int86() failed \n");
+		return NULL;
+	}
 
 	return (void*) VRAM_PHYS_ADDR;
 
@@ -143,42 +141,80 @@ void drawLine(int x1, int y1, int x2, int y2, int color) {
 
 			paintPixel(x1, y1, color); /* Draw the point	*/
 		}
-	}
-	else{
+	} else {
 
 		/* We have a line with a slope between -1 and 1 (ie: includes
-		vertical lines). We must swap our x and y coordinates for this.
-		*
-		Ensure that we are always scan converting the line from left to
-		right to ensure that we produce the same line from P1 to P0 as the
-		line from P0 to P1.
-		*/
-		if (y2 < y1){
-			t = x2; x2 = x1;
-			x1=t; /*Swap X coordinates*/
-			t = y2; y2 = y1;y1 = t;	/*	Swap Y coordinates	*/
+		 vertical lines). We must swap our x and y coordinates for this.
+		 *
+		 Ensure that we are always scan converting the line from left to
+		 right to ensure that we produce the same line from P1 to P0 as the
+		 line from P0 to P1.
+		 */
+		if (y2 < y1) {
+			t = x2;
+			x2 = x1;
+			x1 = t; /*Swap X coordinates*/
+			t = y2;
+			y2 = y1;
+			y1 = t; /*	Swap Y coordinates	*/
 		}
 		if (x2 > x1)
 			yincr = 1;
 		else
 			yincr = -1;
 
-		d = 2*dx - dy;	/* Initial decision variable value	*/
-		Eincr = 2*dx;	/* Increment to move to E pixel */
-		NEincr = 2*(dx - dy); /* Increment to move to NE pixel */
-		paintPixel(x1,y1,color);  /* Draw the first point at (x1,y1) */
-
+		d = 2 * dx - dy; /* Initial decision variable value	*/
+		Eincr = 2 * dx; /* Increment to move to E pixel */
+		NEincr = 2 * (dx - dy); /* Increment to move to NE pixel */
+		paintPixel(x1, y1, color); /* Draw the first point at (x1,y1) */
 
 		/* Incrementally determine the positions of the remaining pixels */
-		for (y1++; y1 <= y2; y1++){
+		for (y1++; y1 <= y2; y1++) {
 
 			if (d < 0)
-				d += Eincr;	/* Choose the Eastern Pixel	*/
-			else{
+				d += Eincr; /* Choose the Eastern Pixel	*/
+			else {
 				d += NEincr;/*Choose the North	Eastern	Pixel*/
 				x1 += yincr;/* (or SE pixel for	dx/dy <	0!)*/
 			}
-			paintPixel(x1,y1,color);
+			paintPixel(x1, y1, color);
 		}
 	}
+}
+
+int draw_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
+	int width, height;
+
+	char *sprite = read_xpm(xpm, &width, &height);
+
+	unsigned int i, j;
+
+	for (i = 0; i < height; i++) {
+		for (j = 0; j < width; j++) {
+			if (*(sprite + i * width + j) != 0)
+				paintPixel(xi + j, yi + i, *(sprite + i * width + j));
+		}
+	}
+
+	free(sprite);
+
+	return 0;
+}
+
+
+int erase_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
+	int width, height;
+	char *sprite = read_xpm(xpm, &width, &height);
+
+	unsigned int i, j;
+
+	for (i = 0; i < height; i++) {
+		for (j = 0; j < width; j++) {
+			paintPixel(xi + j, yi + i, 0);
+		}
+	}
+
+	free(sprite);
+
+	return 0;
 }

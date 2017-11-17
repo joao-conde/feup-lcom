@@ -1,5 +1,6 @@
 #include "video_gr.h"
 #include "test5.h"
+#include "pixmap.h"
 
 #include <unistd.h>
 
@@ -32,7 +33,7 @@ int video_test_square(unsigned short x, unsigned short y, unsigned short size, u
 	}
 
 
-	sleep(5);
+	sleep(6);
 
 
 	vg_exit();
@@ -45,8 +46,8 @@ int video_test_line(unsigned short xi, unsigned short yi,
 	
 	
 	vg_init(0x105);
-	drawLine(0, 0, 400, 200, 0x10);
-	sleep(3);
+	drawLine(xi, yi, xf, yf, color);
+	sleep(5);
 	vg_exit();
 
 	return 0;
@@ -54,7 +55,16 @@ int video_test_line(unsigned short xi, unsigned short yi,
 	
 int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
 	
-	/* To be completed */
+	if(vg_init(0x105) == NULL)
+		return -1;
+
+	draw_xpm(xi,yi, xpm);
+
+	sleep(5);
+
+	if(vg_exit() != 0)
+		return -1;
+
 	return 0;
 }	
 
