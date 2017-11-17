@@ -18,14 +18,19 @@ static unsigned v_res; /* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 
 void *vg_init(unsigned short mode) {
-
+/*
 	vbe_mode_info_t vbe_mode;
 	vbe_get_mode_info(mode, &vbe_mode);
-
+*/
+	/*
 	v_res = vbe_mode.YResolution;
 	h_res = vbe_mode.XResolution;
 	bits_per_pixel = vbe_mode.BitsPerPixel;
+	*/
 
+	v_res = V_RES;
+	h_res = H_RES;
+	bits_per_pixel = BITS_PER_PIXEL;
 
 	unsigned int vram_size = h_res * v_res * (bits_per_pixel / 8);
 
@@ -33,7 +38,7 @@ void *vg_init(unsigned short mode) {
 	struct mem_range mr;
 
 	/* Allow memory mapping */
-	mr.mr_base = (phys_bytes) vbe_mode.PhysBasePtr;
+	mr.mr_base = (phys_bytes) VRAM_PHYS_ADDR;
 	mr.mr_limit = mr.mr_base + vram_size;
 
 	if (OK != (r = sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr)))
@@ -53,7 +58,7 @@ void *vg_init(unsigned short mode) {
 		return NULL;
 	}
 
-	return (void*) vbe_mode.PhysBasePtr;
+	return (void*) VRAM_PHYS_ADDR;
 }
 
 
