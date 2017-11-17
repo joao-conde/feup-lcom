@@ -1,6 +1,7 @@
 #include "video_gr.h"
 #include "test5.h"
 #include "pixmap.h"
+#include "vbe.h"
 
 #include <unistd.h>
 
@@ -76,7 +77,15 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi, unsigned short 
 
 int test_controller() {
 
-	/* To be completed */
+	vbe_info_t vbe_info;
+	vbe_get_info(0x105, &vbe_info);
+
+	printf("\nSTRUCTURE VBE INFO\n");
+
+	printf("version: %d\n",vbe_info.VESAVersion);
+	//printf("mode: %s", vbe_info.VideoModePtr);
+	printf("total memory: %d\n",vbe_info.TotalMemory);
+
 	return 0;
 }	
 	
