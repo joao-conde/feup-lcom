@@ -8,7 +8,6 @@
 #include "vbe.h"
 #include "read_xpm.h"
 
-//#define ABS(a)	((a) >= 0 ? (a) : -(a)) dx = ABS(x2 - x1)
 
 /* Private global variables */
 
@@ -20,22 +19,21 @@ static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 
 void *vg_init(unsigned short mode) {
 
-	//vbe_mode_info_t vbe_mode;
+	vbe_mode_info_t vbe_mode;
+	vbe_get_mode_info(mode, &vbe_mode);
 
-	v_res = V_RES;
-	h_res = H_RES;
-	bits_per_pixel = BITS_PER_PIXEL;
+	v_res = vbe_mode.YResolution;
+	h_res = vbe_mode.XResolution;
+	bits_per_pixel = vbe_mode.BitsPerPixel;
 
-	unsigned int vram_size; /* VRAM's size, but you can use
-	 the frame-buffer size, instead */
 
-	vram_size = h_res * v_res * (bits_per_pixel / 8);
+	unsigned int vram_size = h_res * v_res * (bits_per_pixel / 8);
 
 	int r;
 	struct mem_range mr;
 
 	/* Allow memory mapping */
-	mr.mr_base = (phys_bytes) VRAM_PHYS_ADDR;
+	mr.mr_base = (phys_bytes) vbe_mode.PhysBasePtr;
 	mr.mr_limit = mr.mr_base + vram_size;
 
 	if (OK != (r = sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr)))
@@ -55,9 +53,9 @@ void *vg_init(unsigned short mode) {
 		return NULL;
 	}
 
-	return (void*) VRAM_PHYS_ADDR;
-
+	return (void*) vbe_mode.PhysBasePtr;
 }
+
 
 int vg_exit() {
 	struct reg86u reg86;
@@ -93,6 +91,12 @@ int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
 }
 
 void drawLine(int x1, int y1, int x2, int y2, int color) {
+
+	/*
+	 * Digital Differential Analyzer (DDA) algorithm
+	 * Based on: www.tutorialspoint.com/computer_graphics/line_generation_algorithm.htm
+	 */
+
 
 	int d; /*	Decision variable	*/
 	int dx, dy; /*	Dx and Dy values for the line	*/
@@ -183,34 +187,17 @@ void drawLine(int x1, int y1, int x2, int y2, int color) {
 }
 
 int draw_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
+
 	int width, height;
 
 	char *sprite = read_xpm(xpm, &width, &height);
 
-	unsigned int i, j;
+	unsigned int row, col;
 
-	for (i = 0; i < height; i++) {
-		for (j = 0; j < width; j++) {
-			if (*(sprite + i * width + j) != 0)
-				paintPixel(xi + j, yi + i, *(sprite + i * width + j));
-		}
-	}
-
-	free(sprite);
-
-	return 0;
-}
-
-
-int erase_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
-	int width, height;
-	char *sprite = read_xpm(xpm, &width, &height);
-
-	unsigned int i, j;
-
-	for (i = 0; i < height; i++) {
-		for (j = 0; j < width; j++) {
-			paintPixel(xi + j, yi + i, 0);
+	for (row = 0; row < height; row++) {
+		for (col = 0; col < width; col++) {
+			if (*(sprite + row * width + col) != 0)
+				paintPixel(xi + col, yi + row, *(sprite + row * width + col));
 		}
 	}
 

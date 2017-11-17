@@ -22,22 +22,23 @@ int video_test_init(unsigned short mode, unsigned short delay) {
 
 int video_test_square(unsigned short x, unsigned short y, unsigned short size, unsigned long color) {
 	
-	vg_init(0x105);
+	if(vg_init(VBE_MODE105) == NULL)
+		return -1;
 
-	int i, j;
+	int col, row;
+	for (col = 0; col < size; col++) {
 
-	for (i = 0; i < size; i++) {
-
-		for (j = 0; j < size; j++) {
-			paintPixel(x + i, y + j, color);
+		for (row = 0; row < size; row++) {
+			paintPixel(x + col, y + row, color);
 		}
 	}
 
 
-	sleep(6);
+	sleep(5);
 
 
-	vg_exit();
+	if(vg_exit() != 0)
+		return -1;
 
 	return 0;
 }
@@ -46,17 +47,21 @@ int video_test_line(unsigned short xi, unsigned short yi,
 		           unsigned short xf, unsigned short yf, unsigned long color) {
 	
 	
-	vg_init(0x105);
+	if(vg_init(VBE_MODE105) == NULL)
+		return -1;
+
 	drawLine(xi, yi, xf, yf, color);
 	sleep(5);
-	vg_exit();
+
+	if(vg_exit() != 0)
+		return -1;
 
 	return 0;
 }
 	
 int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
 	
-	if(vg_init(0x105) == NULL)
+	if(vg_init(VBE_MODE105) == NULL)
 		return -1;
 
 	draw_xpm(xi,yi, xpm);
@@ -78,14 +83,42 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi, unsigned short 
 int test_controller() {
 
 	vbe_info_t vbe_info;
-	vbe_get_info(0x105, &vbe_info);
+	vbe_get_info(VBE_MODE105, &vbe_info);
 
 	printf("\nSTRUCTURE VBE INFO\n");
 
 	printf("version: %d\n",vbe_info.VESAVersion);
-	//printf("mode: %s", vbe_info.VideoModePtr);
-	printf("total memory: %d\n",vbe_info.TotalMemory);
+	printf("mode: %s", vbe_info.VideoModePtr);
+	printf("total memory: %d\n", vbe_info.TotalMemory);
 
 	return 0;
 }	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	

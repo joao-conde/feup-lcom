@@ -20,6 +20,7 @@
 #define H_RES             1024
 #define V_RES		      768
 #define BITS_PER_PIXEL	  8
+#define VBE_MODE105 		  0x105
 
 
 /**
