@@ -167,7 +167,7 @@ static int proc_args(int argc, char **argv) {
 
 	else if (strncmp(argv[1], "test_controller", strlen("test_controller")) == 0) {
 
-		if (argc != 3) {
+		if (argc != 2) {
 			printf("vbe: wrong no. of arguments for test_controller()\n");
 			return 1;
 		}
