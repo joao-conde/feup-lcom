@@ -20,7 +20,8 @@
 #define H_RES             1024
 #define V_RES		      768
 #define BITS_PER_PIXEL	  8
-#define VBE_MODE105 		  0x105
+#define VBE_MODE105 	  0x105
+#define BITS_PER_BYTE 	  8
 
 
 /**
@@ -50,7 +51,8 @@ void drawLine(int x1,int y1,int x2,int y2,int color);
 
 int draw_xpm(unsigned short xi, unsigned short yi, char *xpm[]);
 
-int erase_xpm(unsigned short xi, unsigned short yi, char *xpm[]);
+unsigned vg_getHRES();
+unsigned vg_getVRES();
 
  /** @} end of video_gr */
  
