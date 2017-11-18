@@ -8,6 +8,7 @@ video_gr.o:	/usr/include/machine/interrupt.h
 video_gr.o:	/usr/include/machine/mcontext.h
 video_gr.o:	/usr/include/machine/ports.h
 video_gr.o:	/usr/include/machine/stackframe.h
+video_gr.o:	/usr/include/mathconst.h
 video_gr.o:	/usr/include/minix/bitmap.h
 video_gr.o:	/usr/include/minix/callnr.h
 video_gr.o:	/usr/include/minix/com.h
@@ -42,6 +43,7 @@ video_gr.o:	/usr/include/sys/ucred.h
 video_gr.o:	/usr/include/timers.h
 video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/ansi.h
 video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/limits.h
+video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/math.h
 video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/signal.h
 video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stddef.h
 video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdio.h

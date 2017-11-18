@@ -3,11 +3,11 @@
 #include <machine/int86.h>
 #include <sys/mman.h>
 #include <sys/types.h>
+#include <math.h>
 
 #include "video_gr.h"
 #include "vbe.h"
 #include "read_xpm.h"
-
 
 /* Private global variables */
 
@@ -17,21 +17,23 @@ static unsigned h_res; /* Horizontal screen resolution in pixels */
 static unsigned v_res; /* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 
-unsigned vg_getHRES(){return h_res;}
-unsigned vg_getVRES(){return v_res;}
+unsigned vg_getHRES() {
+	return h_res;
+}
+unsigned vg_getVRES() {
+	return v_res;
+}
 
 void *vg_init(unsigned short mode) {
 
 	vbe_mode_info_t vbe_mode;
 	vbe_get_mode_info(mode, &vbe_mode);
 
-
 	v_res = vbe_mode.YResolution;
 	h_res = vbe_mode.XResolution;
 	bits_per_pixel = vbe_mode.BitsPerPixel;
 
-
-	unsigned int vram_size = h_res * v_res * (bits_per_pixel/BITS_PER_BYTE);
+	unsigned int vram_size = h_res * v_res * (bits_per_pixel / BITS_PER_BYTE);
 
 	int r;
 	struct mem_range mr;
@@ -60,7 +62,6 @@ void *vg_init(unsigned short mode) {
 
 	return (void*) vbe_mode.PhysBasePtr;
 }
-
 
 int vg_exit() {
 	struct reg86u reg86;
@@ -190,8 +191,6 @@ void drawLine(int x1, int y1, int x2, int y2, int color) {
 	}
 }
 
-
-
 int draw_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
 
 	int width, height;
@@ -210,4 +209,25 @@ int draw_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
 	free(sprite);
 
 	return 0;
+}
+
+void drawSquare(unsigned short x, unsigned short y, unsigned short size,
+		unsigned long color) {
+
+	short xcoord = ceil(x - size / 2) + vg_getHRES() / 2;
+	short ycoord = ceil(y - size / 2) + vg_getVRES() / 2;
+
+	if (xcoord < 0)
+		xcoord = 0;
+
+	if (ycoord < 0)
+		ycoord = 0;
+
+	int col, row;
+	for (col = 0; col < size; col++) {
+
+		for (row = 0; row < size; row++) {
+			paintPixel(xcoord + col, ycoord + row, color);
+		}
+	}
 }
