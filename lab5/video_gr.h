@@ -49,6 +49,8 @@ int paintPixel(unsigned short x, unsigned short y, unsigned long color);
 
 void drawLine(int x1,int y1,int x2,int y2,int color);
 
+void drawSquare(unsigned short x, unsigned short y, unsigned short size, unsigned long color);
+
 int draw_xpm(unsigned short xi, unsigned short yi, char *xpm[]);
 
 unsigned vg_getHRES();
