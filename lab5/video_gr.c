@@ -20,6 +20,7 @@ static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 unsigned vg_getHRES() {
 	return h_res;
 }
+
 unsigned vg_getVRES() {
 	return v_res;
 }
@@ -100,7 +101,7 @@ void drawLine(int x1, int y1, int x2, int y2, int color) {
 
 	/*
 	 * Digital Differential Analyzer (DDA) algorithm
-	 * Based on: www.tutorialspoint.com/computer_graphics/line_generation_algorithm.htm
+	 * Based on: www.tutorialspoint.com/computer_graphics/line_generation_algorithm.html
 	 */
 
 	int d; /*	Decision variable	*/
@@ -191,7 +192,7 @@ void drawLine(int x1, int y1, int x2, int y2, int color) {
 	}
 }
 
-int draw_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
+int drawXPM(unsigned short xi, unsigned short yi, char *xpm[]) {
 
 	int width, height;
 

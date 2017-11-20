@@ -51,9 +51,12 @@ test5.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/syslimits.h
 test5.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/unistd.h
 test5.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 test5.o:	i8042.h
+test5.o:	i8254.h
 test5.o:	kbd.h
 test5.o:	pixmap.h
 test5.o:	test5.c
 test5.o:	test5.h
+test5.o:	timer.h
 test5.o:	vbe.h
 test5.o:	video_gr.h
+test5.o:	video_test.h

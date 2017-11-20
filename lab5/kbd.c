@@ -2,6 +2,7 @@
 
 #include <minix/sysutil.h>
 #include <minix/drivers.h>
+#include <minix/driver.h>
 
 #ifdef LAB3
 
@@ -153,4 +154,48 @@ void print_scancode(unsigned long scancode) {
 	else
 		print_set1code(scancode);
 
+}
+
+int waitEscapeKey(){
+
+	unsigned long scancode = 0;
+
+	int ipc_status, r, irq_set = kbd_subscribe_int();
+	message msg;
+
+
+	if (irq_set == -1) {
+		printf("kbd_subscribe_int(): Failure\n");
+		return -1;
+	}
+
+	while (scancode != ESC_BREAK) {
+
+		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+			printf("driver_receive failed with: %d", r);
+			continue;
+		}
+
+		if (is_ipc_notify(ipc_status)) { /* received notification */
+
+			switch (_ENDPOINT_P(msg.m_source)) {
+
+			case HARDWARE: /* hardware interrupt notification */
+				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
+					scancode = kbc_read();
+				}
+				break;
+
+			default:
+				break; /* no other notifications expected: do*/
+			}
+		}
+	}
+
+	if (kbd_unsubscribe_int() == -1) {
+		printf("kbd_unsubscribe_int(): Failure\n");
+		return -1;
+	}
+
+	return OK;
 }

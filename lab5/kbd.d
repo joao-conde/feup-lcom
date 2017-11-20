@@ -15,11 +15,13 @@ kbd.o:	/usr/include/minix/const.h
 kbd.o:	/usr/include/minix/devio.h
 kbd.o:	/usr/include/minix/dir.h
 kbd.o:	/usr/include/minix/dmap.h
+kbd.o:	/usr/include/minix/driver.h
 kbd.o:	/usr/include/minix/drivers.h
 kbd.o:	/usr/include/minix/endpoint.h
 kbd.o:	/usr/include/minix/ipc.h
 kbd.o:	/usr/include/minix/ipcconst.h
 kbd.o:	/usr/include/minix/limits.h
+kbd.o:	/usr/include/minix/partition.h
 kbd.o:	/usr/include/minix/safecopies.h
 kbd.o:	/usr/include/minix/sef.h
 kbd.o:	/usr/include/minix/spin.h
