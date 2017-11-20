@@ -75,5 +75,8 @@ void print_set2code(unsigned long scancode);
 void print_sysinb_calls();
 
 
+int waitEscapeKey();
+
+
 
 #endif /* KBD_H */
