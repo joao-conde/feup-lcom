@@ -212,6 +212,26 @@ int drawXPM(unsigned short xi, unsigned short yi, char *xpm[]) {
 	return 0;
 }
 
+int eraseXPM(unsigned short xi, unsigned short yi, char *xpm[]) {
+
+	int width, height;
+
+	char *sprite = read_xpm(xpm, &width, &height);
+
+	unsigned int row, col;
+
+	for (row = 0; row < height; row++) {
+		for (col = 0; col < width; col++) {
+			if (*(sprite + row * width + col) != 0)
+				paintPixel(xi + col, yi + row, 0);
+		}
+	}
+
+	free(sprite);
+
+	return 0;
+}
+
 void drawSquare(unsigned short x, unsigned short y, unsigned short size,
 		unsigned long color) {
 

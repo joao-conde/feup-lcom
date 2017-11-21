@@ -53,6 +53,8 @@ void drawSquare(unsigned short x, unsigned short y, unsigned short size, unsigne
 
 int drawXPM(unsigned short xi, unsigned short yi, char *xpm[]);
 
+int eraseXPM(unsigned short xi, unsigned short yi, char *xpm[]);
+
 unsigned vg_getHRES();
 unsigned vg_getVRES();
 
