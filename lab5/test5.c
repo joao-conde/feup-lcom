@@ -6,17 +6,23 @@
 #include "kbd.h"
 #include "timer.h"
 #include "i8254.h"
+#include "vbe.h"
+#include "lmlib.h"
 
 #include <unistd.h>
 #include <minix/sysutil.h>
 #include <minix/drivers.h>
 #include <minix/driver.h>
 #include <stdlib.h>
+#include <machine/int86.h>
 
 enum direction {
 	VERTICAL, HORIZONTAL
 };
 typedef enum direction direction_t;
+
+#define PB2BASE(x) (((x) >> 4) & 0x0F000)
+#define PB2OFF(x) ((x) & 0x0FFFF)
 
 int video_test_init(unsigned short mode, unsigned short delay) {
 
@@ -100,7 +106,12 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi,
 
 	int incX = xi;
 	int incY = yi;
-	float pixelsInc = s;
+	float pixelsInc;
+	if(s < 0)
+		pixelsInc = 1/s;
+	else
+		pixelsInc = s;
+
 	int int_per_frame = TIMER0_DEFAULT_FREQ / f;
 
 	while (incX != xf || incY != yf) {
@@ -118,16 +129,22 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi,
 				if (msg.NOTIFY_ARG & irq_set) {
 
 					int_counter++;
+					printf("IN CICLE\n");
 
-					if (int_per_frame == int_counter) {
+					if (int_per_frame >= int_counter) {
 						int_counter = 0;
+
 						switch (direction) {
+
 						case VERTICAL:
-							incY += pixelsInc;
+							eraseXPM(xi, incY, xpm);
+							incY += (int)pixelsInc;
 							drawXPM(xi, incY, xpm);
 							break;
+
 						case HORIZONTAL:
-							incX += pixelsInc;
+							eraseXPM(incX, yi, xpm);
+							incX += (int)pixelsInc;
 							drawXPM(incX, yi, xpm);
 							break;
 						}
@@ -158,9 +175,32 @@ int test_controller() {
 	printf("\nSTRUCTURE VBE INFO\n");
 
 	printf("version: %x\n", vbe_info.VESAVersion);
-	printf("\n pointer value: %d\n", vbe_info.VideoModePtr);
-	printf("mode: %s", vbe_info.VideoModePtr);
+
 	printf("total memory: %d\n", vbe_info.TotalMemory);
+
+	mmap_t m;
+	char* modes;
+	struct reg86u r;
+
+	lm_init();
+
+	lm_alloc(256, &m);
+
+	r.u.w.ax = 0x4F01; /* VBE get mode info */
+	/* translate the buffer linear address to a far pointer */
+	r.u.w.es = PB2BASE(m.phys); /* set a segment base */
+	r.u.w.di = PB2OFF(m.phys); /* set the offset accordingly */
+	r.u.b.intno = 0x10;
+	if (sys_int86(&r) != OK) { /* call BIOS */
+
+		return 1;
+	}
+
+	memcpy(modes, m.virtual, 256);
+
+	lm_free(&m);
+
+	printf("Modes: %s \n", modes);
 
 	return 0;
 }

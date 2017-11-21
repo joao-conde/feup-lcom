@@ -3,6 +3,7 @@ test5.o:	/usr/include/errno.h
 test5.o:	/usr/include/limits.h
 test5.o:	/usr/include/machine/bios.h
 test5.o:	/usr/include/machine/fpu.h
+test5.o:	/usr/include/machine/int86.h
 test5.o:	/usr/include/machine/interrupt.h
 test5.o:	/usr/include/machine/mcontext.h
 test5.o:	/usr/include/machine/ports.h
@@ -53,6 +54,7 @@ test5.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 test5.o:	i8042.h
 test5.o:	i8254.h
 test5.o:	kbd.h
+test5.o:	lmlib.h
 test5.o:	pixmap.h
 test5.o:	test5.c
 test5.o:	test5.h
