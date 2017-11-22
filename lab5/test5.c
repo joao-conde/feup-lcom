@@ -19,6 +19,7 @@
 enum direction {
 	VERTICAL, HORIZONTAL
 };
+
 typedef enum direction direction_t;
 
 #define PB2BASE(x) (((x) >> 4) & 0x0F000)
@@ -74,7 +75,7 @@ int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
 		return -1;
 
 	drawXPM(xi, yi, xpm);
-	sleep(5);
+	waitEscapeKey();
 
 	if (vg_exit() != 0)
 		return -1;
@@ -98,23 +99,30 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi,
 	if ((yf - yi) == 0)
 		direction = HORIZONTAL;
 
-	int ipc_status, r, irq_set, int_counter = 0;
+	int ipc_status, r, timer_irq_set, kbd_irq_set, int_counter = 0;
 	message msg;
 
-	if ((irq_set = timer_subscribe_int()) == -1)
+	if ((timer_irq_set = timer_subscribe_int()) == -1)
 		return -1;
 
-	int incX = xi;
-	int incY = yi;
-	float pixelsInc;
-	if(s < 0)
-		pixelsInc = 1/s;
+	if ((kbd_irq_set = kbd_subscribe_int()) == -1)
+		return -1;
+
+	float incX = xi;
+	float incY = yi;
+	float speed;
+
+	unsigned long scancode = 0;
+
+	if (s < 0)
+		speed = 1.0 / (abs(s));
 	else
-		pixelsInc = s;
+		speed = s;
 
-	int int_per_frame = TIMER0_DEFAULT_FREQ / f;
+	float pixelsInc = (speed * f) / TIMER_DEF_FREQ_DOUBLE;
 
-	while (incX != xf || incY != yf) {
+	while ((incX != xf || incY != yf) && scancode != ESC_BREAK) {
+
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != OK) {
 			printf("driver_receive failed with: %d", r);
 			continue;
@@ -126,37 +134,44 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi,
 
 			case HARDWARE: /* hardware interrupt notification */
 
-				if (msg.NOTIFY_ARG & irq_set) {
+				if (msg.NOTIFY_ARG & timer_irq_set) {
 
 					int_counter++;
-					printf("IN CICLE\n");
 
-					if (int_per_frame >= int_counter) {
-						int_counter = 0;
+					switch (direction) {
 
-						switch (direction) {
+					case VERTICAL:
+						eraseXPM(xi, (int) incY, xpm);
+						incY += pixelsInc;
+						drawXPM(xi, (int) incY, xpm);
+						break;
 
-						case VERTICAL:
-							eraseXPM(xi, incY, xpm);
-							incY += (int)pixelsInc;
-							drawXPM(xi, incY, xpm);
-							break;
-
-						case HORIZONTAL:
-							eraseXPM(incX, yi, xpm);
-							incX += (int)pixelsInc;
-							drawXPM(incX, yi, xpm);
-							break;
-						}
+					case HORIZONTAL:
+						eraseXPM(xi, (int) incX, xpm);
+						incX += pixelsInc;
+						drawXPM(xi, (int) incX, xpm);
+						break;
 					}
 
 				}
+
+				if (msg.NOTIFY_ARG & kbd_irq_set) { /* subscribed interrupt */
+					scancode = kbc_read();
+					printf("READ SCANCODE: 0x%x\n");
+				}
+
+				break;
+
+			default:
 				break;
 			}
 		}
 	}
 
 	if (timer_unsubscribe_int() != OK)
+		return -1;
+
+	if (kbd_unsubscribe_int() != OK)
 		return -1;
 
 	if (vg_exit() != 0)
@@ -179,22 +194,14 @@ int test_controller() {
 	printf("total memory: %d\n", vbe_info.TotalMemory);
 
 	mmap_t m;
-	char* modes;
 	struct reg86u r;
+	char* modes;
 
 	lm_init();
-
 	lm_alloc(256, &m);
 
-	r.u.w.ax = 0x4F01; /* VBE get mode info */
-	/* translate the buffer linear address to a far pointer */
-	r.u.w.es = PB2BASE(m.phys); /* set a segment base */
-	r.u.w.di = PB2OFF(m.phys); /* set the offset accordingly */
-	r.u.b.intno = 0x10;
-	if (sys_int86(&r) != OK) { /* call BIOS */
-
-		return 1;
-	}
+	r.u.w.es = PB2BASE(m.phys);
+	r.u.w.di = PB2OFF(m.phys);
 
 	memcpy(modes, m.virtual, 256);
 

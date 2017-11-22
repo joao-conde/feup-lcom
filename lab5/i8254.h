@@ -9,6 +9,8 @@
 
 #define MAX_TIMER_FREQ  1193182    /**< @brief max clock frequency for timer  */
 #define TIMER0_DEFAULT_FREQ 60	   /**< @brief default clock frequency for timer */
+#define TIMER_DEF_FREQ_DOUBLE 60.0
+
 
 #define BIT(n) (0x01<<(n))
 
