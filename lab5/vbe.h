@@ -109,7 +109,7 @@ typedef struct{
 int vbe_get_mode_info(unsigned short mode, vbe_mode_info_t *vmi_p);
 
 
-int vbe_get_info(unsigned short mode, vbe_info_t *vmi_p);
+void* vbe_get_info(unsigned short mode, vbe_info_t *vmi_p);
 
 
 
