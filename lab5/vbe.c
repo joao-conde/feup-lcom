@@ -4,6 +4,7 @@
 
 #include "vbe.h"
 #include "lmlib.h"
+#include "video_test.h"
 
 
 #define LINEAR_MODEL_BIT 14
@@ -45,12 +46,12 @@ int vbe_get_mode_info(unsigned short mode, vbe_mode_info_t *vmi_p) {
 }
 
 
-void* vbe_get_info(unsigned short mode, vbe_info_t *vmi_p){
+int vbe_get_info(vbe_info_t *vmi_p){
 
 	mmap_t m;
 	struct reg86u r;
 
-	void* vmem = lm_init();
+	lm_init();
 
 	lm_alloc(256, &m);
 
@@ -68,6 +69,6 @@ void* vbe_get_info(unsigned short mode, vbe_info_t *vmi_p){
 
 	lm_free(&m);
 
-	return vmem;
+	return OK;
 
 }

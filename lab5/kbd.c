@@ -1,4 +1,5 @@
 #include "kbd.h"
+#include "video_test.h"
 
 #include <minix/sysutil.h>
 #include <minix/drivers.h>

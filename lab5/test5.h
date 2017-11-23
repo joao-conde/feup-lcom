@@ -4,14 +4,14 @@
 /** @defgroup lab5 lab5
  * @{
  *
- * Functions for outputing data to screen in graphics mode
+ * Functions for outputting data to screen in graphics mode
  */
 
 /**
  * @brief Tests initialization of video card in graphics mode
  * 
  * Uses the VBE INT 0x10 interface to set the desired
- *  graphics mode. After delay seconds, it should go 
+ *  graphics mode. After delay seconds, it should go
  *  back to Minix's default text mode.
  * 
  * @param mode 16-bit VBE mode to set
