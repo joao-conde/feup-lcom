@@ -85,7 +85,7 @@ typedef struct {
  */
 typedef struct{
 	char VESASignature[4];  /* 'VESA' 4 byte signature */
-	short  VESAVersion;		/* VBE version number */
+	short  VBEVersion;		/* VBE version number */
 	char  *OEMStringPtr; /* Pointer to OEM string */
 	long   Capabilities;   /* Capabilities of video card */
 	unsigned *VideoModePtr;  /* Pointer to supported modes */

@@ -65,6 +65,7 @@ void *vg_init(unsigned short mode) {
 }
 
 int vg_exit() {
+
 	struct reg86u reg86;
 
 	reg86.u.b.intno = 0x10; /* BIOS video services */
@@ -80,6 +81,11 @@ int vg_exit() {
 }
 
 int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
+
+	/*
+	 * Based on: www.phatcode.net/res/221/files/vbe20.pdf , page 79
+	 */
+
 
 	if (x >= h_res)
 		return -1;
@@ -97,11 +103,12 @@ int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
 
 }
 
-void drawLine(int x1, int y1, int x2, int y2, int color) {
+int drawLine(int x1, int y1, int x2, int y2, int color) {
 
 	/*
 	 * Digital Differential Analyzer (DDA) algorithm
 	 * Based on: www.tutorialspoint.com/computer_graphics/line_generation_algorithm.html
+	 * and on based onhttp://www.phatcode.net/res/221/files/vbe20.pdf , page 79
 	 */
 
 	int d; /*	Decision variable	*/
@@ -190,12 +197,15 @@ void drawLine(int x1, int y1, int x2, int y2, int color) {
 			paintPixel(x1, y1, color);
 		}
 	}
+
+	return OK;
 }
 
 int drawXPM(unsigned short xi, unsigned short yi, char *xpm[]) {
 
 	int width, height;
 
+	//read_xpm provided by professor
 	char *sprite = read_xpm(xpm, &width, &height);
 
 	unsigned int row, col;
@@ -216,6 +226,7 @@ int eraseXPM(unsigned short xi, unsigned short yi, char *xpm[]) {
 
 	int width, height;
 
+	//read_xpm provided by professor
 	char *sprite = read_xpm(xpm, &width, &height);
 
 	unsigned int row, col;
@@ -232,8 +243,7 @@ int eraseXPM(unsigned short xi, unsigned short yi, char *xpm[]) {
 	return 0;
 }
 
-void drawSquare(unsigned short x, unsigned short y, unsigned short size,
-		unsigned long color) {
+int drawSquare(unsigned short x, unsigned short y, unsigned short size,	unsigned long color) {
 
 	short xcoord = ceil(x - size / 2) + vg_getHRES() / 2;
 	short ycoord = ceil(y - size / 2) + vg_getVRES() / 2;
@@ -251,4 +261,6 @@ void drawSquare(unsigned short x, unsigned short y, unsigned short size,
 			paintPixel(xcoord + col, ycoord + row, color);
 		}
 	}
+
+	return OK;
 }

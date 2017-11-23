@@ -22,8 +22,6 @@ enum direction {
 
 typedef enum direction direction_t;
 
-#define PB2BASE(x) (((x) >> 4) & 0x0F000)
-#define PB2OFF(x) ((x) & 0x0FFFF)
 
 int video_test_init(unsigned short mode, unsigned short delay) {
 
@@ -61,6 +59,7 @@ int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
 		return -1;
 
 	drawLine(xi, yi, xf, yf, color);
+	video_dump_fb();
 	waitEscapeKey();
 
 	if (vg_exit() != 0)
@@ -75,6 +74,7 @@ int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
 		return -1;
 
 	drawXPM(xi, yi, xpm);
+	video_dump_fb();
 	waitEscapeKey();
 
 	if (vg_exit() != 0)
@@ -113,10 +113,19 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi,
 
 	}
 
+	float speed;
+	if (s < 0)
+		speed = 1.0 / (abs(s));
+	else
+		speed = s;
+
+
 	int ipc_status, r, timer_irq_set, kbd_irq_set, int_counter = 0;
 	message msg;
 
-	float speed, incX = xi, incY = yi;
+	float incX = xi, incY = yi;
+
+	//pixels to move per interrupt
 	float pixelsInc = (speed * f) / TIMER_DEF_FREQ_DOUBLE;
 	unsigned long scancode = 0;
 
@@ -125,12 +134,6 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi,
 
 	if ((kbd_irq_set = kbd_subscribe_int()) == -1)
 		return -1;
-
-	if (s < 0)
-		speed = 1.0 / (abs(s));
-	else
-		speed = s;
-
 
 	while (/*(incX != xf || incY != yf) &&*/ scancode != ESC_BREAK) {
 
@@ -181,6 +184,8 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi,
 
 					}
 
+					video_dump_fb();
+
 				}
 
 				if (msg.NOTIFY_ARG & kbd_irq_set) { /* subscribed interrupt */
@@ -213,20 +218,21 @@ int test_controller() {
 
 	vbe_get_info(VBE_MODE105, &vbe_info);
 
-	printf("\nSTRUCTURE VBE INFO\n");
+	short vbe_version = (vbe_info.VBEVersion >> 8) & 0xFF;
+	short vbe_subversion = (vbe_info.VBEVersion << 8) & 0xFF;
 
-	printf("version: %x\n", vbe_info.VESAVersion);
+	printf("%x.%x\n", vbe_version, vbe_subversion);
 
-	printf("total memory: %d\n", vbe_info.TotalMemory);
-
-	int segment = (*vbe_info.VideoModePtr >> 16) & 0xFFFF;
-	int offset = (*vbe_info.VideoModePtr & 0xFFFF) << 4;
+	printf("%d\n", vbe_info.TotalMemory);
+/*
+	int segment = (vbe_info.VideoModePtr >> 16) & 0xFFFF;
+	int offset = (vbe_info.VideoModePtr & 0xFFFF) << 4;
 	int linear = segment * 16 + offset;
 
-	unsigned* modes = vbe_info.VideoModePtr + linear;
+	unsigned* modes = (*vbe_info).VideoModePtr + linear;
 
 	printf("Modes: 0x%x\n", modes);
-
+*/
 	return 0;
 }
 
