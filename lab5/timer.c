@@ -4,6 +4,7 @@
 
 #include "i8254.h"
 #include "timer.h"
+#include "video_test.h"
 
 unsigned int counter = 0;
 int hookID;

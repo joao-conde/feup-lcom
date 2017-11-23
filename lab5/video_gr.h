@@ -12,6 +12,11 @@
 #define VBE_MODE105 	  0x105
 #define BITS_PER_BYTE 	  8
 
+enum direction {
+	UP, DOWN, LEFT, RIGHT, STOP
+};
+
+typedef enum direction direction_t;
 
 /**
  * @brief Initializes the video module in graphics mode
@@ -33,7 +38,6 @@ void *vg_init(unsigned short mode);
  */
 int vg_exit(void);
 
-
 int paintPixel(unsigned short x, unsigned short y, unsigned long color);
 
 int drawLine(int x1,int y1,int x2,int y2,int color);
@@ -43,6 +47,10 @@ int drawSquare(unsigned short x, unsigned short y, unsigned short size, unsigned
 int drawXPM(unsigned short xi, unsigned short yi, char *xpm[]);
 
 int eraseXPM(unsigned short xi, unsigned short yi, char *xpm[]);
+
+int move_xpm(char *xpm[], unsigned short xi, unsigned short yi, unsigned short xf, unsigned short yf, short s, unsigned short f);
+
+direction_t getDirection();
 
 unsigned vg_getHRES();
 unsigned vg_getVRES();

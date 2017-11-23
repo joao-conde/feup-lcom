@@ -1,13 +1,20 @@
 #include <minix/syslib.h>
 #include <minix/drivers.h>
+#include <minix/driver.h>
 #include <machine/int86.h>
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <math.h>
 
 #include "video_gr.h"
-#include "vbe.h"
 #include "read_xpm.h"
+#include "video_test.h"
+#include "vbe.h"
+#include "kbd.h"
+#include "timer.h"
+#include "i8254.h"
+#include "vbe.h"
+#include "lmlib.h"
 
 /* Private global variables */
 
@@ -17,12 +24,44 @@ static unsigned h_res; /* Horizontal screen resolution in pixels */
 static unsigned v_res; /* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 
+
 unsigned vg_getHRES() {
 	return h_res;
 }
 
 unsigned vg_getVRES() {
 	return v_res;
+}
+
+direction_t getDirection(xi,yi,xf,yf){
+
+	int dx = xf - xi;
+	int dy = yf - yi;
+
+	//if both dx and dy are 0 state will be STOP therefore no movement
+	if(dx == 0 && dy == 0)	return STOP;
+
+	//if both dx and dy are different that would be a diagonal movement and the code simply refuses to move xpm
+	if(dx != 0 && dy != 0)  return STOP;
+
+	if (dx == 0) {
+
+		if (dy > 0)
+			return DOWN;
+
+		if (dy < 0)
+			return UP;
+
+	} else {
+
+		if (dx > 0)
+			return RIGHT;
+
+		if (dx < 0)
+			return LEFT;
+	}
+
+	return STOP;
 }
 
 void *vg_init(unsigned short mode) {
@@ -77,7 +116,7 @@ int vg_exit() {
 		printf("\tvg_exit(): sys_int86() failed \n");
 		return 1;
 	} else
-		return 0;
+		return OK;
 }
 
 int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
@@ -85,7 +124,6 @@ int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
 	/*
 	 * Based on: www.phatcode.net/res/221/files/vbe20.pdf , page 79
 	 */
-
 
 	if (x >= h_res)
 		return -1;
@@ -99,7 +137,7 @@ int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
 
 	*virtualvramptr = color;
 
-	return 0;
+	return OK;
 
 }
 
@@ -219,7 +257,7 @@ int drawXPM(unsigned short xi, unsigned short yi, char *xpm[]) {
 
 	free(sprite);
 
-	return 0;
+	return OK;
 }
 
 int eraseXPM(unsigned short xi, unsigned short yi, char *xpm[]) {
@@ -240,10 +278,11 @@ int eraseXPM(unsigned short xi, unsigned short yi, char *xpm[]) {
 
 	free(sprite);
 
-	return 0;
+	return OK;
 }
 
-int drawSquare(unsigned short x, unsigned short y, unsigned short size,	unsigned long color) {
+int drawSquare(unsigned short x, unsigned short y, unsigned short size,
+		unsigned long color) {
 
 	short xcoord = ceil(x - size / 2) + vg_getHRES() / 2;
 	short ycoord = ceil(y - size / 2) + vg_getVRES() / 2;
@@ -261,6 +300,106 @@ int drawSquare(unsigned short x, unsigned short y, unsigned short size,	unsigned
 			paintPixel(xcoord + col, ycoord + row, color);
 		}
 	}
+
+	return OK;
+}
+
+int move_xpm(char *xpm[], unsigned short xi, unsigned short yi,
+		unsigned short xf, unsigned short yf, short s, unsigned short f) {
+
+	direction_t direction = getDirection(xi,yi,xf,yf);
+	unsigned long scancode = 0;
+	float speed, incX = xi, incY = yi;
+
+	if (s < 0)
+		speed = 1.0 / (abs(s));
+	else
+		speed = s;
+
+	int ipc_status, r, timer_irq_set, kbd_irq_set, int_counter = 0;
+	message msg;
+
+	//float incX = xi, incY = yi;
+
+	//pixels to move per interrupt
+	float pixels_per_int = (speed * f) / TIMER_DEF_FREQ_DOUBLE;
+
+	if ((timer_irq_set = timer_subscribe_int()) == -1)
+		return -1;
+
+	if ((kbd_irq_set = kbd_subscribe_int()) == -1)
+		return -1;
+
+	while (scancode != ESC_BREAK) {
+
+		if ((r = driver_receive(ANY, &msg, &ipc_status)) != OK) {
+			printf("driver_receive failed with: %d", r);
+			continue;
+		}
+
+		if (is_ipc_notify(ipc_status)) { /* received notification */
+
+			switch (_ENDPOINT_P(msg.m_source)) {
+
+			case HARDWARE: /* hardware interrupt notification */
+
+				if (msg.NOTIFY_ARG & timer_irq_set) {
+
+					int_counter++;
+
+					switch (direction) {
+
+					case STOP:
+						drawXPM(xi, yi, xpm);
+						break;
+
+					case DOWN:
+						eraseXPM(xi, (int) incY, xpm);
+						incY += pixels_per_int;
+						drawXPM(xi, (int) incY, xpm);
+						break;
+
+					case UP:
+						eraseXPM(xi, (int) incY, xpm);
+						incY -= pixels_per_int;
+						drawXPM(xi, (int) incY, xpm);
+						break;
+
+					case RIGHT:
+						eraseXPM((int) incX, yi, xpm);
+						incX += pixels_per_int;
+						drawXPM((int) incX, yi, xpm);
+						break;
+
+					case LEFT:
+						eraseXPM((int) incX, yi, xpm);
+						incX -= pixels_per_int;
+						drawXPM((int) incX, yi, xpm);
+						break;
+
+					}
+
+					video_dump_fb();
+
+				}
+
+				if (msg.NOTIFY_ARG & kbd_irq_set) { /* subscribed interrupt */
+					scancode = kbc_read();
+				}
+
+				break;
+
+			default:
+				break;
+			}
+		}
+	}
+
+	if (timer_unsubscribe_int() != OK)
+		return -1;
+
+	if (kbd_unsubscribe_int() != OK)
+		return -1;
 
 	return OK;
 }

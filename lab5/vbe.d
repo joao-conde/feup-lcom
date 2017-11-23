@@ -52,3 +52,4 @@ vbe.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 vbe.o:	lmlib.h
 vbe.o:	vbe.c
 vbe.o:	vbe.h
+vbe.o:	video_test.h

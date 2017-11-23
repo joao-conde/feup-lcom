@@ -17,11 +17,13 @@ video_gr.o:	/usr/include/minix/const.h
 video_gr.o:	/usr/include/minix/devio.h
 video_gr.o:	/usr/include/minix/dir.h
 video_gr.o:	/usr/include/minix/dmap.h
+video_gr.o:	/usr/include/minix/driver.h
 video_gr.o:	/usr/include/minix/drivers.h
 video_gr.o:	/usr/include/minix/endpoint.h
 video_gr.o:	/usr/include/minix/ipc.h
 video_gr.o:	/usr/include/minix/ipcconst.h
 video_gr.o:	/usr/include/minix/limits.h
+video_gr.o:	/usr/include/minix/partition.h
 video_gr.o:	/usr/include/minix/safecopies.h
 video_gr.o:	/usr/include/minix/sef.h
 video_gr.o:	/usr/include/minix/spin.h
@@ -52,7 +54,13 @@ video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/string.h
 video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/syslimits.h
 video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/unistd.h
 video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
+video_gr.o:	i8042.h
+video_gr.o:	i8254.h
+video_gr.o:	kbd.h
+video_gr.o:	lmlib.h
 video_gr.o:	read_xpm.h
+video_gr.o:	timer.h
 video_gr.o:	vbe.h
 video_gr.o:	video_gr.c
 video_gr.o:	video_gr.h
+video_gr.o:	video_test.h

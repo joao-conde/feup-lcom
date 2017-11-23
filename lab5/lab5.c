@@ -38,7 +38,8 @@ static void print_usage(char **argv) {
 
 static int proc_args(int argc, char **argv) {
 
-	unsigned short mode, delay, x, y, size, x1, y1, speed, frame_rate;
+	unsigned short mode, delay, x, y, size, x1, y1, frame_rate;
+	short speed;
 	unsigned long color;
 
 
@@ -132,14 +133,12 @@ static int proc_args(int argc, char **argv) {
 				return 1;
 			}
 
-			int test_move(char *xpm[], unsigned short xi, unsigned short yi, unsigned short xf, unsigned short yf, short s, unsigned short f);
-
 			x = parse_ulong(argv[3], 10);
 			y = parse_ulong(argv[4], 10);
 			x1 = parse_ulong(argv[5], 10);
 			y1 = parse_ulong(argv[6], 10);
 
-			speed = parse_ulong(argv[7], 10);
+			speed = strtol(argv[7], NULL, 10);
 			frame_rate = parse_ulong(argv[8], 10);
 
 			if ((strncmp(argv[2], "pic1", strlen("pic1")) == 0))
@@ -162,7 +161,7 @@ static int proc_args(int argc, char **argv) {
 				return 1;
 			}
 
-			printf("vbe::test_move(%s, %lu, %lu, %lu, %lu, %lu, %lu)\n", argv[2], x, y, x1, y1, speed, frame_rate);
+			printf("vbe::test_move(%s, %lu, %lu, %lu, %lu, %d, %lu)\n", argv[2], x, y, x1, y1, speed, frame_rate);
 		}
 
 	else if (strncmp(argv[1], "test_controller", strlen("test_controller")) == 0) {
