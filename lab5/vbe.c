@@ -12,6 +12,10 @@
 #define PB2OFF(x) ((x) & 0x0FFFF)
 
 
+#define OFFSET(x) (x & 0x0FFFF)
+#define BASE(x) ((x) >> 12) & 0xF0000)
+
+
 int vbe_get_mode_info(unsigned short mode, vbe_mode_info_t *vmi_p) {
 
 	mmap_t m;
@@ -41,12 +45,12 @@ int vbe_get_mode_info(unsigned short mode, vbe_mode_info_t *vmi_p) {
 }
 
 
-int vbe_get_info(unsigned short mode, vbe_info_t *vmi_p){
+void* vbe_get_info(unsigned short mode, vbe_info_t *vmi_p){
 
 	mmap_t m;
 	struct reg86u r;
 
-	lm_init();
+	void* vmem = lm_init();
 
 	lm_alloc(256, &m);
 
@@ -64,6 +68,6 @@ int vbe_get_info(unsigned short mode, vbe_info_t *vmi_p){
 
 	lm_free(&m);
 
-	return 0;
+	return vmem;
 
 }

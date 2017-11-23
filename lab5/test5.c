@@ -119,7 +119,6 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi,
 	else
 		speed = s;
 
-
 	int ipc_status, r, timer_irq_set, kbd_irq_set, int_counter = 0;
 	message msg;
 
@@ -135,7 +134,7 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi,
 	if ((kbd_irq_set = kbd_subscribe_int()) == -1)
 		return -1;
 
-	while (/*(incX != xf || incY != yf) &&*/ scancode != ESC_BREAK) {
+	while (/*(incX != xf || incY != yf) &&*/scancode != ESC_BREAK) {
 
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != OK) {
 			printf("driver_receive failed with: %d", r);
@@ -223,16 +222,40 @@ int test_controller() {
 
 	printf("%x.%x\n", vbe_version, vbe_subversion);
 
-	printf("%d\n", vbe_info.TotalMemory);
-/*
-	int segment = (vbe_info.VideoModePtr >> 16) & 0xFFFF;
-	int offset = (vbe_info.VideoModePtr & 0xFFFF) << 4;
-	int linear = segment * 16 + offset;
+	/*
+		Originally we tried this solution but the cicle didnt stop where intended, so it read the modes plus garbage.
+		This reading uses the VideoModePtr, sums the virtual memory pointer with the linear size of the physical adress,
+		by calculating the base and offset of VideoModePtr, a 16-bit pointer.
 
-	unsigned* modes = (*vbe_info).VideoModePtr + linear;
 
-	printf("Modes: 0x%x\n", modes);
-*/
-	return 0;
+
+	 NOTE: vmem was the return of my vbe_info function, a void* to the virtual memory allocated by lm_init, late removed
+	 due to no need
+
+	 short* modeListPtr = (short*)vmem + PB2BASE(*(int*)vbe_info.VideoModePtr) + PB2OFF(*(int*)vbe_info.VideoModePtr);
+
+	 while(*modeListPtr != 0xffff){
+	 	 printf("0x%x\n",*modeListPtr);
+	 	 ++modeListPtr;
+	 }
+
+	 */
+
+
+	/*
+	 * This solution reads the reserved array of VBE Info Block and it's also specified in the VBE pdf
+	 */
+	char* modePtr = vbe_info.reserved;
+	while (*modePtr != -1) {
+		short mode = *modePtr;
+		modePtr++;
+		mode += (*modePtr) << 8;
+		printf("0x%x:", mode);
+		modePtr++;
+	}
+
+	printf("\n%d\n", vbe_info.TotalMemory * 64);
+
+	return OK;
 }
 
