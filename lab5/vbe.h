@@ -90,7 +90,7 @@ typedef struct{
 	long   Capabilities;   /* Capabilities of video card */
 	unsigned *VideoModePtr;  /* Pointer to supported modes */
 	short  TotalMemory;	/* Number of 64kb memory blocks */
-	char reserved[236]; /* Pad to 256 byte block size */
+	short reserved[236]; /* Pad to 256 byte block size */
 } __attribute__((packed)) vbe_info_t;
 
 

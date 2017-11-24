@@ -90,6 +90,9 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi,
 	return OK;
 }
 
+
+#define OFFSET(x) (x & 0x0FFFF)
+#define BASE(x) (((x) >> 12) & 0xF0000)
 int test_controller() {
 
 	vbe_info_t vbe_info;
@@ -111,27 +114,22 @@ int test_controller() {
 	 NOTE: vmem was the return of my vbe_info function, a void* to the virtual memory allocated by lm_init, late removed
 	 due to no need
 
-	 short* modeListPtr = (short*)vmem + PB2BASE(*(int*)vbe_info.VideoModePtr) + PB2OFF(*(int*)vbe_info.VideoModePtr);
+	 short* modeListPtr = (short*)vmem + BASE(*(short*)vbe_info.VideoModePtr) + OFFSET(*(short*)vbe_info.VideoModePtr);
 
-	 while(*modeListPtr != 0xffff){
-	 	 printf("0x%x\n",*modeListPtr);
+	 while(*modeListPtr != -1){
+	 	 printf("0x%x\n",modeListPtr);
 	 	 modeListPtr++;
 	 }
-
-	 */
-
+	*/
 
 	/*
 	 * This solution reads the reserved array of VBE Info Block as also specified in the VBE pdf
 	 */
-	char* modePtr = vbe_info.reserved;
 
-	while (*modePtr != -1) {
-		short mode = *modePtr;
-		modePtr++;
-		mode += (*modePtr) << 8;
-		printf("0x%x:", mode);
-		modePtr++;
+	int i = 0;
+	while(vbe_info.reserved[i] != -1){
+		printf("0x%x:",vbe_info.reserved[i]);
+		i++;
 	}
 
 	printf("\n%d\n", vbe_info.TotalMemory * 64); //each block has 64kb this multiplying total amount of blocks per 64 gives us total memory in kb
