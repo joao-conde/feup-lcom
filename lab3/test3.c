@@ -23,7 +23,6 @@ int kbd_test_scan(unsigned short assembly) {
 	message msg;
 
 
-
 	if (irq_set == -1) {
 		printf("kbd_subscribe_int(): Failure\n");
 		return FAIL_SUB_INT;
@@ -45,7 +44,6 @@ int kbd_test_scan(unsigned short assembly) {
 
 					if (assembly){
 						assIH();
-
 					}
 					else
 						kbc_int_handler();
