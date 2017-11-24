@@ -91,8 +91,6 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi,
 }
 
 
-#define OFFSET(x) (x & 0x0FFFF)
-#define BASE(x) (((x) >> 12) & 0xF0000)
 int test_controller() {
 
 	vbe_info_t vbe_info;
@@ -105,8 +103,8 @@ int test_controller() {
 	printf("%x.%x\n", vbe_version, vbe_subversion);
 
 	/*
-		Originally we tried this solution but the cicle didnt stop where intended, so it read the modes plus garbage.
-		This reading uses the VideoModePtr, sums the virtual memory pointer with the linear size of the physical adress,
+		Originally we tried this solution but the cicle didn't stop where intended, so it read the modes plus garbage.
+		This reading uses the VideoModePtr, sums the virtual memory pointer with the linear size of the physical address,
 		by calculating the base and offset of VideoModePtr, a 16-bit pointer.
 
 
