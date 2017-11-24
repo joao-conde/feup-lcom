@@ -86,11 +86,16 @@ typedef struct {
 typedef struct{
 	char VESASignature[4];  /* 'VESA' 4 byte signature */
 	short  VBEVersion;		/* VBE version number */
-	char  *OEMStringPtr; /* Pointer to OEM string */
+	phys_bytes  *OEMStringPtr; /* Pointer to OEM string */
 	long   Capabilities;   /* Capabilities of video card */
-	unsigned *VideoModePtr;  /* Pointer to supported modes */
+	phys_bytes *VideoModePtr;  /* Pointer to supported modes */
 	short  TotalMemory;	/* Number of 64kb memory blocks */
-	short reserved[236]; /* Pad to 256 byte block size */
+	short OEMSoftWareRev;
+	char *OEMVendorNamePtr;
+	char *OEMProductNamePtr;
+	char * OEMProductRevPtr;
+	short reserved[222]; /* Pad to 256 byte block size */
+	char OEMData[256];
 } __attribute__((packed)) vbe_info_t;
 
 
