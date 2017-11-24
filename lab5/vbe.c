@@ -14,7 +14,7 @@
 
 
 #define OFFSET(x) (x & 0x0FFFF)
-#define BASE(x) ((x) >> 12) & 0xF0000)
+#define BASE(x) (((x) >> 12) & 0xF0000)
 
 
 int vbe_get_mode_info(unsigned short mode, vbe_mode_info_t *vmi_p) {
