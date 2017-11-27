@@ -50,3 +50,6 @@ MinixVice.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/unistd.h
 MinixVice.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 MinixVice.o:	MinixVice.c
 MinixVice.o:	MinixVice.h
+MinixVice.o:	i8042.h
+MinixVice.o:	i8254.h
+MinixVice.o:	kbd.h

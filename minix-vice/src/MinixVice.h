@@ -14,12 +14,12 @@ typedef struct{
 } MinixVice;
 
 
-MinixVice* init();
+MinixVice* initMinixVice();
 
-void update(MinixVice* game);
+void updateMinixVice(MinixVice* game);
 
-void draw(MinixVice* game);
+void drawMinixVice(MinixVice* game);
 
-void end(MinixVice* game);
+void endMinixVice(MinixVice* game);
 
 #endif /* MINIXVICE_H */
