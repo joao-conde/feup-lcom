@@ -15,6 +15,11 @@ MinixVice* initMinixVice() {
 	game->draw = 1;
 	game->scancode = 0;
 
+	Timer* timer = (Timer*)malloc(sizeof(Timer));
+	timer->ticked = 0;
+	timer->counter = 0;
+	game->timer = timer;
+
 	return game;
 }
 
