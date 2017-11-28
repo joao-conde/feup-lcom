@@ -5,7 +5,7 @@ COMPILER_TYPE = gnu
 CC = gcc
 
 PROG = minix-vice
-SRCS = kbd.c main.c MinixVice.c read_xpm.c utils.c video_gr.c vbe.c 
+SRCS = kbd.c main.c MinixVice.c read_xpm.c timer.c utils.c video_gr.c vbe.c 
 
 CCFLAGS= -Wall -O3
 

@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
 
 	vg_init(0x105);
 
-	MinixVice* game = (MinixVice*) malloc(sizeof(MinixVice));
+	MinixVice* game = initMinixVice();
 
 	while (!game->done) {
 
