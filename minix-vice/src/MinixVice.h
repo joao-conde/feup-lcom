@@ -2,14 +2,17 @@
 #define MINIXVICE_H
 
 
+#include "kbd.h"
+#include "timer.h"
+
 typedef struct{
 
-	int irq_set_kbd;
+	int irq_set_kbd, irq_set_timer;
 
 	int done, draw;
 
 	unsigned long scancode;
-
+	Timer* timer;
 
 } MinixVice;
 

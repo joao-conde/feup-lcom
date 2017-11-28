@@ -53,3 +53,4 @@ MinixVice.o:	MinixVice.h
 MinixVice.o:	i8042.h
 MinixVice.o:	i8254.h
 MinixVice.o:	kbd.h
+MinixVice.o:	timer.h
