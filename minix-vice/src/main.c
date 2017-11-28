@@ -15,8 +15,9 @@ int main(int argc, char **argv) {
 
 	while (!game->done) {
 
-		if (game->draw)
+		if (game->draw){
 			drawMinixVice(game);
+		}
 
 		updateMinixVice(game);
 	}
