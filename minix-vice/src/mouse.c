@@ -3,6 +3,7 @@
 #include "i8254.h"
 #include "timer.h"
 #include "video_gr.h"
+#include "pixmap.h"
 
 #include <minix/sysutil.h>
 #include <minix/drivers.h>
@@ -47,8 +48,12 @@ Mouse* getMouse() {
 
 void drawMouse() {
 	Mouse* m = getMouse();
-	paintPixel(m->x - m->deltaX, m->y - m->deltaY, 0);
-	paintPixel(m->x, m->y, 50);
+
+	//erase old cursor position
+	eraseXPM(m->x - m->deltaX, m->y - m->deltaY, cross);
+
+	//paint cursor in new position
+	drawXPM(m->x, m->y, cross);
 	m->draw = 0;
 }
 
@@ -67,16 +72,18 @@ void updateMouse() {
 
 	//calculate deltas depending on whether its 2's comp or not
 
-	if (m->packet[0] & BIT(4)) //negative deltaX in 2's c
-		m->deltaX = -((m->packet[1] ^ BYTE_MINUS1) + 1);
+	if (m->packet[0] & BIT(4))
+		m->deltaX =  -((m->packet[1] ^= 0xFF) + 1);
 	else
 		m->deltaX = m->packet[1];
 
-	if (m->packet[0] & BIT(5)) //negative deltaY in 2's c
-		m->deltaY = -((m->packet[2] ^ BYTE_MINUS1) + 1);
+	if (m->packet[0] & BIT(5))
+		m->deltaY = ((m->packet[2] ^= 0xFF) + 1);
 	else
-		m->deltaY = m->packet[2];
+		m->deltaY = - m->packet[2];
 
+	m->x += m->deltaX;
+	m->y += m->deltaY;
 
 	if (m->x < 0)
 		m->x = 0;
@@ -91,11 +98,10 @@ void updateMouse() {
 	if (m->y > vg_getVRES())
 		m->y = vg_getVRES();
 
-	m->x += m->deltaX;
-	m->y += m->deltaY;
 
 	m->draw = 1;
 
+	printf("\nNEW MOVEMENT\n");
 	printf("MOUSE LBBtn: %d\nMOUSE RBTN: %d\nMOUSE MBTN: %d\n", m->LBtnDown, m->RBtnDown, m->MBtnDown);
 	printf("MOUSE DELTAX: %d\nMOUSE DELTAY: %d\n", m->deltaX, m->deltaY);
 	printf("MOUSE X: %d\nMOUSE Y: %d\n", m->x, m->y);
