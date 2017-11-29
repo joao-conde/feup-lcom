@@ -7,7 +7,7 @@
 
 typedef struct{
 
-	int irq_set_kbd, irq_set_timer;
+	int irq_kbd, irq_timer, irq_mouse;
 
 	int done, draw;
 

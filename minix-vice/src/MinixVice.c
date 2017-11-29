@@ -1,6 +1,7 @@
 #include <minix/drivers.h>
 
 #include "MinixVice.h"
+#include "mouse.h"
 
 
 const int FPS = 60;
@@ -8,8 +9,9 @@ const int FPS = 60;
 MinixVice* initMinixVice() {
 	MinixVice* game = (MinixVice*) malloc(sizeof(MinixVice));
 
-	game->irq_set_kbd = kbd_subscribe_int();
-	game->irq_set_timer = timer_subscribe_int();
+	game->irq_kbd = kbd_subscribe_int();
+	game->irq_timer = timer_subscribe_int();
+	game->irq_mouse = mouse_subscribe_int();
 
 	game->done = 0;
 	game->draw = 1;
@@ -37,15 +39,20 @@ void updateMinixVice(MinixVice* game) {
 		switch (_ENDPOINT_P(msg.m_source)) {
 		case HARDWARE:
 
-			if (msg.NOTIFY_ARG & game->irq_set_kbd) {
+			if (msg.NOTIFY_ARG & game->irq_kbd) {
 				game->scancode = kbc_read();
 			}
 
-			if (msg.NOTIFY_ARG & game->irq_set_timer) {
+			if (msg.NOTIFY_ARG & game->irq_timer) {
 				game->timer->counter++;
 				game->timer->ticked = 1;
+			}
 
-				printf("COUNTER %d\n",game->timer->counter);
+			if (msg.NOTIFY_ARG & game->irq_mouse) {
+				printf("INTERRUPT ON MOUSE\n");
+				mouseIH();
+				updateMouse();
+				drawMouse();
 			}
 
 			break;
@@ -56,7 +63,6 @@ void updateMinixVice(MinixVice* game) {
 
 
 	if(game->timer->ticked){
-		printf("MOUSE TICKED\n");
 	}
 
 
@@ -73,6 +79,8 @@ void drawMinixVice(MinixVice* game) {
 void endMinixVice(MinixVice* game) {
 	kbd_unsubscribe_int();
 	timer_unsubscribe_int();
+	mouse_unsubscribe_int();
+
 
 	free(game->timer);
 	free(game);
