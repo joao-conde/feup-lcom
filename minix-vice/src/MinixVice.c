@@ -44,6 +44,8 @@ void updateMinixVice(MinixVice* game) {
 			if (msg.NOTIFY_ARG & game->irq_set_timer) {
 				game->timer->counter++;
 				game->timer->ticked = 1;
+
+				printf("COUNTER %d\n",game->timer->counter);
 			}
 
 			break;
@@ -54,7 +56,7 @@ void updateMinixVice(MinixVice* game) {
 
 
 	if(game->timer->ticked){
-		//draw mouse
+		printf("MOUSE TICKED\n");
 	}
 
 
