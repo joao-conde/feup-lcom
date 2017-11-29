@@ -14,12 +14,13 @@
 
 /* Private global variables */
 
-static char *video_mem; /* Process (virtual) address to which VRAM is mapped */
+static char* video_mem; /* Process (virtual) address to which VRAM is mapped */
+static char* double_buffer;
 
 static unsigned h_res; /* Horizontal screen resolution in pixels */
 static unsigned v_res; /* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
-
+static unsigned int vram_size;
 
 unsigned vg_getHRES() {
 	return h_res;
@@ -68,8 +69,7 @@ void *vg_init(unsigned short mode) {
 	v_res = vbe_mode.YResolution;
 	h_res = vbe_mode.XResolution;
 	bits_per_pixel = vbe_mode.BitsPerPixel;
-
-	unsigned int vram_size = h_res * v_res * (bits_per_pixel / BITS_PER_BYTE);
+	vram_size = h_res * v_res * (bits_per_pixel / BITS_PER_BYTE);
 
 	int r;
 	struct mem_range mr;
@@ -96,6 +96,8 @@ void *vg_init(unsigned short mode) {
 		return NULL;
 	}
 
+	double_buffer = (char*)malloc(sizeof(vram_size));
+
 	return (void*) vbe_mode.PhysBasePtr;
 }
 
@@ -115,6 +117,10 @@ int vg_exit() {
 		return OK;
 }
 
+void flipDB() {
+	memcpy(video_mem, double_buffer, vram_size);
+}
+
 int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
 
 	/*
@@ -127,7 +133,7 @@ int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
 	if (y >= v_res)
 		return -1;
 
-	char *virtualvramptr = video_mem;
+	char *virtualvramptr = video_mem; //changing to double_buffer should be enough :/
 
 	virtualvramptr += x + h_res * y;
 
@@ -299,103 +305,3 @@ int drawSquare(unsigned short x, unsigned short y, unsigned short size,
 
 	return OK;
 }
-//
-//int move_xpm(char *xpm[], unsigned short xi, unsigned short yi,
-//		unsigned short xf, unsigned short yf, short s, unsigned short f) {
-//
-//	direction_t direction = getDirection(xi,yi,xf,yf);
-//	unsigned long scancode = 0;
-//	float speed, incX = xi, incY = yi;
-//
-//	if (s < 0)
-//		speed = 1.0 / (abs(s));
-//	else
-//		speed = s;
-//
-//	int ipc_status, r, timer_irq_set, kbd_irq_set, int_counter = 0;
-//	message msg;
-//
-//	//float incX = xi, incY = yi;
-//
-//	//pixels to move per interrupt
-//	float pixels_per_int = (speed * f) / TIMER_DEF_FREQ_DOUBLE;
-//
-//	if ((timer_irq_set = timer_subscribe_int()) == -1)
-//		return -1;
-//
-//	if ((kbd_irq_set = kbd_subscribe_int()) == -1)
-//		return -1;
-//
-//	while (scancode != ESC_BREAK) {
-//
-//		if ((r = driver_receive(ANY, &msg, &ipc_status)) != OK) {
-//			printf("driver_receive failed with: %d", r);
-//			continue;
-//		}
-//
-//		if (is_ipc_notify(ipc_status)) { /* received notification */
-//
-//			switch (_ENDPOINT_P(msg.m_source)) {
-//
-//			case HARDWARE: /* hardware interrupt notification */
-//
-//				if (msg.NOTIFY_ARG & timer_irq_set) {
-//
-//					int_counter++;
-//
-//					switch (direction) {
-//
-//					case STOP:
-//						drawXPM(xi, yi, xpm);
-//						break;
-//
-//					case DOWN:
-//						eraseXPM(xi, (int) incY, xpm);
-//						incY += pixels_per_int;
-//						drawXPM(xi, (int) incY, xpm);
-//						break;
-//
-//					case UP:
-//						eraseXPM(xi, (int) incY, xpm);
-//						incY -= pixels_per_int;
-//						drawXPM(xi, (int) incY, xpm);
-//						break;
-//
-//					case RIGHT:
-//						eraseXPM((int) incX, yi, xpm);
-//						incX += pixels_per_int;
-//						drawXPM((int) incX, yi, xpm);
-//						break;
-//
-//					case LEFT:
-//						eraseXPM((int) incX, yi, xpm);
-//						incX -= pixels_per_int;
-//						drawXPM((int) incX, yi, xpm);
-//						break;
-//
-//					}
-//
-//					video_dump_fb();
-//
-//				}
-//
-//				if (msg.NOTIFY_ARG & kbd_irq_set) { /* subscribed interrupt */
-//					scancode = kbc_read();
-//				}
-//
-//				break;
-//
-//			default:
-//				break;
-//			}
-//		}
-//	}
-//
-//	if (timer_unsubscribe_int() != OK)
-//		return -1;
-//
-//	if (kbd_unsubscribe_int() != OK)
-//		return -1;
-//
-//	return OK;
-//}

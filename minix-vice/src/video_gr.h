@@ -38,6 +38,8 @@ void *vg_init(unsigned short mode);
  */
 int vg_exit(void);
 
+void flipDB();
+
 int paintPixel(unsigned short x, unsigned short y, unsigned long color);
 
 int drawLine(int x1,int y1,int x2,int y2,int color);

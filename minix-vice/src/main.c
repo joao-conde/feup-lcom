@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 		if(getMouse()->draw){
 			drawMouse();
 		}
-
+		//flipDB();
 		updateMinixVice(game);
 	}
 
