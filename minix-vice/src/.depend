@@ -127,6 +127,7 @@ main.o:	kbd.h
 main.o:	main.c
 main.o:	mouse.h
 main.o:	timer.h
+main.o:	video_gr.h
 
 mouse.o:	/usr/include/errno.h
 mouse.o:	/usr/include/limits.h

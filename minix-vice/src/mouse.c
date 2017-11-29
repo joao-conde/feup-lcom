@@ -11,18 +11,28 @@ int mouse_hookID;
 unsigned long g_packet[PACKET_SIZE];
 unsigned int g_packet_index = 0;
 int g_synched = FALSE;
+
+/* SINGLETON MOUSE IMPLEMENTATION */
 Mouse* mouse = NULL;
 
 Mouse* newMouse() {
 	Mouse* mouse = (Mouse*) malloc(sizeof(Mouse));
 	mouse->x = 0;
 	mouse->y = 0;
+	mouse->deltaX = 0;
+	mouse->deltaY = 0;
+    mouse->LBtnDown = 0;
+    mouse->MBtnDown = 0;
+    mouse->RBtnDown = 0;
 
 	return mouse;
 }
 
 Mouse* getMouse() {
 	if (!mouse) {
+		enable_mouse();
+		enable_DataReporting();
+		setStreamMode();
 		mouse = newMouse();
 	}
 
@@ -43,10 +53,28 @@ void updateMouse() {
 
 	memcpy(m->packet, g_packet, sizeof(m->packet));
 
-	m->x += g_packet[1];
-	m->y += g_packet[2];
+	m->LBtnDown = m->packet[1] & BIT(0);
+	m->RBtnDown = m->packet[1] & BIT(1);
+	m->MBtnDown = m->packet[1] & BIT(2);
 
-	printf("MOUSE X: %d\nMOUSE Y: %d\n",m->x,m->y);
+	//calculate deltas depending on whether its 2's comp or not
+
+	if (m->packet[0] & BIT(4)) //negative deltaX in 2's c
+		m->deltaX = -(m->packet[1] ^ BYTE_MINUS1) + 1;
+	else
+		m->deltaX = m->packet[1];
+
+	if (m->packet[0] & BIT(5)) //negative deltaY in 2's c
+		m->deltaY = -(m->packet[2] ^ BYTE_MINUS1) + 1;
+	else
+		m->deltaY = m->packet[2];
+
+	m->x += m->deltaX;
+	m->y += m->deltaY;
+
+	printf("MOUSE LBBtn: %d\nMOUSE RBTN: %d\nMOUSE MBTN: %d\n", m->LBtnDown, m->RBtnDown, m->MBtnDown);
+	printf("MOUSE DELTAX: %d\nMOUSE DELTAY: %d\n", m->deltaX, m->deltaY);
+	printf("MOUSE X: %d\nMOUSE Y: %d\n", m->x, m->y);
 }
 
 int cleanOBF() {
