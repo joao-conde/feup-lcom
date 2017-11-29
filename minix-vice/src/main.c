@@ -3,6 +3,7 @@
 
 #include "MinixVice.h"
 #include "mouse.h"
+#include "video_gr.h"
 
 int main(int argc, char **argv) {
 	printf("Start of MINIX-VICE!\n");
@@ -10,19 +11,18 @@ int main(int argc, char **argv) {
 	srand(time(NULL));
 	sef_startup();
 
-	vg_init(0x105);
+	vg_init(VBE_MODE105);
 
 	MinixVice* game = initMinixVice();
 
 	while (!game->done) {
 
 		if (game->draw){
-			//drawMinixVice(game);
+			drawMinixVice(game);
 		}
 
-		drawMouse();
-
 		updateMinixVice(game);
+		drawMouse();
 	}
 
 	endMinixVice(game);

@@ -4,13 +4,13 @@
 
 typedef struct {
     int x, y;
-    int xSign, ySign;
+    int deltaX, deltaY;
 
     unsigned long packet[3];
 
-    int leftButtonUp;
-    int middleButtonUp;
-    int rightButtonUp;
+    int LBtnDown;
+    int MBtnDown;
+    int RBtnDown;
 
 } Mouse;
 

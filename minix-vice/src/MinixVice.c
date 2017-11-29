@@ -49,10 +49,8 @@ void updateMinixVice(MinixVice* game) {
 			}
 
 			if (msg.NOTIFY_ARG & game->irq_mouse) {
-				printf("INTERRUPT ON MOUSE\n");
 				mouseIH();
 				updateMouse();
-				drawMouse();
 			}
 
 			break;
@@ -60,7 +58,6 @@ void updateMinixVice(MinixVice* game) {
 			break;
 		}
 	}
-
 
 	if(game->timer->ticked){
 	}
@@ -73,7 +70,7 @@ void updateMinixVice(MinixVice* game) {
 }
 
 void drawMinixVice(MinixVice* game) {
-	drawSquare(0, 0, 10, 10);
+	drawSquare(200, 200, 10, 10);
 }
 
 void endMinixVice(MinixVice* game) {
@@ -81,7 +78,7 @@ void endMinixVice(MinixVice* game) {
 	timer_unsubscribe_int();
 	mouse_unsubscribe_int();
 
-
+	deleteMouse();
 	free(game->timer);
 	free(game);
 }
