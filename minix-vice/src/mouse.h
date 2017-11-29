@@ -12,6 +12,8 @@ typedef struct {
     int MBtnDown;
     int RBtnDown;
 
+    int draw;
+
 } Mouse;
 
 

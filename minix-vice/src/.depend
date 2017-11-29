@@ -183,6 +183,7 @@ mouse.o:	i8254.h
 mouse.o:	mouse.c
 mouse.o:	mouse.h
 mouse.o:	timer.h
+mouse.o:	video_gr.h
 
 read_xpm.o:	/usr/include/limits.h
 read_xpm.o:	/usr/include/minix/dir.h

@@ -21,8 +21,11 @@ int main(int argc, char **argv) {
 			drawMinixVice(game);
 		}
 
+		if(getMouse()->draw){
+			drawMouse();
+		}
+
 		updateMinixVice(game);
-		drawMouse();
 	}
 
 	endMinixVice(game);
