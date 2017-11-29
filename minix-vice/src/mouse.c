@@ -2,6 +2,7 @@
 #include "i8042.h"
 #include "i8254.h"
 #include "timer.h"
+#include "video_gr.h"
 
 #include <minix/sysutil.h>
 #include <minix/drivers.h>
@@ -17,13 +18,18 @@ Mouse* mouse = NULL;
 
 Mouse* newMouse() {
 	Mouse* mouse = (Mouse*) malloc(sizeof(Mouse));
-	mouse->x = 0;
-	mouse->y = 0;
+
+	mouse->x = 200;
+	mouse->y = 200;
+
 	mouse->deltaX = 0;
 	mouse->deltaY = 0;
-    mouse->LBtnDown = 0;
+
+	mouse->LBtnDown = 0;
     mouse->MBtnDown = 0;
     mouse->RBtnDown = 0;
+
+    mouse->draw = 0;
 
 	return mouse;
 }
@@ -41,7 +47,9 @@ Mouse* getMouse() {
 
 void drawMouse() {
 	Mouse* m = getMouse();
-	drawSquare(m->x, m->y, 10, 50);
+	paintPixel(m->x - m->deltaX, m->y - m->deltaY, 0);
+	paintPixel(m->x, m->y, 50);
+	m->draw = 0;
 }
 
 void deleteMouse() {
@@ -60,17 +68,33 @@ void updateMouse() {
 	//calculate deltas depending on whether its 2's comp or not
 
 	if (m->packet[0] & BIT(4)) //negative deltaX in 2's c
-		m->deltaX = -(m->packet[1] ^ BYTE_MINUS1) + 1;
+		m->deltaX = -((m->packet[1] ^ BYTE_MINUS1) + 1);
 	else
 		m->deltaX = m->packet[1];
 
 	if (m->packet[0] & BIT(5)) //negative deltaY in 2's c
-		m->deltaY = -(m->packet[2] ^ BYTE_MINUS1) + 1;
+		m->deltaY = -((m->packet[2] ^ BYTE_MINUS1) + 1);
 	else
 		m->deltaY = m->packet[2];
 
+
+	if (m->x < 0)
+		m->x = 0;
+
+	if (m->x > vg_getHRES())
+		m->x = vg_getHRES();
+
+
+	if (m->y < 0)
+		m->y = 0;
+
+	if (m->y > vg_getVRES())
+		m->y = vg_getVRES();
+
 	m->x += m->deltaX;
 	m->y += m->deltaY;
+
+	m->draw = 1;
 
 	printf("MOUSE LBBtn: %d\nMOUSE RBTN: %d\nMOUSE MBTN: %d\n", m->LBtnDown, m->RBtnDown, m->MBtnDown);
 	printf("MOUSE DELTAX: %d\nMOUSE DELTAY: %d\n", m->deltaX, m->deltaY);
