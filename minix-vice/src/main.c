@@ -2,6 +2,7 @@
 #include <time.h>
 
 #include "MinixVice.h"
+#include "mouse.h"
 
 int main(int argc, char **argv) {
 	printf("Start of MINIX-VICE!\n");
@@ -16,8 +17,10 @@ int main(int argc, char **argv) {
 	while (!game->done) {
 
 		if (game->draw){
-			drawMinixVice(game);
+			//drawMinixVice(game);
 		}
+
+		drawMouse();
 
 		updateMinixVice(game);
 	}
