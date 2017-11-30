@@ -204,6 +204,28 @@ read_xpm.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 read_xpm.o:	read_xpm.c
 read_xpm.o:	read_xpm.h
 
+stb_image_wrap.o:	/usr/include/assert.h
+stb_image_wrap.o:	/usr/include/limits.h
+stb_image_wrap.o:	/usr/include/minix/dir.h
+stb_image_wrap.o:	/usr/include/minix/limits.h
+stb_image_wrap.o:	/usr/include/minix/sys_config.h
+stb_image_wrap.o:	/usr/include/minix/types.h
+stb_image_wrap.o:	/usr/include/stdint.h
+stb_image_wrap.o:	/usr/include/sys/cdefs.h
+stb_image_wrap.o:	/usr/include/sys/null.h
+stb_image_wrap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/ansi.h
+stb_image_wrap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/limits.h
+stb_image_wrap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/math.h
+stb_image_wrap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stddef.h
+stb_image_wrap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdio.h
+stb_image_wrap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdlib.h
+stb_image_wrap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/string.h
+stb_image_wrap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/syslimits.h
+stb_image_wrap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
+stb_image_wrap.o:	stb_image.h
+stb_image_wrap.o:	stb_image_wrap.c
+stb_image_wrap.o:	stb_image_wrap.h
+
 timer.o:	/usr/include/errno.h
 timer.o:	/usr/include/limits.h
 timer.o:	/usr/include/machine/bios.h

@@ -20,8 +20,8 @@ Mouse* mouse = NULL;
 Mouse* newMouse() {
 	Mouse* mouse = (Mouse*) malloc(sizeof(Mouse));
 
-	mouse->x = 200;
-	mouse->y = 200;
+	mouse->x = vg_getHRES()/2;
+	mouse->y = vg_getVRES()/2;
 
 	mouse->deltaX = 0;
 	mouse->deltaY = 0;
@@ -63,6 +63,12 @@ void deleteMouse() {
 
 void updateMouse() {
 	Mouse* m = getMouse();
+
+	if(BIT(7) & g_packet[0]) //Y overflow
+		return;
+
+	if(BIT(6) & g_packet[0]) //X overflow
+		return;
 
 	memcpy(m->packet, g_packet, sizeof(m->packet));
 

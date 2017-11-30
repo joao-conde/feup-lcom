@@ -17,13 +17,10 @@ int main(int argc, char **argv) {
 
 	while (!game->done) {
 
-		if (game->draw){
+		if (game->draw) {
 			drawMinixVice(game);
 		}
 
-		if(getMouse()->draw){
-			drawMouse();
-		}
 		//flipDB();
 		updateMinixVice(game);
 	}
