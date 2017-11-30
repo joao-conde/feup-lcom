@@ -1,9 +1,11 @@
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#ifndef STB_IMAGE_WRAP_H
+#define STB_IMAGE_WRAP_H
 
 
 //load PNG image file
-char* stb_loadPNG(int* width, int* height, char* path);
+unsigned char* stb_loadPNG(char* path, int* width, int* height);
 
 //free image
-void stb_free(char* image;
+void stb_free(char* image);
+
+#endif //STB_IMAGE_WRAP_H
