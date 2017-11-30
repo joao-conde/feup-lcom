@@ -50,7 +50,6 @@ void updateMinixVice(MinixVice* game) {
 
 			if (msg.NOTIFY_ARG & game->irq_mouse) {
 				mouseIH();
-				updateMouse();
 			}
 
 			break;
@@ -60,6 +59,9 @@ void updateMinixVice(MinixVice* game) {
 	}
 
 	if(game->timer->ticked){
+		updateMouse();
+		drawMouse();
+		game->timer->ticked = 0;
 	}
 
 
@@ -71,6 +73,10 @@ void updateMinixVice(MinixVice* game) {
 
 void drawMinixVice(MinixVice* game) {
 	drawSquare(200, 200, 10, 10);
+	if(game->timer->ticked){
+		drawMouse();
+		game->timer->ticked = 0;
+	}
 }
 
 void endMinixVice(MinixVice* game) {
