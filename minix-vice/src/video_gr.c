@@ -121,6 +121,7 @@ void flipDB() {
 	memcpy(video_mem, double_buffer, vram_size);
 }
 
+
 int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
 
 	/*
@@ -135,9 +136,13 @@ int paintPixel(unsigned short x, unsigned short y, unsigned long color) {
 
 	char *virtualvramptr = video_mem; //changing to double_buffer should be enough :/
 
-	virtualvramptr += x + h_res * y;
+	//virtualvramptr += x + h_res * y;
 
-	*virtualvramptr = color;
+	virtualvramptr = (x + y * h_res * (bits_per_pixel/8));
+
+	*virtualvramptr = color & 0x000000FF;
+	*(virtualvramptr+1) = (color & 0x0000FF00) >> 8;
+	*(virtualvramptr+2) = (color & 0x00FF0000) >> 16;
 
 	return OK;
 

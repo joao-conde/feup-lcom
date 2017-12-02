@@ -18,6 +18,7 @@ enum direction {
 
 typedef enum direction direction_t;
 
+
 /**
  * @brief Initializes the video module in graphics mode
  * 
