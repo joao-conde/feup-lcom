@@ -7,11 +7,11 @@
 
 int main(int argc, char **argv) {
 	printf("Start of MINIX-VICE!\n");
-
 	srand(time(NULL));
 	sef_startup();
 
-	vg_init(283);
+	//1024*768
+	vg_init(VBE_MODE105);
 
 	MinixVice* game = initMinixVice();
 
