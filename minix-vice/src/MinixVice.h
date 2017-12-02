@@ -4,12 +4,17 @@
 
 #include "kbd.h"
 #include "timer.h"
+#include "mouse.h"
+#include "bitmap.h"
+
 
 typedef struct{
 
 	int irq_kbd, irq_timer, irq_mouse;
 
 	int done, draw;
+
+	Bitmap* test;
 
 	unsigned long scancode;
 	Timer* timer;

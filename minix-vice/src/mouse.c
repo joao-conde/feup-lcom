@@ -91,6 +91,7 @@ void updateMouse() {
 	m->x += m->deltaX;
 	m->y += m->deltaY;
 
+	/* FOR NOW ALLOW TO CROSS BOUNDARIES --> with this solution "old" mouse movements are not deleted
 	if (m->x < 0)
 		m->x = 0;
 
@@ -102,15 +103,11 @@ void updateMouse() {
 		m->y = 0;
 
 	if (m->y > vg_getVRES())
-		m->y = vg_getVRES();
+		m->y = vg_getVRES();*/
 
 
 	m->draw = 1;
 
-	printf("\nNEW MOVEMENT\n");
-	printf("MOUSE LBBtn: %d\nMOUSE RBTN: %d\nMOUSE MBTN: %d\n", m->LBtnDown, m->RBtnDown, m->MBtnDown);
-	printf("MOUSE DELTAX: %d\nMOUSE DELTAY: %d\n", m->deltaX, m->deltaY);
-	printf("MOUSE X: %d\nMOUSE Y: %d\n", m->x, m->y);
 }
 
 int cleanOBF() {

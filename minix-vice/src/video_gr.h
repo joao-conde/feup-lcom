@@ -57,6 +57,7 @@ direction_t getDirection();
 
 unsigned vg_getHRES();
 unsigned vg_getVRES();
+char* getGraphicBuffer();
 
  /** @} end of video_gr */
  

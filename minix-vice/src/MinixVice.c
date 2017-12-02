@@ -1,7 +1,7 @@
 #include <minix/drivers.h>
 
 #include "MinixVice.h"
-#include "mouse.h"
+
 
 const int FPS = 60;
 
@@ -20,6 +20,8 @@ MinixVice* initMinixVice() {
 	timer->ticked = 0;
 	timer->counter = 0;
 	game->timer = timer;
+
+	game->test = loadBitmap("/home/minx-vice/res/images/teste.bmp");
 
 	return game;
 }
@@ -71,10 +73,10 @@ void updateMinixVice(MinixVice* game) {
 
 
 
-
-
 void drawMinixVice(MinixVice* game) {
-	drawSquare(200, 200, 10, 10);
+//	drawSquare(200, 200, 10, 10);
+
+	drawBitmap(game->test,0,0,ALIGN_CENTER);
 
 	if (game->timer->ticked) {
 		drawMouse();
@@ -89,6 +91,7 @@ void endMinixVice(MinixVice* game) {
 	timer_unsubscribe_int();
 	mouse_unsubscribe_int();
 
+	deleteBitmap(game->test);
 	deleteMouse();
 	free(game->timer);
 	free(game);
