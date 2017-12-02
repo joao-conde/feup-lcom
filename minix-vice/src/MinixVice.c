@@ -3,7 +3,6 @@
 #include "MinixVice.h"
 #include "mouse.h"
 
-
 const int FPS = 60;
 
 MinixVice* initMinixVice() {
@@ -17,7 +16,7 @@ MinixVice* initMinixVice() {
 	game->draw = 1;
 	game->scancode = 0;
 
-	Timer* timer = (Timer*)malloc(sizeof(Timer));
+	Timer* timer = (Timer*) malloc(sizeof(Timer));
 	timer->ticked = 0;
 	timer->counter = 0;
 	game->timer = timer;
@@ -58,12 +57,11 @@ void updateMinixVice(MinixVice* game) {
 		}
 	}
 
-	if(game->timer->ticked){
+	if (game->timer->ticked) {
 		updateMouse();
 		drawMouse();
 		game->timer->ticked = 0;
 	}
-
 
 	if (game->scancode != 0) {
 		if (game->scancode == ESC_BREAK)
@@ -71,13 +69,20 @@ void updateMinixVice(MinixVice* game) {
 	}
 }
 
+
+
+
+
 void drawMinixVice(MinixVice* game) {
 	drawSquare(200, 200, 10, 10);
-	if(game->timer->ticked){
+
+	if (game->timer->ticked) {
 		drawMouse();
 		game->timer->ticked = 0;
 	}
 }
+
+
 
 void endMinixVice(MinixVice* game) {
 	kbd_unsubscribe_int();

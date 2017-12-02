@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
 	srand(time(NULL));
 	sef_startup();
 
-	vg_init(VBE_MODE105);
+	vg_init(283);
 
 	MinixVice* game = initMinixVice();
 
