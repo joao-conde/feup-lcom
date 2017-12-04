@@ -1,6 +1,7 @@
 #ifndef ENTITIES_H
 #define ENTITIES_H
 
+
 typedef struct{
 
 	int x,y;
@@ -21,6 +22,11 @@ typedef struct{
 	int extraPts;
 
 }ExtraPtsBoost;
+
+
+
+void movePlayerLeft(Player* car);
+void movePlayerRight(Player* car);
 
 
 #endif /* ENTITIES_H */
