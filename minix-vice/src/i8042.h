@@ -16,6 +16,12 @@
 /* USEFUL MACROS */
 
 #define ESC_BREAK 		0x81
+#define W_MAKE 		0x11
+#define A_MAKE 		0x1E
+#define S_MAKE 		0x1F
+#define D_MAKE 		0x20
+
+
 #define SET2_SCANCODE	0xE0
 #define OUTBUF_FULL_ASS 1
 #define BREAKCODE		BIT(7)

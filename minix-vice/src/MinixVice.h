@@ -6,6 +6,7 @@
 #include "timer.h"
 #include "mouse.h"
 #include "bitmap.h"
+#include "entities.h"
 
 
 typedef struct{
@@ -14,9 +15,12 @@ typedef struct{
 
 	int done, draw;
 
-	Bitmap* test;
+
 
 	unsigned long scancode;
+
+	Bitmap* test;
+	Player* car;
 	Timer* timer;
 
 } MinixVice;
