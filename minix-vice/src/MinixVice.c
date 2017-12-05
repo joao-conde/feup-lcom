@@ -44,7 +44,9 @@ MinixVice* getGame() {
 	return game;
 }
 
-void kbdInputHandler(MinixVice* game) {
+void kbdInputHandler() {
+	MinixVice* game = getGame();
+
 	if (game->scancode != 0) {
 
 		if (game->scancode == ESC_BREAK) {
@@ -75,7 +77,9 @@ void kbdInputHandler(MinixVice* game) {
 }
 
 
-void updateMinixVice(MinixVice* game) {
+void updateMinixVice() {
+
+	MinixVice* game = getGame();
 
 	int ipc_status, r = 0;
 	message msg;
@@ -140,7 +144,9 @@ void updateMinixVice(MinixVice* game) {
 //	}
 }
 
-void drawMinixVice(MinixVice* game) {
+void drawMinixVice() {
+
+	MinixVice* game = getGame();
 
 	drawPlayer(game->car);
 	if (game->timer->ticked) {
@@ -149,7 +155,9 @@ void drawMinixVice(MinixVice* game) {
 	}
 }
 
-void endMinixVice(MinixVice* game) {
+void endMinixVice() {
+	MinixVice* game = getGame();
+
 	kbd_unsubscribe_int();
 	timer_unsubscribe_int();
 	mouse_unsubscribe_int();

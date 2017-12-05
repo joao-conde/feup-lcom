@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UTILS_H
+#define UTILS_H
 
 
 #define singleBit(byte) (0x01 & byte)
@@ -9,3 +10,6 @@
 
 
 int fileExists(const char* filename);
+
+
+#endif /* UTILS_H */
