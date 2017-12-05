@@ -18,6 +18,8 @@ MinixVice* initMinixVice() {
 	game->draw = 1;
 	game->scancode = 0;
 
+	game->background = loadBitmap("/home/minix-vice/res/images/cursor.bmp");
+
 	Timer* timer = (Timer*) malloc(sizeof(Timer));
 	timer->ticked = 0;
 	timer->counter = 0;
@@ -29,14 +31,14 @@ MinixVice* initMinixVice() {
 	player->deltaX = 0;
 	player->deltaY = 0;
 	player->speed = PLAYER_SPEED;
-	player->bitmap = loadBitmap("/home/minix-vice/res/images/test.bmp");
+	player->bitmap = loadBitmap("/home/minix-vice/res/images/yellow-car.bmp");
 	game->car = player;
-
 
 	return game;
 }
 
 MinixVice* getGame() {
+
 	if (!game) {
 		game = initMinixVice();
 	}
@@ -44,8 +46,18 @@ MinixVice* getGame() {
 	return game;
 }
 
-void kbdInputHandler() {
+void timerIH() {
 	MinixVice* game = getGame();
+
+	game->timer->counter++;
+	game->timer->ticked = 1;
+
+}
+
+void kbdIH() {
+	MinixVice* game = getGame();
+
+	game->scancode = kbc_read();
 
 	if (game->scancode != 0) {
 
@@ -55,27 +67,18 @@ void kbdInputHandler() {
 
 		switch (game->scancode) {
 
-		//		case W_MAKE:
-		//			printf("W pressed\n");
-		//			break;
-		//		case S_MAKE:
-		//			printf("S pressed\n");
-		//			break;
 		case A_MAKE:
 			printf("A pressed\n");
-			//drawSquare(game->car->x, game->car->y, 50, 0);
 			movePlayerLeft(game->car);
 			break;
 		case D_MAKE:
 			printf("D pressed\n");
-			//drawSquare(game->car->x, game->car->y, 50, 0);
 			movePlayerRight(game->car);
 			break;
 		}
 	}
 
 }
-
 
 void updateMinixVice() {
 
@@ -94,13 +97,11 @@ void updateMinixVice() {
 		case HARDWARE:
 
 			if (msg.NOTIFY_ARG & game->irq_kbd) {
-				game->scancode = kbc_read();
-				kbdInputHandler(game);
+				kbdIH();
 			}
 
 			if (msg.NOTIFY_ARG & game->irq_timer) {
-				game->timer->counter++;
-				game->timer->ticked = 1;
+				timerIH();
 			}
 
 			if (msg.NOTIFY_ARG & game->irq_mouse) {
@@ -113,41 +114,20 @@ void updateMinixVice() {
 		}
 	}
 
+
 	if (game->timer->ticked) {
 		updateMouse();
 		drawMouse();
 		game->timer->ticked = 0;
+		flipDB();
 	}
-
-//	if (game->scancode != 0) {
-//
-//		if (game->scancode == ESC_BREAK) {
-//			game->done = 1;
-//		}
-//
-//		switch (game->scancode) {
-//
-////		case W_MAKE:
-////			printf("W pressed\n");
-////			break;
-////		case S_MAKE:
-////			printf("S pressed\n");
-////			break;
-//		case A_MAKE:
-//			printf("A pressed\n");
-//			movePlayerLeft(game);
-//			break;
-//		case D_MAKE:
-//			printf("D pressed\n");
-//			break;
-//		}
-//	}
 }
 
 void drawMinixVice() {
 
 	MinixVice* game = getGame();
 
+	drawBitmap(game->background, 0, 0, ALIGN_LEFT);
 	drawPlayer(game->car);
 	if (game->timer->ticked) {
 		drawMouse();
@@ -162,12 +142,9 @@ void endMinixVice() {
 	timer_unsubscribe_int();
 	mouse_unsubscribe_int();
 
-
 	deleteMouse();
 	free(game->timer);
 	free(game->car);
 	free(game);
 }
-
-
 

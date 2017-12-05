@@ -6,7 +6,7 @@
 #define swap(type,i,j) {type t = i; i = j; j = t;}
 
 
-#define PLAYER_SPEED 10
+#define PLAYER_SPEED 25
 
 
 int fileExists(const char* filename);

@@ -20,7 +20,7 @@ typedef struct{
 
 	unsigned long scancode;
 
-
+	Bitmap* background;
 	Player* car;
 	Timer* timer;
 
