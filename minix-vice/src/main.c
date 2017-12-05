@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 	vg_init(279);
 	printf("%d * %d\n",vg_getHRES(), vg_getVRES());
 
-	MinixVice* game = initMinixVice();
+	MinixVice* game = getGame();
 
 	while (!game->done) {
 

@@ -2,11 +2,15 @@
 
 
 void movePlayerLeft(Player* car){
+	int deltaX, oldX = car->x;
 	car->x = car->x - car->speed;
+	car->deltaX = car->x - oldX;
 }
 
 void movePlayerRight(Player* car){
+	int deltaX, oldX = car->x;
 	car->x = car->x + car->speed;
+	car->deltaX = car->x - oldX;
 }
 
 void drawPlayer(Player* car){
