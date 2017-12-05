@@ -2,6 +2,7 @@
 
 #include "MinixVice.h"
 
+
 const int FPS = 60;
 
 MinixVice* initMinixVice() {
@@ -23,9 +24,13 @@ MinixVice* initMinixVice() {
 	Player* player = (Player*) malloc(sizeof(Player));
 	player->x = 0;
 	player->y = 0;
+	player->deltaX = 0;
+	player->deltaY = 0;
+	player->speed = PLAYER_SPEED;
+	player->bitmap = loadBitmap("/home/minix-vice/res/images/test.bmp");
 	game->car = player;
 
-	if ((game->test = loadBitmap("/home/minix-vice/res/images/test.bmp"))
+	if ((game->test = loadBitmap("/home/minix-vice/res/images/seta.bmp"))
 			== NULL)
 		printf("NULL BITMAP PTR\n");
 
@@ -129,10 +134,8 @@ void updateMinixVice(MinixVice* game) {
 }
 
 void drawMinixVice(MinixVice* game) {
-	drawSquare(game->car->x, game->car->y, 50, 10);
-	printf("BEFORE DRAWBITMAP\n");
-	drawBitmap(game->test, 0, 0, ALIGN_LEFT);
 
+	drawPlayer(game->car);
 	if (game->timer->ticked) {
 		drawMouse();
 		game->timer->ticked = 0;

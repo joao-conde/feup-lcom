@@ -7,6 +7,7 @@
 #include "mouse.h"
 #include "bitmap.h"
 #include "entities.h"
+#include "utils.h"
 
 
 typedef struct{

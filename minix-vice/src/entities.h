@@ -2,9 +2,16 @@
 #define ENTITIES_H
 
 
+#include "bitmap.h"
+
 typedef struct{
 
 	int x,y;
+	int deltaX, deltaY;
+	int speed;
+
+	Bitmap* bitmap;
+
 
 }Player;
 

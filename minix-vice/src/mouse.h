@@ -1,6 +1,7 @@
 #ifndef MOUSE_H
 #define MOUSE_H
 
+#include "bitmap.h"
 
 typedef struct {
     int x, y;
@@ -13,6 +14,8 @@ typedef struct {
     int RBtnDown;
 
     int draw;
+
+    Bitmap* bitmap;
 
 } Mouse;
 
