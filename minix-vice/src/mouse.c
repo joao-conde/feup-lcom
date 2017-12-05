@@ -59,7 +59,7 @@ void drawMouse() {
 //
 //	//paint cursor in new position
 //	drawXPM(m->x, m->y, cross);
-	eraseBitmap(m->bitmap, oldX, oldY, ALIGN_LEFT);
+	//eraseBitmap(m->bitmap, oldX, oldY, ALIGN_LEFT);
 	drawBitmap(m->bitmap, m->x, m->y, ALIGN_LEFT);
 	m->draw = 0;
 }
