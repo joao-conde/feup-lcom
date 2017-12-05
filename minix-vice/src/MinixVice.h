@@ -31,10 +31,10 @@ MinixVice* initMinixVice();
 
 MinixVice* getGame();
 
-void updateMinixVice(MinixVice* game);
+void updateMinixVice();
 
-void drawMinixVice(MinixVice* game);
+void drawMinixVice();
 
-void endMinixVice(MinixVice* game);
+void endMinixVice();
 
 #endif /* MINIXVICE_H */
