@@ -20,7 +20,7 @@ typedef struct{
 
 	unsigned long scancode;
 
-	Bitmap* test;
+
 	Player* car;
 	Timer* timer;
 
@@ -28,6 +28,8 @@ typedef struct{
 
 
 MinixVice* initMinixVice();
+
+MinixVice* getGame();
 
 void updateMinixVice(MinixVice* game);
 

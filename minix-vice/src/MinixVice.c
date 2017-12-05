@@ -2,11 +2,13 @@
 
 #include "MinixVice.h"
 
-
 const int FPS = 60;
 
+/* SINGLETON GAME IMPLEMENTATION */
+MinixVice* game = NULL;
+
 MinixVice* initMinixVice() {
-	MinixVice* game = (MinixVice*) malloc(sizeof(MinixVice));
+	game = (MinixVice*) malloc(sizeof(MinixVice));
 
 	game->irq_kbd = kbd_subscribe_int();
 	game->irq_timer = timer_subscribe_int();
@@ -30,9 +32,14 @@ MinixVice* initMinixVice() {
 	player->bitmap = loadBitmap("/home/minix-vice/res/images/test.bmp");
 	game->car = player;
 
-	if ((game->test = loadBitmap("/home/minix-vice/res/images/seta.bmp"))
-			== NULL)
-		printf("NULL BITMAP PTR\n");
+
+	return game;
+}
+
+MinixVice* getGame() {
+	if (!game) {
+		game = initMinixVice();
+	}
 
 	return game;
 }
@@ -54,12 +61,12 @@ void kbdInputHandler(MinixVice* game) {
 		//			break;
 		case A_MAKE:
 			printf("A pressed\n");
-			drawSquare(game->car->x, game->car->y, 50, 0);
+			//drawSquare(game->car->x, game->car->y, 50, 0);
 			movePlayerLeft(game->car);
 			break;
 		case D_MAKE:
 			printf("D pressed\n");
-			drawSquare(game->car->x, game->car->y, 50, 0);
+			//drawSquare(game->car->x, game->car->y, 50, 0);
 			movePlayerRight(game->car);
 			break;
 		}
@@ -147,7 +154,7 @@ void endMinixVice(MinixVice* game) {
 	timer_unsubscribe_int();
 	mouse_unsubscribe_int();
 
-	deleteBitmap(game->test);
+
 	deleteMouse();
 	free(game->timer);
 	free(game->car);
