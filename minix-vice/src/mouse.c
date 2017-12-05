@@ -32,6 +32,8 @@ Mouse* newMouse() {
 
     mouse->draw = 0;
 
+    mouse->bitmap = loadBitmap("/home/minix-vice/res/images/seta.bmp");
+
 	return mouse;
 }
 
@@ -49,11 +51,16 @@ Mouse* getMouse() {
 void drawMouse() {
 	Mouse* m = getMouse();
 
-	//erase old cursor position
-	eraseXPM(m->x - m->deltaX, m->y - m->deltaY, cross);
+	int oldX = m->x - m->deltaX;
+	int oldY = m->y - m->deltaY;
 
-	//paint cursor in new position
-	drawXPM(m->x, m->y, cross);
+//	//erase old cursor position
+//	eraseXPM(m->x - m->deltaX, m->y - m->deltaY, cross);
+//
+//	//paint cursor in new position
+//	drawXPM(m->x, m->y, cross);
+	eraseBitmap(m->bitmap, oldX, oldY, ALIGN_LEFT);
+	drawBitmap(m->bitmap, m->x, m->y, ALIGN_LEFT);
 	m->draw = 0;
 }
 
