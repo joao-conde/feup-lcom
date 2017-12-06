@@ -41,7 +41,7 @@ MinixVice* initMinixVice() {
 	player->deltaX = 0;
 	player->deltaY = 0;
 	player->speed = PLAYER_SPEED;
-	player->bitmap = loadBitmap("/home/minix-vice/res/images/red-racecar.bmp");
+	player->bitmap = loadBitmap("/home/minix-vice/res/images/blue-car.bmp");
 	game->car = player;
 
 	return game;
