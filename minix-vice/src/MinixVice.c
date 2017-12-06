@@ -8,6 +8,8 @@ const int FPS = 60;
 MinixVice* game = NULL;
 
 MinixVice* initMinixVice() {
+
+	/* GAME INITIALIZATION */
 	game = (MinixVice*) malloc(sizeof(MinixVice));
 
 	game->irq_kbd = kbd_subscribe_int();
@@ -17,21 +19,29 @@ MinixVice* initMinixVice() {
 	game->done = 0;
 	game->draw = 1;
 	game->scancode = 0;
+	//game->background = loadBitmap("/home/minix-vice/res/images/ubuntu-desktop.bmp");
 
-	game->background = loadBitmap("/home/minix-vice/res/images/cursor.bmp");
 
+	/* TIMER INITIALIZATION */
 	Timer* timer = (Timer*) malloc(sizeof(Timer));
 	timer->ticked = 0;
 	timer->counter = 0;
 	game->timer = timer;
 
+
+	/* PLAYER INITIALIZATION */
 	Player* player = (Player*) malloc(sizeof(Player));
-	player->x = 0;
+	//player->x = vg_getHRES() / 2;
+	//player->y = vg_getVRES() / 2;
+
 	player->y = 0;
+	player->x = 0;
+
+
 	player->deltaX = 0;
 	player->deltaY = 0;
 	player->speed = PLAYER_SPEED;
-	player->bitmap = loadBitmap("/home/minix-vice/res/images/yellow-car.bmp");
+	player->bitmap = loadBitmap("/home/minix-vice/res/images/red-racecar.bmp");
 	game->car = player;
 
 	return game;
@@ -117,9 +127,9 @@ void updateMinixVice() {
 
 	if (game->timer->ticked) {
 		updateMouse();
-		drawMouse();
-		game->timer->ticked = 0;
-		flipDB();
+		//drawMouse();
+		//game->timer->ticked = 0;
+		//flipDB();
 	}
 }
 
@@ -127,15 +137,19 @@ void drawMinixVice() {
 
 	MinixVice* game = getGame();
 
-	drawBitmap(game->background, 0, 0, ALIGN_LEFT);
+	drawBackgroundBitmap(game->background, 0, 0, ALIGN_LEFT);
 	drawPlayer(game->car);
+
 	if (game->timer->ticked) {
 		drawMouse();
 		game->timer->ticked = 0;
 	}
+
+	flipDB();
 }
 
 void endMinixVice() {
+	//TODO: FREE ALL GAME ENTITIES AND BITMAPS
 	MinixVice* game = getGame();
 
 	kbd_unsubscribe_int();

@@ -7,7 +7,7 @@
 typedef struct{
 
 	int x,y;
-	int deltaX, deltaY;
+	int deltaX, deltaY; //TODO: is it needed, given that we dont need to erase old position anymore cuz db?
 	int speed;
 
 	Bitmap* bitmap;
@@ -31,9 +31,11 @@ typedef struct{
 }ExtraPtsBoost;
 
 
+/* PLAYER METHODS */
 
 void movePlayerLeft(Player* car);
 void movePlayerRight(Player* car);
+void drawPlayer(Player* car);
 
 
 #endif /* ENTITIES_H */

@@ -131,6 +131,58 @@ void drawBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 			}
 
 		}
+		//memcpy(bufferStartPos, imgStartPos, drawWidth * 2);
+	}
+}
+
+
+void drawBackgroundBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
+	if (bmp == NULL)
+		return;
+
+	unsigned horizontalRes = vg_getHRES();
+	unsigned verticalRes = vg_getVRES();
+
+	int width = bmp->bitmapInfoHeader.width;
+	int drawWidth = width;
+	int height = bmp->bitmapInfoHeader.height;
+
+	if (alignment == ALIGN_CENTER)
+		x -= width / 2;
+	else if (alignment == ALIGN_RIGHT)
+		x -= width;
+
+	if (x + width < 0 || x > horizontalRes || y + height < 0 || y > verticalRes)
+		return;
+
+	int xCorrection = 0;
+	if (x < 0) {
+		xCorrection = -x;
+		drawWidth -= xCorrection;
+		x = 0;
+
+		if (drawWidth > horizontalRes)
+			drawWidth = horizontalRes;
+	} else if (x + drawWidth >= horizontalRes) {
+		drawWidth = horizontalRes - x;
+	}
+
+	char* bufferStartPos;
+	char* imgStartPos;
+
+	int i;
+	for (i = 0; i < height; i++) {
+		int pos = y + height - 1 - i;
+
+		if (pos < 0 || pos >= verticalRes)
+			continue;
+
+		bufferStartPos = getGraphicBuffer();
+		bufferStartPos += x * 2 + pos * horizontalRes * 2;
+
+		imgStartPos = bmp->bitmapData + xCorrection * 2 + i * width * 2;
+
+		memcpy(bufferStartPos, 0, drawWidth * 2); //TODO: CHANGE 0 TO IMGSTARTPOS (current pixel color)
 	}
 }
 
