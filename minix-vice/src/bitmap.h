@@ -55,6 +55,8 @@ Bitmap* loadBitmap(const char* filename);
  */
 void drawBitmap(Bitmap* bitmap, int x, int y, Alignment alignment);
 
+void drawBackgroundBitmap(Bitmap* bmp, int x, int y, Alignment alignment);
+
 
 /**
  * @brief Destroys the given bitmap, freeing all resources used by it.
