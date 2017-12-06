@@ -131,12 +131,12 @@ void drawBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 			}
 
 		}
-		//memcpy(bufferStartPos, imgStartPos, drawWidth * 2);
 	}
 }
 
 
 void drawBackgroundBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
+
 	if (bmp == NULL)
 		return;
 
@@ -182,7 +182,7 @@ void drawBackgroundBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 
 		imgStartPos = bmp->bitmapData + xCorrection * 2 + i * width * 2;
 
-		memcpy(bufferStartPos, 0, drawWidth * 2); //TODO: CHANGE 0 TO IMGSTARTPOS (current pixel color)
+		memcpy(bufferStartPos, imgStartPos, drawWidth * 2);
 	}
 }
 
