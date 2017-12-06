@@ -19,7 +19,7 @@ MinixVice* initMinixVice() {
 	game->done = 0;
 	game->draw = 1;
 	game->scancode = 0;
-	//game->background = loadBitmap("/home/minix-vice/res/images/ubuntu-desktop.bmp");
+	game->background = loadBitmap("/home/minix-vice/res/images/ubuntu-desktop.bmp");
 
 
 	/* TIMER INITIALIZATION */
