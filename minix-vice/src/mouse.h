@@ -8,6 +8,8 @@ typedef struct {
     int deltaX, deltaY;
 
     unsigned long packet[3];
+    unsigned int packet_index;
+    int mouse_packets_synched;
 
     int LBtnDown;
     int MBtnDown;
@@ -59,7 +61,7 @@ void synch_packet(long byte);
 
 long mouse_readOBF();
 
-void mouseIH();
+void mouseIntHandler();
 
 void display_packet(unsigned long *packet);
 

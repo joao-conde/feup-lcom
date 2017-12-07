@@ -24,6 +24,8 @@ typedef struct{
 	Player* car;
 	Timer* timer;
 
+	Barrel* barrel;
+
 } MinixVice;
 
 

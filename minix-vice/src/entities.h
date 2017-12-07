@@ -4,10 +4,11 @@
 
 #include "bitmap.h"
 
+
 typedef struct{
 
 	int x,y;
-	int deltaX, deltaY; //TODO: is it needed, given that we dont need to erase old position anymore cuz db?
+	int width, height;
 	int speed;
 
 	Bitmap* bitmap;
@@ -19,13 +20,16 @@ typedef struct{
 typedef struct{
 
 	int x,y;
+	int width, height;
+	Bitmap* bitmap;
 
-}Oil;
+}Barrel;
 
 
 typedef struct{
 
 	int x,y;
+	int width, height;
 	int extraPts;
 
 }ExtraPtsBoost;
@@ -36,6 +40,11 @@ typedef struct{
 void movePlayerLeft(Player* car);
 void movePlayerRight(Player* car);
 void drawPlayer(Player* car);
+
+
+/* BARREL METHODS */
+
+void drawBarrel(Barrel* barrel);
 
 
 #endif /* ENTITIES_H */

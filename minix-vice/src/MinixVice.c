@@ -19,8 +19,18 @@ MinixVice* initMinixVice() {
 	game->done = 0;
 	game->draw = 1;
 	game->scancode = 0;
-	game->background = loadBitmap("/home/minix-vice/res/images/ubuntu-desktop.bmp");
+	game->background = loadBitmap("/home/minix-vice/res/images/road.bmp");
 
+
+	/* ONE BARREL INIT */
+	Barrel* barrel = (Barrel*) malloc(sizeof(Barrel));
+	barrel->x = vg_getHRES() / 2;
+	barrel->y = (vg_getVRES() / 2) - 200;
+	barrel->bitmap = loadBitmap("/home/minix-vice/res/images/barrel.bmp");
+	barrel->width = barrel->bitmap->bitmapInfoHeader.width;
+	barrel->height = barrel->bitmap->bitmapInfoHeader.height;
+
+	game->barrel = barrel;
 
 	/* TIMER INITIALIZATION */
 	Timer* timer = (Timer*) malloc(sizeof(Timer));
@@ -31,17 +41,18 @@ MinixVice* initMinixVice() {
 
 	/* PLAYER INITIALIZATION */
 	Player* player = (Player*) malloc(sizeof(Player));
-	//player->x = vg_getHRES() / 2;
-	//player->y = vg_getVRES() / 2;
+	player->x = vg_getHRES() / 2;
+	player->y = vg_getVRES() / 2;
 
-	player->y = 0;
-	player->x = 0;
+//	player->y = 0;
+//	player->x = 0;
 
-
-	player->deltaX = 0;
-	player->deltaY = 0;
 	player->speed = PLAYER_SPEED;
 	player->bitmap = loadBitmap("/home/minix-vice/res/images/blue-car.bmp");
+	player->width = player->bitmap->bitmapInfoHeader.width;
+	player->height = player->bitmap->bitmapInfoHeader.height;
+
+
 	game->car = player;
 
 	return game;
@@ -55,6 +66,45 @@ MinixVice* getGame() {
 
 	return game;
 }
+
+//TODO: change this to work with mouse object
+void mouseIH(){
+	mouseIntHandler();
+}
+
+//void mouseIH(){
+//
+//	Mouse* m = getMouse();
+//
+//	long byte = mouse_readOBF();
+//
+//	if (byte == -1)
+//		return;
+//
+//	if (m->packet_index > 2) {
+//		m->mouse_packets_synched = 0;
+//	}
+//
+//	synch_packet(byte);
+//
+//	if (m->mouse_packets_synched) {
+//		m->packet[m->packet_index] = byte;
+//		m->packet_index++;
+//	}
+//}
+//
+//void synch_packet(long byte) {
+//
+//	Mouse* m = getMouse();
+//
+//	if (m->mouse_packets_synched)
+//		return;
+//
+//	if (FIRSTBYTE & byte) {
+//		m->packet_index = 0;
+//		m->mouse_packets_synched = 1;
+//	}
+//}
 
 void timerIH() {
 	MinixVice* game = getGame();
@@ -78,11 +128,9 @@ void kbdIH() {
 		switch (game->scancode) {
 
 		case A_MAKE:
-			printf("A pressed\n");
 			movePlayerLeft(game->car);
 			break;
 		case D_MAKE:
-			printf("D pressed\n");
 			movePlayerRight(game->car);
 			break;
 		}
@@ -124,6 +172,8 @@ void updateMinixVice() {
 		}
 	}
 
+	//early version commented for now
+	//check_collisions();
 
 	if (game->timer->ticked) {
 		updateMouse();
@@ -139,13 +189,42 @@ void drawMinixVice() {
 
 	drawBackgroundBitmap(game->background, 0, 0, ALIGN_LEFT);
 	drawPlayer(game->car);
+	drawBarrel(game->barrel);
+
+	//printf("BARREL SIZE: %d * %d\n", game->barrel->bitmap->bitmapInfoHeader.width , game->barrel->bitmap->bitmapInfoHeader.height);
 
 	if (game->timer->ticked) {
-		drawMouse();
+		if(getMouse()->draw){
+			drawMouse();
+		}
 		game->timer->ticked = 0;
 	}
 
 	flipDB();
+}
+
+
+//first attempt at collisions
+int check_collisions(){
+	MinixVice* game = getGame();
+
+	int playerX = game->car->x;
+	int playerY = game->car->y;
+
+	int xi = game->barrel->x;
+	int xf = xi + game->barrel->width;
+
+	int yi = game->barrel->y;
+	int yf = yi + game->barrel->height;
+
+
+	printf("PLAYER: %d - %d\n",playerX, playerY);
+	printf("BARREL: %d - %d ; %d - %d\n",xi, yi, xf, yf);
+
+	if(playerX > xf)
+		game->done = 1;
+
+	return 0;
 }
 
 void endMinixVice() {

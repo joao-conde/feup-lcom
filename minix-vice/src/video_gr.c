@@ -7,9 +7,7 @@
 #include <math.h>
 
 #include "video_gr.h"
-#include "read_xpm.h"
 #include "vbe.h"
-#include "read_xpm.h"
 #include "lmlib.h"
 
 /* Private global variables */
