@@ -1,24 +1,18 @@
 #include "entities.h"
 
-
-void movePlayerLeft(Player* car){
-	int deltaX, oldX = car->x;
+void movePlayerLeft(Player* car) {
 	car->x = car->x - car->speed;
-	car->deltaX = car->x - oldX;
 }
 
-void movePlayerRight(Player* car){
-	int deltaX, oldX = car->x;
+void movePlayerRight(Player* car) {
 	car->x = car->x + car->speed;
-	car->deltaX = car->x - oldX;
 }
 
-void drawPlayer(Player* car){
-
-	int oldX = car->x - car->deltaX;
-	int oldY = car->y - car->deltaY;
-
-	//eraseBitmap(car->bitmap, oldX, oldY, ALIGN_LEFT);
+void drawPlayer(Player* car) {
 	drawBitmap(car->bitmap, car->x, car->y, ALIGN_LEFT);
+}
+
+void drawBarrel(Barrel* barrel) {
+	drawBitmap(barrel->bitmap, barrel->x, barrel->y, ALIGN_LEFT);
 }
 
