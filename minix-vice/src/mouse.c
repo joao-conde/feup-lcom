@@ -3,7 +3,7 @@
 #include "i8254.h"
 #include "timer.h"
 #include "video_gr.h"
-#include "pixmap.h"
+#include "utils.h"
 
 #include <minix/sysutil.h>
 #include <minix/drivers.h>
@@ -36,7 +36,7 @@ Mouse* newMouse() {
 
     mouse->draw = 0;
 
-    mouse->bitmap = loadBitmap("/home/minix-vice/res/images/seta.bmp");
+    mouse->bitmap = loadBitmap(getImgPath("seta"));
 
 	return mouse;
 }

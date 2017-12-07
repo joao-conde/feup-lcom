@@ -11,8 +11,9 @@ typedef struct{
 	int width, height;
 	int speed;
 
-	Bitmap* bitmap;
-
+	Bitmap* bmpForward;
+	Bitmap* bmpTLeft;
+	Bitmap* bmpTRight;
 
 }Player;
 
