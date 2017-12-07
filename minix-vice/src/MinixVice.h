@@ -8,6 +8,8 @@
 #include "bitmap.h"
 #include "entities.h"
 #include "utils.h"
+#include "state_machines.h"
+
 
 
 typedef struct{

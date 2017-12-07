@@ -13,3 +13,15 @@ int fileExists(const char* filename){
 
 	return 0;
 }
+
+
+const char* getImgPath(const char* img){
+
+	char num[256];
+	sprintf(num, "/home/minix-vice/res/images/%s.bmp",img);
+
+	char* str = (char*) malloc(256);
+	strcpy(str,num);
+
+	return str;
+}

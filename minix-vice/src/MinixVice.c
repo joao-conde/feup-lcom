@@ -1,3 +1,4 @@
+
 #include <minix/drivers.h>
 
 #include "MinixVice.h"
@@ -19,14 +20,15 @@ MinixVice* initMinixVice() {
 	game->done = 0;
 	game->draw = 1;
 	game->scancode = 0;
-	game->background = loadBitmap("/home/minix-vice/res/images/road.bmp");
+	//game->background = loadBitmap("/home/minix-vice/res/images/road.bmp");
+	game->background = loadBitmap(getImgPath("road"));
 
 
 	/* ONE BARREL INIT */
 	Barrel* barrel = (Barrel*) malloc(sizeof(Barrel));
 	barrel->x = vg_getHRES() / 2;
 	barrel->y = (vg_getVRES() / 2) - 200;
-	barrel->bitmap = loadBitmap("/home/minix-vice/res/images/barrel.bmp");
+	barrel->bitmap = loadBitmap(getImgPath("barrel"));
 	barrel->width = barrel->bitmap->bitmapInfoHeader.width;
 	barrel->height = barrel->bitmap->bitmapInfoHeader.height;
 
@@ -48,9 +50,13 @@ MinixVice* initMinixVice() {
 //	player->x = 0;
 
 	player->speed = PLAYER_SPEED;
-	player->bitmap = loadBitmap("/home/minix-vice/res/images/blue-car.bmp");
-	player->width = player->bitmap->bitmapInfoHeader.width;
-	player->height = player->bitmap->bitmapInfoHeader.height;
+	player->bmpForward = loadBitmap(getImgPath("blue-car"));
+	player->bmpTLeft = loadBitmap(getImgPath("blue-car-tl"));
+	player->bmpTRight = loadBitmap(getImgPath("blue-car-tr"));
+
+
+	//player->width = player->bitmap->bitmapInfoHeader.width;
+	//player->height = player->bitmap->bitmapInfoHeader.height;
 
 
 	game->car = player;
@@ -129,11 +135,17 @@ void kbdIH() {
 
 		case A_MAKE:
 			movePlayerLeft(game->car);
+			updatePlayerState(TLEFT);
 			break;
 		case D_MAKE:
 			movePlayerRight(game->car);
+			updatePlayerState(TRIGHT);
+			break;
+		default:
+			updatePlayerState(DEFAULT);
 			break;
 		}
+
 	}
 
 }

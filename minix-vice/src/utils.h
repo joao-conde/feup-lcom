@@ -11,5 +11,7 @@
 
 int fileExists(const char* filename);
 
+const char* getImgPath(const char* img);
+
 
 #endif /* UTILS_H */
