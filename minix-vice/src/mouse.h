@@ -9,7 +9,7 @@ typedef struct {
 
     unsigned long packet[3];
     unsigned int packet_index;
-    int mouse_packets_synched;
+    int packets_synched;
 
     int LBtnDown;
     int MBtnDown;

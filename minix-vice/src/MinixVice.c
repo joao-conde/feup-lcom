@@ -9,60 +9,79 @@ extern st_game gameState;
 /* SINGLETON GAME IMPLEMENTATION */
 MinixVice* game = NULL;
 
+void subscribeInterrupts(){
+	game->irq_kbd = kbd_subscribe_int();
+	game->irq_timer = timer_subscribe_int();
+	game->irq_mouse = mouse_subscribe_int();
+}
+
+void createEntities(){
+	game->main_menu = (MainMenu*) malloc(sizeof(MainMenu));
+	game->barrel = (Barrel*) malloc(sizeof(Barrel));
+	game->timer = (Timer*) malloc(sizeof(Timer));
+	game->car = (Player*) malloc(sizeof(Player));
+}
+
+void loadBitmaps(){
+
+	game->background = loadBitmap(getImgPath("road"));
+	game->menu_background = loadBitmap(getImgPath("main-menu"));
+	game->barrel->bitmap = loadBitmap(getImgPath("barrel"));
+	game->car->bmpForward = loadBitmap(getImgPath("blue-car"));
+	game->car->bmpTLeft = loadBitmap(getImgPath("blue-car-tl"));
+	game->car->bmpTRight = loadBitmap(getImgPath("blue-car-tr"));
+
+	game->car->width = game->car->bmpForward->bitmapInfoHeader.width;
+	game->car->height = game->car->bmpForward->bitmapInfoHeader.height;
+
+}
+
+void deleteBitmaps(){
+	deleteBitmap(game->background);
+	deleteBitmap(game->menu_background);
+	deleteBitmap(game->car->bmpForward);
+	deleteBitmap(game->car->bmpTLeft);
+	deleteBitmap(game->car->bmpTRight);
+	deleteBitmap(game->barrel->bitmap);
+}
+
+
 MinixVice* initMinixVice() {
 
 	/* GAME INITIALIZATION */
 	game = (MinixVice*) malloc(sizeof(MinixVice));
 
-	game->irq_kbd = kbd_subscribe_int();
-	game->irq_timer = timer_subscribe_int();
-	game->irq_mouse = mouse_subscribe_int();
+	subscribeInterrupts();
+	createEntities();
+	loadBitmaps();
 
 	game->done = 0;
 	game->draw = 1;
 	game->scancode = 0;
-	//game->background = loadBitmap("/home/minix-vice/res/images/road.bmp");
-	game->background = loadBitmap(getImgPath("road"));
-	game->menu_background = loadBitmap(getImgPath("main-menu"));
+
 
 	/* MAIN MENU INIT */
-	game->main_menu = (MainMenu*) malloc(sizeof(MainMenu));
 	game->main_menu->playBtn = newColliderBox(250, 106, 200, 200);
 	game->main_menu->quitBtn = newColliderBox(0, 200, 200, 400);
 
 	/* ONE BARREL INIT */
-	Barrel* barrel = (Barrel*) malloc(sizeof(Barrel));
-	barrel->x = vg_getHRES() / 2;
-	barrel->y = (vg_getVRES() / 2) - 200;
-	barrel->bitmap = loadBitmap(getImgPath("barrel"));
-	barrel->width = barrel->bitmap->bitmapInfoHeader.width;
-	barrel->height = barrel->bitmap->bitmapInfoHeader.height;
 
-	game->barrel = barrel;
+	game->barrel->x = vg_getHRES() / 2;
+	game->barrel->y = (vg_getVRES() / 2) - 200;
+	game->barrel->width = game->barrel->bitmap->bitmapInfoHeader.width;
+	game->barrel->height = game->barrel->bitmap->bitmapInfoHeader.height;
 
-	/* TIMER INITIALIZATION */
-	Timer* timer = (Timer*) malloc(sizeof(Timer));
-	timer->ticked = 0;
-	timer->counter = 0;
-	game->timer = timer;
+	game->timer->ticked = 0;
+	game->timer->counter = 0;
 
-	/* PLAYER INITIALIZATION */
-	Player* player = (Player*) malloc(sizeof(Player));
-	player->x = vg_getHRES() / 2;
-	player->y = vg_getVRES() / 2;
+
+	game->car->x = vg_getHRES() / 2;
+	game->car->y = vg_getVRES() / 2;
 
 //	player->y = 0;
 //	player->x = 0;
 
-	player->speed = PLAYER_SPEED;
-	player->bmpForward = loadBitmap(getImgPath("blue-car"));
-	player->bmpTLeft = loadBitmap(getImgPath("blue-car-tl"));
-	player->bmpTRight = loadBitmap(getImgPath("blue-car-tr"));
-
-	//player->width = player->bitmap->bitmapInfoHeader.width;
-	//player->height = player->bitmap->bitmapInfoHeader.height;
-
-	game->car = player;
+	game->car->speed = PLAYER_SPEED;
 
 	return game;
 }
@@ -198,18 +217,18 @@ void updateMinixVice() {
 		//flipDB();
 	}
 
-//	if (m->LBtnDown) {
-//
-//		if (clicked(game->main_menu->playBtn, m->x, m->y)) {
-//			printf("CLICKED PLAY\n");
-//			updateGameState(PLAY);
-//		}
-//
-//		if (clicked(game->main_menu->quitBtn, m->x, m->y)) {
-//			printf("CLICKED QUIT\n");
-//		}
-//	}
+	if (m->LBtnDown) {
 
+		if (clicked(game->main_menu->playBtn, m->x, m->y)) {
+			printf("CLICKED PLAY\n");
+			updateGameState(PLAY);
+		}
+
+		if (clicked(game->main_menu->quitBtn, m->x, m->y)) {
+			printf("CLICKED QUIT\n");
+			//game->done = 1;
+		}
+	}
 
 }
 
@@ -264,6 +283,8 @@ int check_collisions() {
 	printf("PLAYER: %d - %d\n", playerX, playerY);
 	printf("BARREL: %d - %d ; %d - %d\n", xi, yi, xf, yf);
 
+
+	//TODO: AN ACTUAL COLLISION
 	if (playerX > xf)
 		game->done = 1;
 
@@ -278,6 +299,7 @@ void endMinixVice() {
 	timer_unsubscribe_int();
 	mouse_unsubscribe_int();
 
+	deleteBitmaps();
 	deleteMouse();
 	free(game->timer);
 	free(game->car);

@@ -35,7 +35,7 @@ Mouse* newMouse() {
 
 
     mouse->packet_index = 0;
-    mouse->mouse_packets_synched = 0;
+    mouse->packets_synched = 0;
 
     mouse->draw = 0;
 
@@ -115,7 +115,7 @@ void updateMouse() {
 	m->draw = 1;
 
 }
-//
+
 //void updateMouse() {
 //	Mouse* m = getMouse();
 //
@@ -236,35 +236,32 @@ long mouse_readOBF() {
 //void mouseIntHandler() {
 //
 //	Mouse* m = getMouse();
-//
 //	long byte = mouse_readOBF();
 //
 //	if (byte == -1)
 //		return;
 //
 //	if (m->packet_index > 2) {
-//		m->mouse_packets_synched = FALSE;
+//		m->packets_synched = 0;
 //	}
 //
-//	synch_packet(byte,m);
+//	synch_packet(byte);
 //
-//	if (m->mouse_packets_synched) {
+//	if (m->packets_synched) {
 //		m->packet[m->packet_index] = byte;
 //		m->packet_index++;
 //	}
 //
 //}
 //
-//void synch_packet(long byte, Mouse* m) {
-//
-//	//Mouse* m = getMouse();
-//
-//	if (m->mouse_packets_synched)
+//void synch_packet(long byte) {
+//	Mouse*  m = getMouse();
+//	if (m->packets_synched)
 //		return;
 //
 //	if (FIRSTBYTE & byte) {
 //		m->packet_index = 0;
-//		m->mouse_packets_synched = 1;
+//		m->packets_synched = 1;
 //	}
 //}
 
