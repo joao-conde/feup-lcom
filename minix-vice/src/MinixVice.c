@@ -1,9 +1,10 @@
-
 #include <minix/drivers.h>
 
 #include "MinixVice.h"
 
 const int FPS = 60;
+
+extern st_game gameState;
 
 /* SINGLETON GAME IMPLEMENTATION */
 MinixVice* game = NULL;
@@ -22,7 +23,12 @@ MinixVice* initMinixVice() {
 	game->scancode = 0;
 	//game->background = loadBitmap("/home/minix-vice/res/images/road.bmp");
 	game->background = loadBitmap(getImgPath("road"));
+	game->menu_background = loadBitmap(getImgPath("main-menu"));
 
+	/* MAIN MENU INIT */
+	game->main_menu = (MainMenu*) malloc(sizeof(MainMenu));
+	game->main_menu->playBtn = newColliderBox(0, 0, 200, 200);
+	game->main_menu->quitBtn = newColliderBox(0, 200, 200, 400);
 
 	/* ONE BARREL INIT */
 	Barrel* barrel = (Barrel*) malloc(sizeof(Barrel));
@@ -40,7 +46,6 @@ MinixVice* initMinixVice() {
 	timer->counter = 0;
 	game->timer = timer;
 
-
 	/* PLAYER INITIALIZATION */
 	Player* player = (Player*) malloc(sizeof(Player));
 	player->x = vg_getHRES() / 2;
@@ -54,10 +59,8 @@ MinixVice* initMinixVice() {
 	player->bmpTLeft = loadBitmap(getImgPath("blue-car-tl"));
 	player->bmpTRight = loadBitmap(getImgPath("blue-car-tr"));
 
-
 	//player->width = player->bitmap->bitmapInfoHeader.width;
 	//player->height = player->bitmap->bitmapInfoHeader.height;
-
 
 	game->car = player;
 
@@ -74,7 +77,7 @@ MinixVice* getGame() {
 }
 
 //TODO: change this to work with mouse object
-void mouseIH(){
+void mouseIH() {
 	mouseIntHandler();
 }
 
@@ -153,6 +156,7 @@ void kbdIH() {
 void updateMinixVice() {
 
 	MinixVice* game = getGame();
+	Mouse* m = getMouse();
 
 	int ipc_status, r = 0;
 	message msg;
@@ -193,20 +197,47 @@ void updateMinixVice() {
 		//game->timer->ticked = 0;
 		//flipDB();
 	}
+
+	if (m->LBtnDown) {
+
+		if (clicked(game->main_menu->playBtn, m->x, m->y)) {
+			printf("CLICKED PLAY\n");
+			updateGameState(PLAY);
+		}
+
+		if (clicked(game->main_menu->quitBtn, m->x, m->y)) {
+			printf("CLICKED QUIT\n");
+		}
+	}
 }
 
 void drawMinixVice() {
 
 	MinixVice* game = getGame();
 
-	drawBackgroundBitmap(game->background, 0, 0, ALIGN_LEFT);
-	drawPlayer(game->car);
-	drawBarrel(game->barrel);
+	switch (gameState) {
+
+	case MAIN_MENU:
+		//TODO: draw menu
+		drawBackgroundBitmap(game->menu_background, 0, 0, ALIGN_LEFT);
+		break;
+
+	case GAME:
+		drawBackgroundBitmap(game->background, 0, 0, ALIGN_LEFT);
+		drawPlayer(game->car);
+		drawBarrel(game->barrel);
+		break;
+
+	}
+
+//	drawBackgroundBitmap(game->background, 0, 0, ALIGN_LEFT);
+//	drawPlayer(game->car);
+//	drawBarrel(game->barrel);
 
 	//printf("BARREL SIZE: %d * %d\n", game->barrel->bitmap->bitmapInfoHeader.width , game->barrel->bitmap->bitmapInfoHeader.height);
 
 	if (game->timer->ticked) {
-		if(getMouse()->draw){
+		if (getMouse()->draw) {
 			drawMouse();
 		}
 		game->timer->ticked = 0;
@@ -215,9 +246,8 @@ void drawMinixVice() {
 	flipDB();
 }
 
-
 //first attempt at collisions
-int check_collisions(){
+int check_collisions() {
 	MinixVice* game = getGame();
 
 	int playerX = game->car->x;
@@ -229,11 +259,10 @@ int check_collisions(){
 	int yi = game->barrel->y;
 	int yf = yi + game->barrel->height;
 
+	printf("PLAYER: %d - %d\n", playerX, playerY);
+	printf("BARREL: %d - %d ; %d - %d\n", xi, yi, xf, yf);
 
-	printf("PLAYER: %d - %d\n",playerX, playerY);
-	printf("BARREL: %d - %d ; %d - %d\n",xi, yi, xf, yf);
-
-	if(playerX > xf)
+	if (playerX > xf)
 		game->done = 1;
 
 	return 0;

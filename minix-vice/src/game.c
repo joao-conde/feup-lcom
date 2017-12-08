@@ -25,11 +25,11 @@ MinixVice* startGame() {
 
 	MinixVice* game = getGame();
 
+
 	return game;
 }
 
 void gameLoop(MinixVice* game) {
-
 	while (!game->done) {
 
 		if (game->draw) {
