@@ -9,10 +9,17 @@ extern st_game gameState;
 /* SINGLETON GAME IMPLEMENTATION */
 MinixVice* game = NULL;
 
+
 void subscribeInterrupts(){
 	game->irq_kbd = kbd_subscribe_int();
 	game->irq_timer = timer_subscribe_int();
 	game->irq_mouse = mouse_subscribe_int();
+}
+
+void unsubscribeInterrupts(){
+	kbd_unsubscribe_int();
+	timer_unsubscribe_int();
+	mouse_unsubscribe_int();
 }
 
 void createEntities(){
@@ -46,6 +53,22 @@ void deleteBitmaps(){
 }
 
 
+void moveBackground(){
+
+	MinixVice* game = getGame();
+
+	game->backgroundY++;
+
+	int backgroundHeight = game->background->bitmapInfoHeader.height;
+
+    //FIXME: MOVING BACKGROUND WRONG
+	if(game->backgroundY == vg_getVRES()/4){
+		game->backgroundY = 0;
+		printf("Ayy lmao\n");
+	}
+
+}
+
 MinixVice* initMinixVice() {
 
 	/* GAME INITIALIZATION */
@@ -58,6 +81,8 @@ MinixVice* initMinixVice() {
 	game->done = 0;
 	game->draw = 1;
 	game->scancode = 0;
+
+	game->backgroundY = 0;
 
 
 	/* MAIN MENU INIT */
@@ -139,6 +164,7 @@ void timerIH() {
 
 	game->timer->counter++;
 	game->timer->ticked = 1;
+	moveBackground();
 
 }
 
@@ -244,7 +270,8 @@ void drawMinixVice() {
 		break;
 
 	case GAME:
-		drawBackgroundBitmap(game->background, 0, 0, ALIGN_LEFT);
+		//FIXME: FIX MOVING BACKGROUND
+		drawBackgroundBitmap(game->background, 0, game->backgroundY, ALIGN_LEFT);
 		drawPlayer(game->car);
 		drawBarrel(game->barrel);
 		break;
@@ -295,14 +322,14 @@ void endMinixVice() {
 	//TODO: FREE ALL GAME ENTITIES AND BITMAPS
 	MinixVice* game = getGame();
 
-	kbd_unsubscribe_int();
-	timer_unsubscribe_int();
-	mouse_unsubscribe_int();
+	unsubscribeInterrupts();
 
 	deleteBitmaps();
 	deleteMouse();
+
 	free(game->timer);
 	free(game->car);
+	free(game->barrel);
 	free(game);
 }
 

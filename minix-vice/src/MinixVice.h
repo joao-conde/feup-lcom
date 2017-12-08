@@ -23,6 +23,7 @@ typedef struct{
 
 	unsigned long scancode;
 
+	int backgroundY;
 	Bitmap* background;
 	Bitmap* menu_background;
 
