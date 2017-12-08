@@ -1,6 +1,8 @@
 #include "state_machines.h"
 
-st_game gameState = MAIN_MENU;
+
+//TODO: set to MAIN_MENU
+st_game gameState = GAME;
 
 st_player playerState = DEFAULT;
 
