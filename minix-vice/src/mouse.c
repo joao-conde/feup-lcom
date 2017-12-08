@@ -20,8 +20,11 @@ Mouse* mouse = NULL;
 Mouse* newMouse() {
 	Mouse* mouse = (Mouse*) malloc(sizeof(Mouse));
 
-	mouse->x = vg_getHRES()/2;
-	mouse->y = vg_getVRES()/2;
+//	mouse->x = vg_getHRES()/2;
+//	mouse->y = vg_getVRES()/2;
+
+	mouse->x = 85;
+	mouse->y = 210;
 
 	mouse->deltaX = 0;
 	mouse->deltaY = 0;
