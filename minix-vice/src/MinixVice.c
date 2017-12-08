@@ -27,7 +27,7 @@ MinixVice* initMinixVice() {
 
 	/* MAIN MENU INIT */
 	game->main_menu = (MainMenu*) malloc(sizeof(MainMenu));
-	game->main_menu->playBtn = newColliderBox(0, 0, 200, 200);
+	game->main_menu->playBtn = newColliderBox(250, 106, 200, 200);
 	game->main_menu->quitBtn = newColliderBox(0, 200, 200, 400);
 
 	/* ONE BARREL INIT */
@@ -198,17 +198,19 @@ void updateMinixVice() {
 		//flipDB();
 	}
 
-	if (m->LBtnDown) {
+//	if (m->LBtnDown) {
+//
+//		if (clicked(game->main_menu->playBtn, m->x, m->y)) {
+//			printf("CLICKED PLAY\n");
+//			updateGameState(PLAY);
+//		}
+//
+//		if (clicked(game->main_menu->quitBtn, m->x, m->y)) {
+//			printf("CLICKED QUIT\n");
+//		}
+//	}
 
-		if (clicked(game->main_menu->playBtn, m->x, m->y)) {
-			printf("CLICKED PLAY\n");
-			updateGameState(PLAY);
-		}
 
-		if (clicked(game->main_menu->quitBtn, m->x, m->y)) {
-			printf("CLICKED QUIT\n");
-		}
-	}
 }
 
 void drawMinixVice() {
