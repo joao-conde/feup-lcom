@@ -2,7 +2,7 @@
 #define STATE_H
 
 typedef enum {
-	MAIN_MENU, GAME
+	MAIN_MENU, GAME, OVER
 } st_game;
 
 
@@ -11,10 +11,9 @@ typedef enum {
 } st_player;
 
 
-typedef enum{
-	KAPA
-} event_t_game;
-
+typedef enum {
+	PLAY, TERMINATE
+} game_event_t;
 
 /*
  * Because he can go from one state to any other
@@ -22,6 +21,6 @@ typedef enum{
 */
 void updatePlayerState(st_player newState);
 
-void updateGameState();
+void updateGameState(game_event_t event);
 
 #endif /* STATE_H */

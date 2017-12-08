@@ -7,3 +7,20 @@ st_player playerState = DEFAULT;
 void updatePlayerState(st_player newState) {
 	playerState = newState;
 }
+
+void updateGameState(game_event_t event) {
+
+	switch (gameState) {
+
+	case MAIN_MENU:
+
+		if (event == PLAY)
+			gameState = GAME;
+
+		if (event == TERMINATE)
+			gameState = OVER;
+
+		break;
+
+	}
+}

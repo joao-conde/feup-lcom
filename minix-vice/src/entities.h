@@ -3,7 +3,14 @@
 
 
 #include "bitmap.h"
+#include "ColliderBox.h"
 
+typedef struct{
+
+	ColliderBox* playBtn;
+	ColliderBox* quitBtn;
+
+}MainMenu;
 
 typedef struct{
 

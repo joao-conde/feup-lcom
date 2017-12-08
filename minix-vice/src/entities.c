@@ -3,6 +3,8 @@
 
 extern st_player playerState;
 
+/* PLAYER METHODS */
+
 void movePlayerLeft(Player* car) {
 	car->x = car->x - car->speed;
 }
@@ -26,6 +28,9 @@ void drawPlayer(Player* car) {
 	}
 
 }
+
+
+/* ENEMY METHODS */
 
 void drawBarrel(Barrel* barrel) {
 	drawBitmap(barrel->bitmap, barrel->x, barrel->y, ALIGN_LEFT);

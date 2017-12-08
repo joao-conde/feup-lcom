@@ -19,10 +19,13 @@ typedef struct{
 	int done, draw;
 
 
+	MainMenu* main_menu;
 
 	unsigned long scancode;
 
 	Bitmap* background;
+	Bitmap* menu_background;
+
 	Player* car;
 	Timer* timer;
 
