@@ -2,7 +2,7 @@
 
 
 //TODO: set to MAIN_MENU
-st_game gameState = GAME;
+st_game gameState = MAIN_MENU;
 
 st_player playerState = DEFAULT;
 

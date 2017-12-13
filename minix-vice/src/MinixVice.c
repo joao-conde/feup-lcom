@@ -64,7 +64,6 @@ void moveBackground(){
     //FIXME: MOVING BACKGROUND WRONG
 	if(game->backgroundY == vg_getVRES()/4){
 		game->backgroundY = 0;
-		printf("Ayy lmao\n");
 	}
 
 }
@@ -86,8 +85,8 @@ MinixVice* initMinixVice() {
 
 
 	/* MAIN MENU INIT */
-	game->main_menu->playBtn = newColliderBox(250, 106, 200, 200);
-	game->main_menu->quitBtn = newColliderBox(0, 200, 200, 400);
+	game->main_menu->playBtn = newColliderBox(95, 145, 392, 230);
+	game->main_menu->quitBtn = newColliderBox(95, 257, 392, 340);
 
 	/* ONE BARREL INIT */
 
@@ -102,9 +101,6 @@ MinixVice* initMinixVice() {
 
 	game->car->x = vg_getHRES() / 2;
 	game->car->y = vg_getVRES() / 2;
-
-//	player->y = 0;
-//	player->x = 0;
 
 	game->car->speed = PLAYER_SPEED;
 
@@ -123,6 +119,16 @@ MinixVice* getGame() {
 //TODO: change this to work with mouse object
 void mouseIH() {
 	mouseIntHandler();
+
+	Mouse* m = getMouse();
+	MinixVice* game = getGame();
+
+	if(m->RBtnDown)	game->done = 1;
+
+//	if(m->LBtnDown){
+//		printf("CLICKED AT COORDS X-Y: %d-%d\n",m->x, m->y);
+//	}
+
 }
 
 //void mouseIH(){
@@ -246,13 +252,13 @@ void updateMinixVice() {
 	if (m->LBtnDown) {
 
 		if (clicked(game->main_menu->playBtn, m->x, m->y)) {
-			printf("CLICKED PLAY\n");
+			//printf("CLICKED PLAY\n");
 			updateGameState(PLAY);
 		}
 
 		if (clicked(game->main_menu->quitBtn, m->x, m->y)) {
-			printf("CLICKED QUIT\n");
-			//game->done = 1;
+			//printf("CLICKED QUIT\n");
+			game->done = 1;
 		}
 	}
 
@@ -331,5 +337,6 @@ void endMinixVice() {
 	free(game->car);
 	free(game->barrel);
 	free(game);
+
 }
 

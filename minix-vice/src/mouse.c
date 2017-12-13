@@ -20,11 +20,8 @@ Mouse* mouse = NULL;
 Mouse* newMouse() {
 	Mouse* mouse = (Mouse*) malloc(sizeof(Mouse));
 
-//	mouse->x = vg_getHRES()/2;
-//	mouse->y = vg_getVRES()/2;
-
-	mouse->x = 85;
-	mouse->y = 210;
+	mouse->x = vg_getHRES()/2;
+	mouse->y = vg_getVRES()/2;
 
 	mouse->deltaX = 0;
 	mouse->deltaY = 0;
@@ -78,9 +75,9 @@ void updateMouse() {
 
 	memcpy(m->packet, g_packet, sizeof(m->packet));
 
-	m->LBtnDown = m->packet[1] & BIT(0);
-	m->RBtnDown = m->packet[1] & BIT(1);
-	m->MBtnDown = m->packet[1] & BIT(2);
+	m->LBtnDown = m->packet[0] & BIT(0);
+	m->RBtnDown = m->packet[0] & BIT(1);
+	m->MBtnDown = m->packet[0] & BIT(2);
 
 	//calculate deltas depending on whether its 2's comp or not
 
@@ -113,6 +110,7 @@ void updateMouse() {
 
 
 	m->draw = 1;
+
 
 }
 

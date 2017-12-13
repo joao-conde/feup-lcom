@@ -7,7 +7,6 @@ void play(){
 }
 
 MinixVice* startGame() {
-	printf("Start of MINIX-VICE!\n");
 	srand(time(NULL));
 	sef_startup();
 
