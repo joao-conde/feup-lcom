@@ -140,8 +140,8 @@ void drawBackgroundBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 	if (bmp == NULL)
 		return;
 
-	unsigned horizontalRes = vg_getHRES();
-	unsigned verticalRes = vg_getVRES();
+	int horizontalRes = vg_getHRES();
+	int verticalRes = vg_getVRES();
 
 	int width = bmp->bitmapInfoHeader.width;
 	int drawWidth = width;
@@ -154,6 +154,7 @@ void drawBackgroundBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 
 	if (x + width < 0 || x > horizontalRes || y + height < 0 || y > verticalRes)
 		return;
+
 
 	int xCorrection = 0;
 	if (x < 0) {
@@ -170,12 +171,17 @@ void drawBackgroundBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 	char* bufferStartPos;
 	char* imgStartPos;
 
+	int background_flag = (y < 0); //is it drawing out of the screen
+
 	int i;
 	for (i = 0; i < height; i++) {
 		int pos = y + height - 1 - i;
 
-		if (pos < 0 || pos >= verticalRes)
+		if ((!background_flag && (pos < 0)) || (!background_flag && (pos >= verticalRes))) {
 			continue;
+		} else if ((background_flag && (pos < 0)) || (background_flag && (pos >= verticalRes))) {
+			break;
+		}
 
 		bufferStartPos = getGraphicBuffer();
 		bufferStartPos += x * 2 + pos * horizontalRes * 2;
