@@ -1,16 +1,20 @@
 #include "entities.h"
-#include "state_machines.h"
+#include "MinixVice.h"
+
 
 extern st_player playerState;
 
 /* PLAYER METHODS */
 
 void movePlayerLeft(Player* car) {
-	car->x = car->x - car->speed;
+	MinixVice* game = getGame();
+
+	car->x = car->x - 3*game->speed;
 }
 
 void movePlayerRight(Player* car) {
-	car->x = car->x + car->speed;
+	MinixVice* game = getGame();
+	car->x = car->x + 3*game->speed;
 }
 
 void drawPlayer(Player* car) {
