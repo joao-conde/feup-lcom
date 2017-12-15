@@ -9,29 +9,29 @@ extern st_game gameState;
 /* SINGLETON GAME IMPLEMENTATION */
 MinixVice* game = NULL;
 
-
-void subscribeInterrupts(){
+void subscribeInterrupts() {
 	game->irq_kbd = kbd_subscribe_int();
 	game->irq_timer = timer_subscribe_int();
 	game->irq_mouse = mouse_subscribe_int();
 }
 
-void unsubscribeInterrupts(){
+void unsubscribeInterrupts() {
 	kbd_unsubscribe_int();
 	timer_unsubscribe_int();
 	mouse_unsubscribe_int();
 }
 
-void createEntities(){
+void createEntities() {
 	game->main_menu = (MainMenu*) malloc(sizeof(MainMenu));
 	game->barrel = (Barrel*) malloc(sizeof(Barrel));
 	game->timer = (Timer*) malloc(sizeof(Timer));
 	game->car = (Player*) malloc(sizeof(Player));
 }
 
-void loadBitmaps(){
+void loadBitmaps() {
 
 	game->background = loadBitmap(getImgPath("road"));
+	game->background1 = loadBitmap(getImgPath("road1"));
 	game->menu_background = loadBitmap(getImgPath("main-menu"));
 	game->barrel->bitmap = loadBitmap(getImgPath("barrel"));
 	game->car->bmpForward = loadBitmap(getImgPath("blue-car"));
@@ -43,7 +43,7 @@ void loadBitmaps(){
 
 }
 
-void deleteBitmaps(){
+void deleteBitmaps() {
 	deleteBitmap(game->background);
 	deleteBitmap(game->menu_background);
 	deleteBitmap(game->car->bmpForward);
@@ -52,19 +52,21 @@ void deleteBitmaps(){
 	deleteBitmap(game->barrel->bitmap);
 }
 
-
-void moveBackground(){
+void moveBackground() {
 
 	MinixVice* game = getGame();
 
 	game->backgroundY++;
+	game->background1Y++;
 
 	int backgroundHeight = game->background->bitmapInfoHeader.height;
 
-    //FIXME: MOVING BACKGROUND WRONG
-	if(game->backgroundY == vg_getVRES()/4){
+
+	/*
+	//FIXME: MOVING BACKGROUND WRONG
+	if (game->backgroundY == vg_getVRES() / 4) {
 		game->backgroundY = 0;
-	}
+	}*/
 
 }
 
@@ -82,7 +84,7 @@ MinixVice* initMinixVice() {
 	game->scancode = 0;
 
 	game->backgroundY = 0;
-
+	game->background1Y = game->background1->bitmapInfoHeader.height / 2;
 
 	/* MAIN MENU INIT */
 	game->main_menu->playBtn = newColliderBox(95, 145, 392, 230);
@@ -97,7 +99,6 @@ MinixVice* initMinixVice() {
 
 	game->timer->ticked = 0;
 	game->timer->counter = 0;
-
 
 	game->car->x = vg_getHRES() / 2;
 	game->car->y = vg_getVRES() / 2;
@@ -123,7 +124,8 @@ void mouseIH() {
 	Mouse* m = getMouse();
 	MinixVice* game = getGame();
 
-	if(m->RBtnDown)	game->done = 1;
+	if (m->RBtnDown)
+		game->done = 1;
 
 //	if(m->LBtnDown){
 //		printf("CLICKED AT COORDS X-Y: %d-%d\n",m->x, m->y);
@@ -264,6 +266,15 @@ void updateMinixVice() {
 
 }
 
+void drawMovingBackground() {
+	static int y = 0;
+	if (++y == vg_getVRES())
+		y = 0;
+
+	drawBackgroundBitmap(game->background, 0, y, ALIGN_LEFT);
+	drawBackgroundBitmap(game->background, 0, y - vg_getVRES(), ALIGN_LEFT);
+}
+
 void drawMinixVice() {
 
 	MinixVice* game = getGame();
@@ -277,7 +288,11 @@ void drawMinixVice() {
 
 	case GAME:
 		//FIXME: FIX MOVING BACKGROUND
-		drawBackgroundBitmap(game->background, 0, game->backgroundY, ALIGN_LEFT);
+//		drawBackgroundBitmap(game->background, 0, game->backgroundY, ALIGN_LEFT);
+		//drawBackgroundBitmap(game->background1, 0, game->background1Y, ALIGN_LEFT);
+
+		drawMovingBackground();
+
 		drawPlayer(game->car);
 		drawBarrel(game->barrel);
 		break;
@@ -295,9 +310,9 @@ void drawMinixVice() {
 			drawMouse();
 		}
 		game->timer->ticked = 0;
+		flipDB();
 	}
 
-	flipDB();
 }
 
 //first attempt at collisions
@@ -315,7 +330,6 @@ int check_collisions() {
 
 	printf("PLAYER: %d - %d\n", playerX, playerY);
 	printf("BARREL: %d - %d ; %d - %d\n", xi, yi, xf, yf);
-
 
 	//TODO: AN ACTUAL COLLISION
 	if (playerX > xf)

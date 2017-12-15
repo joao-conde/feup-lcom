@@ -2,6 +2,12 @@
 
 void play(){
 	MinixVice* game = startGame();
+//	int i = 0;
+//	while (i++ < 1000) {
+//		printf(".");
+//		drawMovingBackground();
+//		usleep(10000);
+//	} // todo delete
 	gameLoop(game);
 	endGame(game);
 }
