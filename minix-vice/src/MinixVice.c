@@ -2,8 +2,6 @@
 
 #include "MinixVice.h"
 
-const int FPS = 60;
-
 extern st_game gameState;
 
 /* SINGLETON GAME IMPLEMENTATION */
@@ -31,7 +29,6 @@ void createEntities() {
 void loadBitmaps() {
 
 	game->background = loadBitmap(getImgPath("road"));
-	game->background1 = loadBitmap(getImgPath("road1"));
 	game->menu_background = loadBitmap(getImgPath("main-menu"));
 	game->barrel->bitmap = loadBitmap(getImgPath("barrel"));
 	game->car->bmpForward = loadBitmap(getImgPath("blue-car"));
@@ -52,24 +49,6 @@ void deleteBitmaps() {
 	deleteBitmap(game->barrel->bitmap);
 }
 
-void moveBackground() {
-
-	MinixVice* game = getGame();
-
-	game->backgroundY++;
-	game->background1Y++;
-
-	int backgroundHeight = game->background->bitmapInfoHeader.height;
-
-
-	/*
-	//FIXME: MOVING BACKGROUND WRONG
-	if (game->backgroundY == vg_getVRES() / 4) {
-		game->backgroundY = 0;
-	}*/
-
-}
-
 MinixVice* initMinixVice() {
 
 	/* GAME INITIALIZATION */
@@ -82,9 +61,6 @@ MinixVice* initMinixVice() {
 	game->done = 0;
 	game->draw = 1;
 	game->scancode = 0;
-
-	game->backgroundY = 0;
-	game->background1Y = game->background1->bitmapInfoHeader.height / 2;
 
 	/* MAIN MENU INIT */
 	game->main_menu->playBtn = newColliderBox(95, 145, 392, 230);
@@ -119,6 +95,8 @@ MinixVice* getGame() {
 
 //TODO: change this to work with mouse object
 void mouseIH() {
+	static int counter = 0;
+
 	mouseIntHandler();
 
 	Mouse* m = getMouse();
@@ -127,52 +105,17 @@ void mouseIH() {
 	if (m->RBtnDown)
 		game->done = 1;
 
-//	if(m->LBtnDown){
-//		printf("CLICKED AT COORDS X-Y: %d-%d\n",m->x, m->y);
-//	}
-
 }
 
-//void mouseIH(){
-//
-//	Mouse* m = getMouse();
-//
-//	long byte = mouse_readOBF();
-//
-//	if (byte == -1)
-//		return;
-//
-//	if (m->packet_index > 2) {
-//		m->mouse_packets_synched = 0;
-//	}
-//
-//	synch_packet(byte);
-//
-//	if (m->mouse_packets_synched) {
-//		m->packet[m->packet_index] = byte;
-//		m->packet_index++;
-//	}
-//}
-//
-//void synch_packet(long byte) {
-//
-//	Mouse* m = getMouse();
-//
-//	if (m->mouse_packets_synched)
-//		return;
-//
-//	if (FIRSTBYTE & byte) {
-//		m->packet_index = 0;
-//		m->mouse_packets_synched = 1;
-//	}
-//}
 
 void timerIH() {
 	MinixVice* game = getGame();
 
 	game->timer->counter++;
 	game->timer->ticked = 1;
-	moveBackground();
+
+	printf("TIMER interrupt\n");
+
 
 }
 
@@ -241,26 +184,17 @@ void updateMinixVice() {
 		}
 	}
 
-	//early version commented for now
-	//check_collisions();
 
-	if (game->timer->ticked) {
-		updateMouse();
-		//drawMouse();
-		//game->timer->ticked = 0;
-		//flipDB();
-	}
+	if (gameState == MAIN_MENU) {
+		if (m->LBtnDown) {
 
-	if (m->LBtnDown) {
+			if (clicked(game->main_menu->playBtn, m->x, m->y)) {
+				updateGameState(PLAY);
+			}
 
-		if (clicked(game->main_menu->playBtn, m->x, m->y)) {
-			//printf("CLICKED PLAY\n");
-			updateGameState(PLAY);
-		}
-
-		if (clicked(game->main_menu->quitBtn, m->x, m->y)) {
-			//printf("CLICKED QUIT\n");
-			game->done = 1;
+			if (clicked(game->main_menu->quitBtn, m->x, m->y)) {
+				game->done = 1;
+			}
 		}
 	}
 
@@ -282,16 +216,13 @@ void drawMinixVice() {
 	switch (gameState) {
 
 	case MAIN_MENU:
-		//TODO: draw menu
+		//TODO: draw menu function
 		drawBackgroundBitmap(game->menu_background, 0, 0, ALIGN_LEFT);
 		break;
 
 	case GAME:
-		//FIXME: FIX MOVING BACKGROUND
-//		drawBackgroundBitmap(game->background, 0, game->backgroundY, ALIGN_LEFT);
-		//drawBackgroundBitmap(game->background1, 0, game->background1Y, ALIGN_LEFT);
-
-		drawMovingBackground();
+		if (game->timer->ticked)
+			drawMovingBackground();
 
 		drawPlayer(game->car);
 		drawBarrel(game->barrel);
@@ -299,16 +230,8 @@ void drawMinixVice() {
 
 	}
 
-//	drawBackgroundBitmap(game->background, 0, 0, ALIGN_LEFT);
-//	drawPlayer(game->car);
-//	drawBarrel(game->barrel);
-
-	//printf("BARREL SIZE: %d * %d\n", game->barrel->bitmap->bitmapInfoHeader.width , game->barrel->bitmap->bitmapInfoHeader.height);
-
 	if (game->timer->ticked) {
-		if (getMouse()->draw) {
-			drawMouse();
-		}
+		drawMouse();
 		game->timer->ticked = 0;
 		flipDB();
 	}

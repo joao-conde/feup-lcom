@@ -7,10 +7,6 @@ typedef struct {
     int x, y;
     int deltaX, deltaY;
 
-    unsigned long packet[3];
-    unsigned int packet_index;
-    int packets_synched;
-
     int LBtnDown;
     int MBtnDown;
     int RBtnDown;
@@ -23,6 +19,7 @@ typedef struct {
 
 
 Mouse* newMouse();
+
 Mouse* getMouse();
 
 void deleteMouse();

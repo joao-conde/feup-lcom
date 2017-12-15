@@ -10,9 +10,9 @@
 
 int mouse_hookID;
 
-unsigned long g_packet[PACKET_SIZE];
-unsigned int g_packet_index = 0;
-int g_synched = FALSE;
+static unsigned long g_packet[PACKET_SIZE];
+static unsigned int g_packet_index = 0;
+static int g_synched = FALSE;
 
 /* SINGLETON MOUSE IMPLEMENTATION */
 Mouse* mouse = NULL;
@@ -20,23 +20,19 @@ Mouse* mouse = NULL;
 Mouse* newMouse() {
 	Mouse* mouse = (Mouse*) malloc(sizeof(Mouse));
 
-	mouse->x = vg_getHRES()/2;
-	mouse->y = vg_getVRES()/2;
+	mouse->x = vg_getHRES() / 2;
+	mouse->y = vg_getVRES() / 2;
 
 	mouse->deltaX = 0;
 	mouse->deltaY = 0;
 
 	mouse->LBtnDown = 0;
-    mouse->MBtnDown = 0;
-    mouse->RBtnDown = 0;
+	mouse->MBtnDown = 0;
+	mouse->RBtnDown = 0;
 
+	mouse->draw = 0;
 
-    mouse->packet_index = 0;
-    mouse->packets_synched = 0;
-
-    mouse->draw = 0;
-
-    mouse->bitmap = loadBitmap(getImgPath("seta"));
+	mouse->bitmap = loadBitmap(getImgPath("seta"));
 
 	return mouse;
 }
@@ -56,112 +52,64 @@ void drawMouse() {
 	Mouse* m = getMouse();
 
 	drawBitmap(m->bitmap, m->x, m->y, ALIGN_LEFT);
+
 	m->draw = 0;
+
 }
 
 void deleteMouse() {
 	free(getMouse());
 }
 
-
 void updateMouse() {
 	Mouse* m = getMouse();
 
-	if(BIT(7) & g_packet[0]) //Y overflow
+	if (BIT(7) & g_packet[0]) //Y overflow
 		return;
 
-	if(BIT(6) & g_packet[0]) //X overflow
+	if (BIT(6) & g_packet[0]) //X overflow
 		return;
 
-	memcpy(m->packet, g_packet, sizeof(m->packet));
-
-	m->LBtnDown = m->packet[0] & BIT(0);
-	m->RBtnDown = m->packet[0] & BIT(1);
-	m->MBtnDown = m->packet[0] & BIT(2);
+	m->LBtnDown = g_packet[0] & BIT(0);
+	m->RBtnDown = g_packet[0] & BIT(1);
+	m->MBtnDown = g_packet[0] & BIT(2);
 
 	//calculate deltas depending on whether its 2's comp or not
 
-	if (m->packet[0] & BIT(4))
-		m->deltaX =  -((m->packet[1] ^= 0xFF) + 1);
-	else
-		m->deltaX = m->packet[1];
+	if (g_packet[0] & BIT(4)) {
+		m->deltaX = -((g_packet[1] ^= 0xFF) + 1);
+	} else
+		m->deltaX = g_packet[1];
 
-	if (m->packet[0] & BIT(5))
-		m->deltaY = ((m->packet[2] ^= 0xFF) + 1);
-	else
-		m->deltaY = - m->packet[2];
+	if (g_packet[0] & BIT(5)) {
+		m->deltaY = ((g_packet[2] ^= 0xFF) + 1);
+	} else
+		m->deltaY = -g_packet[2];
+
+
+	//Boundaries check
+
+	if (m->x + m->deltaX <= 0)
+		m->x = vg_getHRES() - m->bitmap->bitmapInfoHeader.width;
+
+	if (m->y + m->deltaY <= 0)
+		m->y = vg_getVRES() - m->bitmap->bitmapInfoHeader.height;
+
+	if (m->x + m->deltaX >= vg_getHRES())
+		m->x = vg_getHRES() - m->bitmap->bitmapInfoHeader.width;
+
+	if (m->y + m->deltaY >= vg_getVRES())
+		m->y = vg_getVRES() - m->bitmap->bitmapInfoHeader.height;
+
+
 
 	m->x += m->deltaX;
 	m->y += m->deltaY;
 
-	/* FOR NOW ALLOW TO CROSS BOUNDARIES --> with this solution "old" mouse movements are not deleted
-	if (m->x < 0)
-		m->x = 0;
-
-	if (m->x > vg_getHRES())
-		m->x = vg_getHRES();
-
-
-	if (m->y < 0)
-		m->y = 0;
-
-	if (m->y > vg_getVRES())
-		m->y = vg_getVRES();*/
-
 
 	m->draw = 1;
 
-
 }
-
-//void updateMouse() {
-//	Mouse* m = getMouse();
-//
-//	if(BIT(7) & m->packet[0]) //Y overflow
-//		return;
-//
-//	if(BIT(6) & m->packet[0]) //X overflow
-//		return;
-//
-//	//memcpy(m->packet, g_packet, sizeof(m->packet));
-//
-//	m->LBtnDown = m->packet[1] & BIT(0);
-//	m->RBtnDown = m->packet[1] & BIT(1);
-//	m->MBtnDown = m->packet[1] & BIT(2);
-//
-//	//calculate deltas depending on whether its 2's comp or not
-//
-//	if (m->packet[0] & BIT(4))
-//		m->deltaX =  -((m->packet[1] ^= 0xFF) + 1);
-//	else
-//		m->deltaX = m->packet[1];
-//
-//	if (m->packet[0] & BIT(5))
-//		m->deltaY = ((m->packet[2] ^= 0xFF) + 1);
-//	else
-//		m->deltaY = - m->packet[2];
-//
-//	m->x += m->deltaX;
-//	m->y += m->deltaY;
-//
-//	/* FOR NOW ALLOW TO CROSS BOUNDARIES --> with this solution "old" mouse movements are not deleted
-//	if (m->x < 0)
-//		m->x = 0;
-//
-//	if (m->x > vg_getHRES())
-//		m->x = vg_getHRES();
-//
-//
-//	if (m->y < 0)
-//		m->y = 0;
-//
-//	if (m->y > vg_getVRES())
-//		m->y = vg_getVRES();*/
-//
-//
-//	m->draw = 1;
-//
-//}
 
 int cleanOBF() {
 	return mouse_readOBF();
@@ -231,40 +179,8 @@ long mouse_readOBF() {
 	return TRIES_EXCEED;
 }
 
-//void mouseIntHandler() {
-//
-//	Mouse* m = getMouse();
-//	long byte = mouse_readOBF();
-//
-//	if (byte == -1)
-//		return;
-//
-//	if (m->packet_index > 2) {
-//		m->packets_synched = 0;
-//	}
-//
-//	synch_packet(byte);
-//
-//	if (m->packets_synched) {
-//		m->packet[m->packet_index] = byte;
-//		m->packet_index++;
-//	}
-//
-//}
-//
-//void synch_packet(long byte) {
-//	Mouse*  m = getMouse();
-//	if (m->packets_synched)
-//		return;
-//
-//	if (FIRSTBYTE & byte) {
-//		m->packet_index = 0;
-//		m->packets_synched = 1;
-//	}
-//}
-
-
 void mouseIntHandler() {
+	printf("Mouse interrupt\n");
 
 	long byte = mouse_readOBF();
 
@@ -272,6 +188,7 @@ void mouseIntHandler() {
 		return;
 
 	if (g_packet_index > 2) {
+		updateMouse();
 		g_synched = FALSE;
 	}
 

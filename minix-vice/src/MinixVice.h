@@ -18,14 +18,11 @@ typedef struct{
 
 	int done, draw;
 
-
 	MainMenu* main_menu;
 
 	unsigned long scancode;
 
-	int backgroundY, background1Y;
 	Bitmap* background;
-	Bitmap* background1;
 	Bitmap* menu_background;
 
 	Player* car;
@@ -46,6 +43,5 @@ void drawMinixVice();
 
 void endMinixVice();
 
-void drawMovingBackground(); // TODO DELETE
 
 #endif /* MINIXVICE_H */

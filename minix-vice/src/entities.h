@@ -43,6 +43,8 @@ typedef struct{
 }ExtraPtsBoost;
 
 
+void drawMovingBackground();
+
 /* PLAYER METHODS */
 
 void movePlayerLeft(Player* car);
