@@ -62,6 +62,8 @@ MinixVice* initMinixVice() {
 	game->draw = 1;
 	game->scancode = 0;
 
+	game->speed = 3;
+
 	/* MAIN MENU INIT */
 	game->main_menu->playBtn = newColliderBox(95, 145, 392, 230);
 	game->main_menu->quitBtn = newColliderBox(95, 257, 392, 340);
@@ -79,7 +81,6 @@ MinixVice* initMinixVice() {
 	game->car->x = vg_getHRES() / 2;
 	game->car->y = vg_getVRES() / 2;
 
-	game->car->speed = PLAYER_SPEED;
 
 	return game;
 }
@@ -114,9 +115,6 @@ void timerIH() {
 	game->timer->counter++;
 	game->timer->ticked = 1;
 
-	printf("TIMER interrupt\n");
-
-
 }
 
 void kbdIH() {
@@ -140,6 +138,15 @@ void kbdIH() {
 			movePlayerRight(game->car);
 			updatePlayerState(TRIGHT);
 			break;
+
+		case W_MAKE:
+			accelerate();
+			break;
+
+		case S_MAKE:
+			brake();
+			break;
+
 		default:
 			updatePlayerState(DEFAULT);
 			break;
@@ -148,6 +155,24 @@ void kbdIH() {
 	}
 
 }
+
+void brake(){
+	MinixVice* game = getGame();
+
+	if(game->speed <= 1){
+		game->speed = 1;
+		return;
+	}
+
+	game->speed -= 1;
+}
+
+void accelerate(){
+	MinixVice* game = getGame();
+
+	game->speed += 0.5;
+}
+
 
 void updateMinixVice() {
 
@@ -201,8 +226,13 @@ void updateMinixVice() {
 }
 
 void drawMovingBackground() {
-	static int y = 0;
-	if (++y == vg_getVRES())
+	static float y = 0;
+
+	MinixVice* game = getGame();
+
+	y += game->speed;
+
+	if (y >= vg_getVRES())
 		y = 0;
 
 	drawBackgroundBitmap(game->background, 0, y, ALIGN_LEFT);

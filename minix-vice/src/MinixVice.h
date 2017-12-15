@@ -11,12 +11,13 @@
 #include "state_machines.h"
 
 
-
 typedef struct{
 
 	int irq_kbd, irq_timer, irq_mouse;
 
 	int done, draw;
+
+	float speed;
 
 	MainMenu* main_menu;
 
@@ -40,6 +41,10 @@ MinixVice* getGame();
 void updateMinixVice();
 
 void drawMinixVice();
+
+void brake();
+
+void accelerate();
 
 void endMinixVice();
 

@@ -4,6 +4,7 @@
 
 #include "bitmap.h"
 #include "ColliderBox.h"
+#include "state_machines.h"
 
 typedef struct{
 
@@ -16,7 +17,6 @@ typedef struct{
 
 	int x,y;
 	int width, height;
-	int speed;
 
 	Bitmap* bmpForward;
 	Bitmap* bmpTLeft;

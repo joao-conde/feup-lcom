@@ -20,7 +20,7 @@ MinixVice* startGame() {
 	 *
 	 */
 	vg_init(279);
-	printf("%d * %d\n", vg_getHRES(), vg_getVRES());
+	printf("SCREEN RES: %d * %d\n", vg_getHRES(), vg_getVRES());
 
 	MinixVice* game = getGame();
 

@@ -38,7 +38,7 @@ Mouse* newMouse() {
 }
 
 Mouse* getMouse() {
-	if (!mouse) {
+	if (mouse == NULL) {
 		enable_mouse();
 		enable_DataReporting();
 		setStreamMode();
@@ -86,29 +86,23 @@ void updateMouse() {
 	} else
 		m->deltaY = -g_packet[2];
 
-
 	//Boundaries check
 
-	if (m->x + m->deltaX <= 0)
-		m->x = vg_getHRES() - m->bitmap->bitmapInfoHeader.width;
+	if (m->x + m->deltaX >= vg_getHRES() - 6) {
+		m->x = vg_getHRES() - 6;
+	}else if (m->x + m->deltaX < 0)
+		m->x = 0;
+	else
+		m->x += m->deltaX;
 
-	if (m->y + m->deltaY <= 0)
-		m->y = vg_getVRES() - m->bitmap->bitmapInfoHeader.height;
-
-	if (m->x + m->deltaX >= vg_getHRES())
-		m->x = vg_getHRES() - m->bitmap->bitmapInfoHeader.width;
-
-	if (m->y + m->deltaY >= vg_getVRES())
-		m->y = vg_getVRES() - m->bitmap->bitmapInfoHeader.height;
-
-
-
-	m->x += m->deltaX;
-	m->y += m->deltaY;
-
+	if (m->y + m->deltaY >= vg_getVRES() - 6) {
+		m->y = vg_getVRES() - 6;
+	}else if (m->y + m->deltaY < 6)
+		m->y = 0;
+	else
+		m->y += m->deltaY;
 
 	m->draw = 1;
-
 }
 
 int cleanOBF() {
@@ -180,7 +174,6 @@ long mouse_readOBF() {
 }
 
 void mouseIntHandler() {
-	printf("Mouse interrupt\n");
 
 	long byte = mouse_readOBF();
 
