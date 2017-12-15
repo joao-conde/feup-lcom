@@ -2,12 +2,6 @@
 
 void play(){
 	MinixVice* game = startGame();
-//	int i = 0;
-//	while (i++ < 1000) {
-//		printf(".");
-//		drawMovingBackground();
-//		usleep(10000);
-//	} // todo delete
 	gameLoop(game);
 	endGame(game);
 }
@@ -16,7 +10,7 @@ MinixVice* startGame() {
 	srand(time(NULL));
 	sef_startup();
 
-	/* 16 bit modes
+	/* 16 bit graphic modes
 	 *
 	 * 270(0x010E) - 320*200
 	 * 273(0x0111) - 640*480
@@ -41,7 +35,6 @@ void gameLoop(MinixVice* game) {
 			drawMinixVice(game);
 		}
 
-		//flipDB();
 		updateMinixVice(game);
 	}
 
@@ -50,6 +43,5 @@ void gameLoop(MinixVice* game) {
 
 void endGame(MinixVice* game){
 	endMinixVice(game);
-
 	vg_exit();
 }
