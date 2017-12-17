@@ -38,17 +38,6 @@ typedef struct{
 }Barrel;
 
 
-typedef struct{
-
-	int x,y;
-	int width, height;
-	int extraPts;
-
-	ColliderBox* body;
-
-}ExtraPtsBoost;
-
-
 void drawMovingBackground();
 
 /* PLAYER METHODS */
@@ -61,6 +50,9 @@ void drawPlayer();
 /* BARREL METHODS */
 
 void drawBarrel(Barrel* barrel);
+void drawBarrels();
+void updateBarrelsPos();
+
 
 
 #endif /* ENTITIES_H */

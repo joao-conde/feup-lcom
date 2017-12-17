@@ -1,7 +1,6 @@
 #ifndef MINIXVICE_H
 #define MINIXVICE_H
 
-
 #include "kbd.h"
 #include "timer.h"
 #include "mouse.h"
@@ -11,7 +10,8 @@
 #include "state_machines.h"
 
 
-typedef struct{
+
+typedef struct {
 
 	int irq_kbd, irq_timer, irq_mouse;
 
@@ -33,7 +33,6 @@ typedef struct{
 
 } MinixVice;
 
-
 MinixVice* initMinixVice();
 
 MinixVice* getGame();
@@ -46,7 +45,9 @@ void brake();
 
 void accelerate();
 
-void endMinixVice();
+void createBarrels();
 
+
+void endMinixVice();
 
 #endif /* MINIXVICE_H */

@@ -9,12 +9,17 @@ extern st_player playerState;
 void movePlayerLeft() {
 	MinixVice* game = getGame();
 
-	game->car->x = game->car->x - 3*game->speed;
+	game->car->x -= 3*game->speed;
+	game->car->body->x1 -= 3*game->speed;
+	game->car->body->x2 -= 3*game->speed;
 }
 
 void movePlayerRight() {
 	MinixVice* game = getGame();
-	game->car->x = game->car->x + 3*game->speed;
+
+	game->car->x += 3*game->speed;
+	game->car->body->x1 += 3*game->speed;
+	game->car->body->x2 += 3*game->speed;
 }
 
 void drawPlayer() {
