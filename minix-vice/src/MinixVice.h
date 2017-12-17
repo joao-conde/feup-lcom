@@ -29,7 +29,7 @@ typedef struct{
 	Player* car;
 	Timer* timer;
 
-	Barrel* barrel;
+	Barrel* barrels[3];
 
 } MinixVice;
 

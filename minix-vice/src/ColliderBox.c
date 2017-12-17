@@ -14,7 +14,13 @@ ColliderBox* newColliderBox(int x1, int y1, int x2, int y2){
 }
 
 
-int clicked(ColliderBox* collider, int x, int y){
+int clicked(ColliderBox* collider, Mouse* mouse){
+
+	int x = mouse->x;
+	int y = mouse->y;
+
+	if(!mouse->LBtnDown)
+		return 0;
 
 	if(!(x >= collider->x1 && x <= collider->x2))
 		return 0;
@@ -23,6 +29,13 @@ int clicked(ColliderBox* collider, int x, int y){
 		return 0;
 
 	return 1;
+}
+
+
+int collide(ColliderBox* c1, ColliderBox* c2){
+
+	return 1; //TODO actually calculate if they collide
+
 }
 
 
