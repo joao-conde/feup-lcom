@@ -22,6 +22,8 @@ typedef struct{
 	Bitmap* bmpTLeft;
 	Bitmap* bmpTRight;
 
+	ColliderBox* body;
+
 }Player;
 
 
@@ -30,6 +32,8 @@ typedef struct{
 	int x,y;
 	int width, height;
 	Bitmap* bitmap;
+
+	ColliderBox* body;
 
 }Barrel;
 
@@ -40,6 +44,8 @@ typedef struct{
 	int width, height;
 	int extraPts;
 
+	ColliderBox* body;
+
 }ExtraPtsBoost;
 
 
@@ -47,9 +53,9 @@ void drawMovingBackground();
 
 /* PLAYER METHODS */
 
-void movePlayerLeft(Player* car);
-void movePlayerRight(Player* car);
-void drawPlayer(Player* car);
+void movePlayerLeft();
+void movePlayerRight();
+void drawPlayer();
 
 
 /* BARREL METHODS */

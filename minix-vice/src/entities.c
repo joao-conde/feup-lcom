@@ -6,28 +6,30 @@ extern st_player playerState;
 
 /* PLAYER METHODS */
 
-void movePlayerLeft(Player* car) {
+void movePlayerLeft() {
 	MinixVice* game = getGame();
 
-	car->x = car->x - 3*game->speed;
+	game->car->x = game->car->x - 3*game->speed;
 }
 
-void movePlayerRight(Player* car) {
+void movePlayerRight() {
 	MinixVice* game = getGame();
-	car->x = car->x + 3*game->speed;
+	game->car->x = game->car->x + 3*game->speed;
 }
 
-void drawPlayer(Player* car) {
+void drawPlayer() {
+
+	MinixVice* game = getGame();
 
 	switch (playerState) {
 	case TLEFT:
-		drawBitmap(car->bmpTLeft, car->x, car->y, ALIGN_LEFT);
+		drawBitmap(game->car->bmpTLeft, game->car->x, game->car->y, ALIGN_LEFT);
 		break;
 	case TRIGHT:
-		drawBitmap(car->bmpTRight, car->x, car->y, ALIGN_LEFT);
+		drawBitmap(game->car->bmpTRight, game->car->x, game->car->y, ALIGN_LEFT);
 		break;
 	default:
-		drawBitmap(car->bmpForward, car->x, car->y, ALIGN_LEFT);
+		drawBitmap(game->car->bmpForward, game->car->x, game->car->y, ALIGN_LEFT);
 		break;
 	}
 
