@@ -46,11 +46,26 @@ void loadBarrelsBitmaps() {
 	}
 }
 
+void loadDigitBitmaps(){
+	game->digits[0] = loadBitmap(getImgPath("0"));
+	game->digits[1] = loadBitmap(getImgPath("1"));
+	game->digits[2] = loadBitmap(getImgPath("2"));
+	game->digits[3] = loadBitmap(getImgPath("3"));
+	game->digits[4] = loadBitmap(getImgPath("4"));
+	game->digits[5] = loadBitmap(getImgPath("5"));
+	game->digits[6] = loadBitmap(getImgPath("6"));
+	game->digits[7] = loadBitmap(getImgPath("7"));
+	game->digits[8] = loadBitmap(getImgPath("8"));
+	game->digits[9] = loadBitmap(getImgPath("9"));
+}
+
 void loadBitmaps() {
 
 	game->background = loadBitmap(getImgPath("road"));
 	game->menu_background = loadBitmap(getImgPath("main-menu"));
 	game->settings_background = loadBitmap(getImgPath("temporary"));
+
+	loadDigitBitmaps();
 
 	loadBarrelsBitmaps();
 
@@ -110,8 +125,8 @@ void initBarrels() {
 
 	for (i = 0; i < numberOfBarrels; i++) {
 
-		game->barrels[i]->x = vg_getHRES() / 2 + i * 100;
-		game->barrels[i]->y = 0;
+		game->barrels[i]->x = generateRandomPos(0, vg_getHRES());
+		game->barrels[i]->y = generateRandomPos(0, vg_getVRES());
 
 		game->barrels[i]->body = newColliderBox(game->barrels[i]->x,
 				game->barrels[i]->y, game->barrels[i]->x + barrelWidth,
@@ -120,11 +135,15 @@ void initBarrels() {
 	}
 }
 
-void initTimer(){
+void initTimer() {
 	MinixVice* game = getGame();
 
 	game->timer->ticked = 0;
 	game->timer->counter = 0;
+}
+
+int generateRandomPos(int lowerBound, int higherBound) {
+	return rand() % (higherBound - lowerBound) + lowerBound;
 }
 
 MinixVice* initMinixVice() {
@@ -228,6 +247,24 @@ void accelerate() {
 	game->speed += 0.5;
 }
 
+void recalculateBarrelPos(Barrel* barrel){
+	int width, height, newX;
+
+	width = barrel->bitmap->bitmapInfoHeader.width;
+	height = barrel->bitmap->bitmapInfoHeader.height;
+
+	newX = generateRandomPos(0,vg_getHRES());
+
+	barrel->x = newX;
+	barrel->y = 0;
+
+	barrel->body->x1 = newX;
+	barrel->body->y1 = 0;
+
+	barrel->body->x2 = newX + width;
+	barrel->body->y2 = height;
+}
+
 void updateMinixVice() {
 
 	MinixVice* game = getGame();
@@ -278,18 +315,32 @@ void updateMinixVice() {
 
 	case GAME:
 
-		if(game->timer->ticked){
+		if (game->timer->ticked) {
+			game->score++;
 			updateBarrelsPos();
 		}
 
 		for (i = 0; i < numberOfBarrels; i++) {
+
 			if (collide(game->car->body, game->barrels[i]->body)) {
 				printf("Car collided with barrel\n");
 				game->done = 1;
 			}
+
+			//if barrel out of game screen re-calculate coordinates
+			if (game->barrels[i]->y > vg_getVRES()) {
+				recalculateBarrelPos(game->barrels[i]);
+			}
 		}
 
 		break;
+
+//	case OPTIONS:
+//
+//		if(clicked())
+//			changeCar(Bitmap do novo carro);
+//
+//		break;
 
 	default: //TODO remove this?
 		break;
@@ -332,6 +383,19 @@ void drawBarrels() {
 
 }
 
+
+void displayScore(){
+	MinixVice* game = getGame();
+    int score = game->score;
+	int offset = 50, i = 0;
+
+	while(score >= 1){
+		drawBitmap(game->digits[score % 10], (vg_getHRES() - 50) - offset * i, 0, ALIGN_LEFT);
+		score /= 10;
+		i++;
+	}
+}
+
 void drawMinixVice() {
 
 	MinixVice* game = getGame();
@@ -361,12 +425,13 @@ void drawMinixVice() {
 	if (game->timer->ticked) {
 		drawMouse();
 		game->timer->ticked = 0;
-		game->score++;
+		displayScore();
 		//TODO display score
 		flipDB();
 	}
 
 }
+
 
 
 void endMinixVice() {

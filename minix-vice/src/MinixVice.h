@@ -27,6 +27,7 @@ typedef struct {
 	Bitmap* background;
 	Bitmap* menu_background;
 	Bitmap* settings_background;
+	Bitmap* digits[10];
 
 	Player* car;
 	Timer* timer;
