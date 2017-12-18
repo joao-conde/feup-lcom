@@ -41,19 +41,19 @@ int collide(ColliderBox* c1, ColliderBox* c2) {
 	 */
 
 	//check condition 1
-	if(c1->x1 >= c2->x2)
+	if(c1->x1 > c2->x2)
 		return 0;
 
 	//check condition 2
-	if(c1->x2 <= c2->x1)
+	if(c1->x2 < c2->x1)
 		return 0;
 
 	//check condition 3
-	if(c1->y1 <= c2->y2)
+	if(c1->y1 > c2->y2)
 		return 0;
 
-	//check condition 3
-	if(c1->y2 >= c2->y1)
+	//check condition 4
+	if(c1->y2 < c2->y1)
 		return 0;
 
 	return 1;
