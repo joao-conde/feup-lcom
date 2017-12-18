@@ -39,8 +39,10 @@ void createBarrels() {
 
 void loadBarrelsBitmaps() {
 	int i;
+	//Loads bitmap only once but stores it multiple times (not relevant)
+	Bitmap* barrelBitmap = loadBitmap(getImgPath("barrel"));
 	for (i = 0; i < numberOfBarrels; i++) {
-		game->barrels[i]->bitmap = loadBitmap(getImgPath("barrel"));
+		game->barrels[i]->bitmap = barrelBitmap;
 	}
 }
 
@@ -49,7 +51,6 @@ void loadBitmaps() {
 	game->background = loadBitmap(getImgPath("road"));
 	game->menu_background = loadBitmap(getImgPath("main-menu"));
 	game->settings_background = loadBitmap(getImgPath("temporary"));
-
 
 	loadBarrelsBitmaps();
 
@@ -65,29 +66,14 @@ void deleteBitmaps() {
 	deleteBitmap(game->car->bmpForward);
 	deleteBitmap(game->car->bmpTLeft);
 	deleteBitmap(game->car->bmpTRight);
-
-	deleteBarrelsBitmaps();
+	deleteBitmap(game->barrels[0]->bitmap);
 }
 
-void deleteBarrelsBitmaps() {
-	int i;
-	for (i = 0; i < numberOfBarrels; i++) {
-		deleteBitmap(game->barrels[i]->bitmap);
-	}
-}
+void initPlayer() {
+	int carWidth, carHeight;
 
-MinixVice* initMinixVice() {
+	MinixVice* game = getGame();
 
-	int carWidth, carHeight, barrelWidth, barrelHeight;
-
-	/* GAME INITIALIZATION */
-	game = (MinixVice*) malloc(sizeof(MinixVice));
-
-	subscribeInterrupts();
-	createEntities();
-	loadBitmaps();
-
-	/* PLAYER INIT */
 	carWidth = game->car->bmpForward->bitmapInfoHeader.width;
 	carHeight = game->car->bmpForward->bitmapInfoHeader.height;
 
@@ -96,23 +82,29 @@ MinixVice* initMinixVice() {
 
 	game->car->body = newColliderBox(game->car->x, game->car->y,
 			game->car->x + carWidth, game->car->y + carHeight);
+}
 
-	/* GAME PROPERTIES INIT */
+void initGameProperties() {
+	MinixVice* game = getGame();
+
 	game->done = 0;
 	game->draw = 1;
 	game->scancode = 0;
 	game->score = 0;
 
 	game->speed = INITIAL_SPEED;
+}
 
-	/* MAIN MENU INIT */
+void initMainMenu() {
+	MinixVice* game = getGame();
+
 	game->main_menu->playBtn = newColliderBox(95, 145, 392, 230);
 	game->main_menu->quitBtn = newColliderBox(95, 257, 392, 340);
+}
 
-	/* TWO BARRELS INIT */
+void initBarrels() {
+	int i, barrelWidth, barrelHeight;
 
-	//TODO create a function to initialize the barrels properties
-	int i;
 	barrelWidth = game->barrels[0]->bitmap->bitmapInfoHeader.width;
 	barrelHeight = game->barrels[0]->bitmap->bitmapInfoHeader.height;
 
@@ -126,10 +118,35 @@ MinixVice* initMinixVice() {
 				game->barrels[i]->y + barrelHeight);
 
 	}
+}
 
-	/* TIMER INIT */
+void initTimer(){
+	MinixVice* game = getGame();
+
 	game->timer->ticked = 0;
 	game->timer->counter = 0;
+}
+
+MinixVice* initMinixVice() {
+
+	/* GAME INITIALIZATION */
+	game = (MinixVice*) malloc(sizeof(MinixVice));
+
+	subscribeInterrupts();
+
+	createEntities();
+
+	loadBitmaps();
+
+	initPlayer();
+
+	initGameProperties();
+
+	initMainMenu();
+
+	initBarrels();
+
+	initTimer();
 
 	return game;
 }
@@ -143,15 +160,8 @@ MinixVice* getGame() {
 	return game;
 }
 
-//TODO: change this to work with mouse object
 void mouseIH() {
-	static int counter = 0;
-
 	mouseIntHandler();
-
-	Mouse* m = getMouse();
-	MinixVice* game = getGame();
-
 }
 
 void timerIH() {
@@ -266,10 +276,11 @@ void updateMinixVice() {
 
 		break;
 
-
-
 	case GAME:
-		updateBarrelsPos();
+
+		if(game->timer->ticked){
+			updateBarrelsPos();
+		}
 
 		for (i = 0; i < numberOfBarrels; i++) {
 			if (collide(game->car->body, game->barrels[i]->body)) {
@@ -305,12 +316,10 @@ void updateBarrelsPos() {
 
 	int i;
 	for (i = 0; i < numberOfBarrels; i++) {
-		//TODO barrels are starting close to end cuz speed is high :/
 		game->barrels[i]->y += game->speed;
 		game->barrels[i]->body->y1 += game->speed;
 		game->barrels[i]->body->y2 += game->speed;
 	}
-
 
 }
 
@@ -359,28 +368,6 @@ void drawMinixVice() {
 
 }
 
-////first attempt at collisions
-//int check_collisions() {
-//	MinixVice* game = getGame();
-//
-//	int playerX = game->car->x;
-//	int playerY = game->car->y;
-//
-//	int xi = game->barrel->x;
-//	int xf = xi + game->barrel->width;
-//
-//	int yi = game->barrel->y;
-//	int yf = yi + game->barrel->height;
-//
-//	printf("PLAYER: %d - %d\n", playerX, playerY);
-//	printf("BARREL: %d - %d ; %d - %d\n", xi, yi, xf, yf);
-//
-//	//TODO: AN ACTUAL COLLISION
-//	if (playerX > xf)
-//		game->done = 1;
-//
-//	return 0;
-//}
 
 void endMinixVice() {
 	//TODO: FREE ALL GAME ENTITIES AND BITMAPS
@@ -398,7 +385,6 @@ void endMinixVice() {
 //	for (i = 0; i < numberOfBarrels; i++) {
 //		free(game->barrels[i]);
 //	}
-
 
 	free(game);
 

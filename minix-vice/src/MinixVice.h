@@ -31,7 +31,7 @@ typedef struct {
 	Player* car;
 	Timer* timer;
 
-	Barrel* barrels[1];
+	Barrel* barrels[2];
 
 } MinixVice;
 
@@ -50,8 +50,6 @@ void accelerate();
 void createBarrels();
 
 void deleteBitmaps();
-
-void deleteBarrelsBitmaps();
 
 
 void endMinixVice();
