@@ -18,6 +18,7 @@ typedef struct {
 	int done, draw;
 
 	float speed;
+	int score;
 
 	MainMenu* main_menu;
 
@@ -25,11 +26,12 @@ typedef struct {
 
 	Bitmap* background;
 	Bitmap* menu_background;
+	Bitmap* settings_background;
 
 	Player* car;
 	Timer* timer;
 
-	Barrel* barrels[3];
+	Barrel* barrels[1];
 
 } MinixVice;
 
@@ -46,6 +48,10 @@ void brake();
 void accelerate();
 
 void createBarrels();
+
+void deleteBitmaps();
+
+void deleteBarrelsBitmaps();
 
 
 void endMinixVice();

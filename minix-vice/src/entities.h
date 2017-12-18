@@ -16,7 +16,6 @@ typedef struct{
 typedef struct{
 
 	int x,y;
-	int width, height;
 
 	Bitmap* bmpForward;
 	Bitmap* bmpTLeft;
@@ -30,7 +29,6 @@ typedef struct{
 typedef struct{
 
 	int x,y;
-	int width, height;
 	Bitmap* bitmap;
 
 	ColliderBox* body;

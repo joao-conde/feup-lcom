@@ -2,7 +2,7 @@
 #define STATE_H
 
 typedef enum {
-	MAIN_MENU, GAME, OVER
+	MAIN_MENU, OPTIONS, GAME, OVER
 } st_game;
 
 
@@ -12,7 +12,7 @@ typedef enum {
 
 
 typedef enum {
-	PLAY, TERMINATE
+	PLAY, SETTINGS, TERMINATE
 } game_event_t;
 
 /*

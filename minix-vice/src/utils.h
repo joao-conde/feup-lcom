@@ -6,7 +6,7 @@
 #define swap(type,i,j) {type t = i; i = j; j = t;}
 
 
-#define INITIAL_SPEED 6
+#define INITIAL_SPEED 2
 
 
 

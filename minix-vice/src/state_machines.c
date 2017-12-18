@@ -19,6 +19,9 @@ void updateGameState(game_event_t event) {
 		if (event == PLAY)
 			gameState = GAME;
 
+		if (event == SETTINGS)
+			gameState = OPTIONS;
+
 		if (event == TERMINATE)
 			gameState = OVER;
 
