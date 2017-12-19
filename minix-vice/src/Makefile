@@ -5,7 +5,7 @@ COMPILER_TYPE = gnu
 CC = gcc
 
 PROG = minix-vice
-SRCS += bitmap.c ColliderBox.c entities.c game.c kbd.c main.c mouse.c MinixVice.c state_machines.c 
+SRCS += bitmap.c ColliderBox.c entities.c game.c kbd.c main.c mouse.c MinixVice.c rtc.c state_machines.c
 SRCS += timer.c utils.c video_gr.c vbe.c 
 
 CCFLAGS= -Wall -O3
