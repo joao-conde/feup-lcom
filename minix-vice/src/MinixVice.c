@@ -1,11 +1,14 @@
 #include <minix/drivers.h>
 
 #include "MinixVice.h"
+#include "rtc.h"
 
 extern st_game gameState;
 
 /* SINGLETON GAME IMPLEMENTATION */
 MinixVice* game = NULL;
+
+int selectedCar = 1; //by default blue car
 
 int numberOfBarrels = sizeof(game->barrels) / sizeof(Barrel*);
 
@@ -46,7 +49,7 @@ void loadBarrelsBitmaps() {
 	}
 }
 
-void loadDigitBitmaps(){
+void loadDigitBitmaps() {
 	game->digits[0] = loadBitmap(getImgPath("0"));
 	game->digits[1] = loadBitmap(getImgPath("1"));
 	game->digits[2] = loadBitmap(getImgPath("2"));
@@ -59,6 +62,25 @@ void loadDigitBitmaps(){
 	game->digits[9] = loadBitmap(getImgPath("9"));
 }
 
+void loadCarBitmaps() {
+
+	switch (selectedCar) {
+	case 1: //blue car
+		game->car->bmpForward = loadBitmap(getImgPath("blue-car"));
+		game->car->bmpTLeft = loadBitmap(getImgPath("blue-car-tl"));
+		game->car->bmpTRight = loadBitmap(getImgPath("blue-car-tr"));
+		break;
+
+	case 2:
+		break;
+
+	case 3:
+		break;
+
+	}
+
+}
+
 void loadBitmaps() {
 
 	game->background = loadBitmap(getImgPath("road"));
@@ -68,10 +90,7 @@ void loadBitmaps() {
 	loadDigitBitmaps();
 
 	loadBarrelsBitmaps();
-
-	game->car->bmpForward = loadBitmap(getImgPath("blue-car"));
-	game->car->bmpTLeft = loadBitmap(getImgPath("blue-car-tl"));
-	game->car->bmpTRight = loadBitmap(getImgPath("blue-car-tr"));
+	loadCarBitmaps();
 
 }
 
@@ -189,6 +208,12 @@ void timerIH() {
 	game->timer->counter++;
 	game->timer->ticked = 1;
 
+	/* first attempt at RTC :/
+	 unsigned long *day, *month, *year;
+	 getDate(day,month,year);
+	 printf("DATE: %d, %d, %d\n",*day,*month,*year);
+	 */
+
 }
 
 void kbdIH() {
@@ -247,13 +272,13 @@ void accelerate() {
 	game->speed += 0.5;
 }
 
-void recalculateBarrelPos(Barrel* barrel){
+void recalculateBarrelPos(Barrel* barrel) {
 	int width, height, newX;
 
 	width = barrel->bitmap->bitmapInfoHeader.width;
 	height = barrel->bitmap->bitmapInfoHeader.height;
 
-	newX = generateRandomPos(0,vg_getHRES());
+	newX = generateRandomPos(0, vg_getHRES());
 
 	barrel->x = newX;
 	barrel->y = 0;
@@ -383,14 +408,15 @@ void drawBarrels() {
 
 }
 
-
-void displayScore(){
+void displayScore() {
 	MinixVice* game = getGame();
-    int score = game->score;
+
+	int score = game->score;
 	int offset = 50, i = 0;
 
-	while(score >= 1){
-		drawBitmap(game->digits[score % 10], (vg_getHRES() - 50) - offset * i, 0, ALIGN_LEFT);
+	while (score >= 1) {
+		drawBitmap(game->digits[score % 10],
+				(vg_getHRES() - offset) - offset * i, 0, ALIGN_LEFT);
 		score /= 10;
 		i++;
 	}
@@ -403,7 +429,7 @@ void drawMinixVice() {
 	switch (gameState) {
 
 	case MAIN_MENU:
-		//TODO: draw menu function
+//TODO: draw menu function
 		drawBackgroundBitmap(game->menu_background, 0, 0, ALIGN_LEFT);
 		break;
 
@@ -426,16 +452,14 @@ void drawMinixVice() {
 		drawMouse();
 		game->timer->ticked = 0;
 		displayScore();
-		//TODO display score
+//TODO display score
 		flipDB();
 	}
 
 }
 
-
-
 void endMinixVice() {
-	//TODO: FREE ALL GAME ENTITIES AND BITMAPS
+//TODO: FREE ALL GAME ENTITIES AND BITMAPS
 	MinixVice* game = getGame();
 
 	unsubscribeInterrupts();
