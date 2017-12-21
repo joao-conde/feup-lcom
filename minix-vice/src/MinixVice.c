@@ -8,8 +8,6 @@ extern st_game gameState;
 /* SINGLETON GAME IMPLEMENTATION */
 MinixVice* game = NULL;
 
-int selectedCar = 2; //by default blue car
-
 int numberOfBarrels = sizeof(game->barrels) / sizeof(Barrel*);
 
 void subscribeInterrupts() {
@@ -63,7 +61,7 @@ void loadDigitBitmaps() {
 	game->digits[9] = loadBitmap(getImgPath("9"));
 }
 
-void loadCarBitmaps() {
+void loadCarBitmaps(int selectedCar) {
 
 	switch (selectedCar) {
 	case 1: //blue car
@@ -97,7 +95,6 @@ void loadBitmaps() {
 	loadDigitBitmaps();
 
 	loadBarrelsBitmaps();
-	loadCarBitmaps();
 
 }
 
@@ -141,14 +138,16 @@ void initMainMenu() {
 
 	game->main_menu->playBtn = newColliderBox(95, 145, 392, 230);
 	game->main_menu->quitBtn = newColliderBox(95, 257, 392, 340);
+
 }
 
 void initSelectMenu(){
 	MinixVice* game = getGame();
 
-//	game->main_menu->playBtn = newColliderBox(95, 145, 392, 230);
-//	game->main_menu->quitBtn = newColliderBox(95, 257, 392, 340);
-	//TODO correct coliders
+	game->select_menu->select_lamb = newColliderBox(156, 230, 319, 568);
+	game->select_menu->select_blue = newColliderBox(431, 230, 579, 568);
+	game->select_menu->select_mercedes = newColliderBox(705, 230, 860, 568);
+
 }
 
 void initBarrels() {
@@ -191,11 +190,13 @@ MinixVice* initMinixVice() {
 
 	loadBitmaps();
 
-	initPlayer();
+//	initPlayer();
 
 	initGameProperties();
 
 	initMainMenu();
+
+	initSelectMenu();
 
 	initBarrels();
 
@@ -344,11 +345,36 @@ void updateMinixVice() {
 	case MAIN_MENU:
 
 		if (clicked(game->main_menu->playBtn, m)) {
-			updateGameState(PLAY);
+			updateGameState(SETTINGS);
 		}
 
 		if (clicked(game->main_menu->quitBtn, m)) {
 			game->done = 1;
+		}
+
+		break;
+
+	case OPTIONS:
+
+		if (clicked(game->select_menu->select_lamb, m)) {
+			loadCarBitmaps(2);
+			initPlayer();
+
+			updateGameState(PLAY);
+		}
+
+		if (clicked(game->select_menu->select_blue, m)) {
+			loadCarBitmaps(1);
+			initPlayer();
+
+			updateGameState(PLAY);
+		}
+
+		if (clicked(game->select_menu->select_mercedes, m)) {
+			loadCarBitmaps(3);
+			initPlayer();
+
+			updateGameState(PLAY);
 		}
 
 		break;
@@ -375,16 +401,8 @@ void updateMinixVice() {
 
 		break;
 
-//	case OPTIONS:
-//
-//		if(clicked())
-//			changeCar(Bitmap do novo carro);
-//
-//		break;
-
-	default: //TODO remove this?
-		break;
 	}
+
 
 }
 

@@ -1,6 +1,5 @@
 #include "state_machines.h"
 
-
 //TODO: set to MAIN_MENU
 st_game gameState = MAIN_MENU;
 
@@ -16,14 +15,18 @@ void updateGameState(game_event_t event) {
 
 	case MAIN_MENU:
 
-		if (event == PLAY)
-			gameState = GAME;
-
 		if (event == SETTINGS)
 			gameState = OPTIONS;
 
 		if (event == TERMINATE)
 			gameState = OVER;
+
+		break;
+
+	case OPTIONS:
+
+		if (event == PLAY)
+			gameState = GAME;
 
 		break;
 

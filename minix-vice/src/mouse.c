@@ -103,6 +103,10 @@ void updateMouse() {
 		m->y += m->deltaY;
 
 	m->draw = 1;
+
+//	if(m->LBtnDown)
+//		printf("%d - %d\n",m->x, m->y);
+	//TODO delete this useful print to figure out button coords
 }
 
 int cleanOBF() {
