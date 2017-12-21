@@ -1,6 +1,9 @@
 #ifndef RTC_H
 #define RTC_H
 
+#define BIT(n) (0x01<<(n))
+
+
 
 //TODO check if rtc is updating, verifying the UIP in regA
 int isRTCUpdating();
