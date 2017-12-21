@@ -10,8 +10,18 @@ typedef struct{
 
 	ColliderBox* playBtn;
 	ColliderBox* quitBtn;
+	Bitmap* menu_background;
 
 }MainMenu;
+
+typedef struct{
+
+	ColliderBox* select_lamb;
+	ColliderBox* select_blue;
+	ColliderBox* select_mercedes;
+	Bitmap* select_background;
+
+}SelectMenu;
 
 typedef struct{
 
