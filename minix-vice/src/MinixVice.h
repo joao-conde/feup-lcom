@@ -21,12 +21,12 @@ typedef struct {
 	int score;
 
 	MainMenu* main_menu;
+	SelectMenu* select_menu;
 
 	unsigned long scancode;
 
 	Bitmap* background;
-	Bitmap* menu_background;
-	Bitmap* settings_background;
+
 	Bitmap* digits[10];
 
 	Player* car;

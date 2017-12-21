@@ -8,7 +8,7 @@ extern st_game gameState;
 /* SINGLETON GAME IMPLEMENTATION */
 MinixVice* game = NULL;
 
-int selectedCar = 1; //by default blue car
+int selectedCar = 2; //by default blue car
 
 int numberOfBarrels = sizeof(game->barrels) / sizeof(Barrel*);
 
@@ -26,6 +26,7 @@ void unsubscribeInterrupts() {
 
 void createEntities() {
 	game->main_menu = (MainMenu*) malloc(sizeof(MainMenu));
+	game->select_menu = (SelectMenu*) malloc(sizeof(SelectMenu));
 
 	createBarrels();
 
@@ -71,10 +72,16 @@ void loadCarBitmaps() {
 		game->car->bmpTRight = loadBitmap(getImgPath("blue-car-tr"));
 		break;
 
-	case 2:
+	case 2: //black lamb
+		game->car->bmpForward = loadBitmap(getImgPath("lamb"));
+		game->car->bmpTLeft = loadBitmap(getImgPath("lamb-tl"));
+		game->car->bmpTRight = loadBitmap(getImgPath("lamb-tr"));
 		break;
 
-	case 3:
+	case 3: //gray mercedes
+		game->car->bmpForward = loadBitmap(getImgPath("mercedes"));
+		game->car->bmpTLeft = loadBitmap(getImgPath("mercedes-tl"));
+		game->car->bmpTRight = loadBitmap(getImgPath("mercedes-tr"));
 		break;
 
 	}
@@ -84,8 +91,8 @@ void loadCarBitmaps() {
 void loadBitmaps() {
 
 	game->background = loadBitmap(getImgPath("road"));
-	game->menu_background = loadBitmap(getImgPath("main-menu"));
-	game->settings_background = loadBitmap(getImgPath("temporary"));
+	game->main_menu->menu_background = loadBitmap(getImgPath("main-menu"));
+	game->select_menu->select_background = loadBitmap(getImgPath("carselect"));
 
 	loadDigitBitmaps();
 
@@ -96,7 +103,7 @@ void loadBitmaps() {
 
 void deleteBitmaps() {
 	deleteBitmap(game->background);
-	deleteBitmap(game->menu_background);
+	deleteBitmap(game->main_menu->menu_background);
 	deleteBitmap(game->car->bmpForward);
 	deleteBitmap(game->car->bmpTLeft);
 	deleteBitmap(game->car->bmpTRight);
@@ -134,6 +141,14 @@ void initMainMenu() {
 
 	game->main_menu->playBtn = newColliderBox(95, 145, 392, 230);
 	game->main_menu->quitBtn = newColliderBox(95, 257, 392, 340);
+}
+
+void initSelectMenu(){
+	MinixVice* game = getGame();
+
+//	game->main_menu->playBtn = newColliderBox(95, 145, 392, 230);
+//	game->main_menu->quitBtn = newColliderBox(95, 257, 392, 340);
+	//TODO correct coliders
 }
 
 void initBarrels() {
@@ -430,11 +445,11 @@ void drawMinixVice() {
 
 	case MAIN_MENU:
 //TODO: draw menu function
-		drawBackgroundBitmap(game->menu_background, 0, 0, ALIGN_LEFT);
+		drawBackgroundBitmap(game->main_menu->menu_background, 0, 0, ALIGN_LEFT);
 		break;
 
 	case OPTIONS:
-		drawBackgroundBitmap(game->settings_background, 0, 0, ALIGN_LEFT);
+		drawBackgroundBitmap(game->select_menu->select_background, 0, 0, ALIGN_LEFT);
 		break;
 
 	case GAME:
