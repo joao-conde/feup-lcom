@@ -33,6 +33,7 @@ typedef struct {
 	Timer* timer;
 
 	Barrel* barrels[2];
+	Cone* cones[2];
 
 } MinixVice;
 
