@@ -1,9 +1,19 @@
 #include "rtc.h"
+
 #include <minix/drivers.h>
 
 
 //TODO check if rtc is updating, verifying the UIP in regA
 int isRTCUpdating(){
+
+	unsigned long regA;
+
+	sys_outb(0x70, 10);
+	sys_inb(0x71, &regA);
+
+	if ((regA & BIT(7)) != 0)
+		return 1;
+
 	return 0;
 }
 

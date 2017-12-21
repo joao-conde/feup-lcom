@@ -189,7 +189,6 @@ void initBarrels() {
 	}
 }
 
-
 void initCones() {
 	int i, coneWidth, coneHeight;
 
@@ -209,7 +208,6 @@ void initCones() {
 
 	}
 }
-
 
 void initTimer() {
 	MinixVice* game = getGame();
@@ -269,11 +267,16 @@ void timerIH() {
 	game->timer->counter++;
 	game->timer->ticked = 1;
 
-	/* first attempt at RTC :/
-	 unsigned long *day, *month, *year;
-	 getDate(day,month,year);
-	 printf("DATE: %d, %d, %d\n",*day,*month,*year);
-	 */
+//	/* first attempt at RTC */
+//	unsigned long *day, *month, *year;
+//
+//	do {
+//		if (!isRTCUpdating()) {
+//			getDate(day, month, year);
+//		}
+//
+//	} while (isRTCUpdating());
+
 
 }
 
@@ -339,7 +342,7 @@ void recalculateBarrelPos(Barrel* barrel) {
 	width = barrel->bitmap->bitmapInfoHeader.width;
 	height = barrel->bitmap->bitmapInfoHeader.height;
 
-	newX = generateRandomPos(197, 823-width);
+	newX = generateRandomPos(197, 823 - width);
 
 	barrel->x = newX;
 	barrel->y = 0;
@@ -351,14 +354,13 @@ void recalculateBarrelPos(Barrel* barrel) {
 	barrel->body->y2 = height;
 }
 
-
 void recalculateConePos(Cone* cone) {
 	int width, height, newX;
 
 	width = cone->bitmap->bitmapInfoHeader.width;
 	height = cone->bitmap->bitmapInfoHeader.height;
 
-	newX = generateRandomPos(197, 823-width);
+	newX = generateRandomPos(197, 823 - width);
 
 	cone->x = newX;
 	cone->y = 0;
@@ -369,7 +371,6 @@ void recalculateConePos(Cone* cone) {
 	cone->body->x2 = newX + width;
 	cone->body->y2 = height;
 }
-
 
 void updateMinixVice() {
 
@@ -465,7 +466,6 @@ void updateMinixVice() {
 			}
 		}
 
-
 		for (i = 0; i < numberOfCones; i++) {
 
 			if (collide(game->car->body, game->cones[i]->body)) {
@@ -529,7 +529,6 @@ void drawBarrels() {
 	}
 
 }
-
 
 void drawCones() {
 
