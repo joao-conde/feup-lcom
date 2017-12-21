@@ -56,3 +56,7 @@ void drawBarrel(Barrel* barrel) {
 	drawBitmap(barrel->bitmap, barrel->x, barrel->y, ALIGN_LEFT);
 }
 
+void drawCone(Cone* cone) {
+	drawBitmap(cone->bitmap, cone->x, cone->y, ALIGN_LEFT);
+}
+

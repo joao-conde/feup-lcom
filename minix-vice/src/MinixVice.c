@@ -9,6 +9,7 @@ extern st_game gameState;
 MinixVice* game = NULL;
 
 int numberOfBarrels = sizeof(game->barrels) / sizeof(Barrel*);
+int numberOfCones = sizeof(game->cones) / sizeof(Cone*);
 
 void subscribeInterrupts() {
 	game->irq_kbd = kbd_subscribe_int();
@@ -27,6 +28,7 @@ void createEntities() {
 	game->select_menu = (SelectMenu*) malloc(sizeof(SelectMenu));
 
 	createBarrels();
+	createCones();
 
 	game->timer = (Timer*) malloc(sizeof(Timer));
 	game->car = (Player*) malloc(sizeof(Player));
@@ -39,12 +41,28 @@ void createBarrels() {
 	}
 }
 
+void createCones() {
+	int i;
+	for (i = 0; i < numberOfCones; i++) {
+		game->cones[i] = (Cone*) malloc(sizeof(Cone));
+	}
+}
+
 void loadBarrelsBitmaps() {
 	int i;
 	//Loads bitmap only once but stores it multiple times (not relevant)
 	Bitmap* barrelBitmap = loadBitmap(getImgPath("barrel"));
 	for (i = 0; i < numberOfBarrels; i++) {
 		game->barrels[i]->bitmap = barrelBitmap;
+	}
+}
+
+void loadConesBitmaps() {
+	int i;
+	//Loads bitmap only once but stores it multiple times (not relevant)
+	Bitmap* coneBitmap = loadBitmap(getImgPath("traffic-cone"));
+	for (i = 0; i < numberOfCones; i++) {
+		game->cones[i]->bitmap = coneBitmap;
 	}
 }
 
@@ -95,6 +113,7 @@ void loadBitmaps() {
 	loadDigitBitmaps();
 
 	loadBarrelsBitmaps();
+	loadConesBitmaps();
 
 }
 
@@ -170,6 +189,28 @@ void initBarrels() {
 	}
 }
 
+
+void initCones() {
+	int i, coneWidth, coneHeight;
+
+	coneWidth = game->cones[0]->bitmap->bitmapInfoHeader.width;
+	coneHeight = game->cones[0]->bitmap->bitmapInfoHeader.height;
+
+	for (i = 0; i < numberOfCones; i++) {
+
+		game->cones[i]->x = generateRandomPos(197, 823 - coneWidth);
+//		game->cones[i]->y = generateRandomPos(0, vg_getVRES());
+
+		game->cones[i]->y = 0;
+
+		game->cones[i]->body = newColliderBox(game->cones[i]->x,
+				game->cones[i]->y, game->cones[i]->x + coneWidth,
+				game->cones[i]->y + coneHeight);
+
+	}
+}
+
+
 void initTimer() {
 	MinixVice* game = getGame();
 
@@ -201,6 +242,8 @@ MinixVice* initMinixVice() {
 	initSelectMenu();
 
 	initBarrels();
+
+	initCones();
 
 	initTimer();
 
@@ -308,6 +351,26 @@ void recalculateBarrelPos(Barrel* barrel) {
 	barrel->body->y2 = height;
 }
 
+
+void recalculateConePos(Cone* cone) {
+	int width, height, newX;
+
+	width = cone->bitmap->bitmapInfoHeader.width;
+	height = cone->bitmap->bitmapInfoHeader.height;
+
+	newX = generateRandomPos(197, 823-width);
+
+	cone->x = newX;
+	cone->y = 0;
+
+	cone->body->x1 = newX;
+	cone->body->y1 = 0;
+
+	cone->body->x2 = newX + width;
+	cone->body->y2 = height;
+}
+
+
 void updateMinixVice() {
 
 	MinixVice* game = getGame();
@@ -386,18 +449,33 @@ void updateMinixVice() {
 		if (game->timer->ticked) {
 			game->score++;
 			updateBarrelsPos();
+			updateConesPos();
 		}
 
 		for (i = 0; i < numberOfBarrels; i++) {
 
 			if (collide(game->car->body, game->barrels[i]->body)) {
-				printf("Car collided with barrel\n");
+				printf("Car collided with a barrel\n");
 				game->done = 1;
 			}
 
 			//if barrel out of game screen re-calculate coordinates
 			if (game->barrels[i]->y > vg_getVRES()) {
 				recalculateBarrelPos(game->barrels[i]);
+			}
+		}
+
+
+		for (i = 0; i < numberOfCones; i++) {
+
+			if (collide(game->car->body, game->cones[i]->body)) {
+				printf("Car collided with a cone\n");
+				game->done = 1;
+			}
+
+			//if barrel out of game screen re-calculate coordinates
+			if (game->cones[i]->y > vg_getVRES()) {
+				recalculateConePos(game->cones[i]);
 			}
 		}
 
@@ -430,7 +508,17 @@ void updateBarrelsPos() {
 		game->barrels[i]->body->y1 += game->speed;
 		game->barrels[i]->body->y2 += game->speed;
 	}
+}
 
+void updateConesPos() {
+	MinixVice* game = getGame();
+
+	int i;
+	for (i = 0; i < numberOfCones; i++) {
+		game->cones[i]->y += game->speed;
+		game->cones[i]->body->y1 += game->speed;
+		game->cones[i]->body->y2 += game->speed;
+	}
 }
 
 void drawBarrels() {
@@ -438,6 +526,16 @@ void drawBarrels() {
 	int i;
 	for (i = 0; i < numberOfBarrels; i++) {
 		drawBarrel(game->barrels[i]);
+	}
+
+}
+
+
+void drawCones() {
+
+	int i;
+	for (i = 0; i < numberOfCones; i++) {
+		drawCone(game->cones[i]);
 	}
 
 }
@@ -479,6 +577,7 @@ void drawMinixVice() {
 
 		drawPlayer(game->car);
 		drawBarrels();
+		drawCones();
 
 		break;
 
@@ -488,7 +587,6 @@ void drawMinixVice() {
 		drawMouse();
 		game->timer->ticked = 0;
 		displayScore();
-//TODO display score
 		flipDB();
 	}
 

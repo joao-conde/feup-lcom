@@ -46,6 +46,16 @@ typedef struct{
 }Barrel;
 
 
+typedef struct{
+
+	int x,y;
+	Bitmap* bitmap;
+
+	ColliderBox* body;
+
+}Cone;
+
+
 void drawMovingBackground();
 
 /* PLAYER METHODS */
