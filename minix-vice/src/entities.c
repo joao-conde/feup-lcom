@@ -12,14 +12,23 @@ void movePlayerLeft() {
 	game->car->x -= 3*game->speed;
 	game->car->body->x1 -= 3*game->speed;
 	game->car->body->x2 -= 3*game->speed;
+
+	if(game->car->x <= 197)
+		game->car->x = 197;
 }
 
 void movePlayerRight() {
 	MinixVice* game = getGame();
+	int carWidth = game->car->bmpForward->bitmapInfoHeader.width;
+
 
 	game->car->x += 3*game->speed;
 	game->car->body->x1 += 3*game->speed;
 	game->car->body->x2 += 3*game->speed;
+
+
+	if(game->car->x >= (823 - carWidth))
+		game->car->x = (823 - carWidth);
 }
 
 void drawPlayer() {

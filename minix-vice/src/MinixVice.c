@@ -141,7 +141,7 @@ void initMainMenu() {
 
 }
 
-void initSelectMenu(){
+void initSelectMenu() {
 	MinixVice* game = getGame();
 
 	game->select_menu->select_lamb = newColliderBox(156, 230, 319, 568);
@@ -158,8 +158,10 @@ void initBarrels() {
 
 	for (i = 0; i < numberOfBarrels; i++) {
 
-		game->barrels[i]->x = generateRandomPos(0, vg_getHRES());
-		game->barrels[i]->y = generateRandomPos(0, vg_getVRES());
+		game->barrels[i]->x = generateRandomPos(197, 823 - barrelWidth);
+//		game->barrels[i]->y = generateRandomPos(0, vg_getVRES());
+
+		game->barrels[i]->y = 0;
 
 		game->barrels[i]->body = newColliderBox(game->barrels[i]->x,
 				game->barrels[i]->y, game->barrels[i]->x + barrelWidth,
@@ -190,7 +192,7 @@ MinixVice* initMinixVice() {
 
 	loadBitmaps();
 
-//	initPlayer();
+//	initPlayer(); cannot be initialized right away, no car selected
 
 	initGameProperties();
 
@@ -294,7 +296,7 @@ void recalculateBarrelPos(Barrel* barrel) {
 	width = barrel->bitmap->bitmapInfoHeader.width;
 	height = barrel->bitmap->bitmapInfoHeader.height;
 
-	newX = generateRandomPos(0, vg_getHRES());
+	newX = generateRandomPos(197, 823-width);
 
 	barrel->x = newX;
 	barrel->y = 0;
@@ -356,15 +358,15 @@ void updateMinixVice() {
 
 	case OPTIONS:
 
-		if (clicked(game->select_menu->select_lamb, m)) {
-			loadCarBitmaps(2);
+		if (clicked(game->select_menu->select_blue, m)) {
+			loadCarBitmaps(1);
 			initPlayer();
 
 			updateGameState(PLAY);
 		}
 
-		if (clicked(game->select_menu->select_blue, m)) {
-			loadCarBitmaps(1);
+		if (clicked(game->select_menu->select_lamb, m)) {
+			loadCarBitmaps(2);
 			initPlayer();
 
 			updateGameState(PLAY);
@@ -402,7 +404,6 @@ void updateMinixVice() {
 		break;
 
 	}
-
 
 }
 
@@ -463,11 +464,13 @@ void drawMinixVice() {
 
 	case MAIN_MENU:
 //TODO: draw menu function
-		drawBackgroundBitmap(game->main_menu->menu_background, 0, 0, ALIGN_LEFT);
+		drawBackgroundBitmap(game->main_menu->menu_background, 0, 0,
+				ALIGN_LEFT);
 		break;
 
 	case OPTIONS:
-		drawBackgroundBitmap(game->select_menu->select_background, 0, 0, ALIGN_LEFT);
+		drawBackgroundBitmap(game->select_menu->select_background, 0, 0,
+				ALIGN_LEFT);
 		break;
 
 	case GAME:
