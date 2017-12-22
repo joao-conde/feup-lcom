@@ -57,6 +57,12 @@ void timerIH();
 
 void kbdIH();
 
+void interruptsHandler();
+
+
+/* EVENT HANDLING */
+
+void handleEvents();
 
 
 /* UPDATE-DRAW-END GAME*/
@@ -112,6 +118,10 @@ void drawBarrels();
 
 void drawCones();
 
+void freeBarrels();
+
+void freeCones();
+
 
 /* BACKGROUND */
 
@@ -123,7 +133,7 @@ void updateConesPos();
 
 
 
-/* BITMAP HANDLING */
+/* BITMAP LOADING */
 
 void loadBitmaps();
 
@@ -135,7 +145,17 @@ void loadDigitBitmaps();
 
 void loadCarBitmaps(int selectedCar);
 
+
+/* BITMAP DELETING */
+
 void deleteBitmaps();
+
+void deleteDigitBitmaps();
+
+void deleteBarrelsBitmaps();
+
+void deleteConesBitmaps();
+
 
 
 #endif /* MINIXVICE_H */
