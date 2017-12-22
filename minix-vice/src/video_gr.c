@@ -32,37 +32,6 @@ unsigned vg_getVRES() {
 	return v_res;
 }
 
-direction_t getDirection(xi,yi,xf,yf){
-
-	int dx = xf - xi;
-	int dy = yf - yi;
-
-	//if both dx and dy are 0 state will be STOP therefore no movement
-	if(dx == 0 && dy == 0)	return STOP;
-
-	//if both dx and dy are different that would be a diagonal movement and the code simply refuses to move xpm
-	if(dx != 0 && dy != 0)  return STOP;
-
-	if (dx == 0) {
-
-		if (dy > 0)
-			return DOWN;
-
-		if (dy < 0)
-			return UP;
-
-	} else {
-
-		if (dx > 0)
-			return RIGHT;
-
-		if (dx < 0)
-			return LEFT;
-	}
-
-	return STOP;
-}
-
 void *vg_init(unsigned short mode) {
 
 	vbe_mode_info_t vbe_mode;
