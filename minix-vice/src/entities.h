@@ -5,6 +5,7 @@
 #include "bitmap.h"
 #include "ColliderBox.h"
 #include "state_machines.h"
+#include "utils.h"
 
 typedef struct{
 
@@ -56,7 +57,6 @@ typedef struct{
 }Cone;
 
 
-void drawMovingBackground();
 
 /* PLAYER METHODS */
 
@@ -68,8 +68,7 @@ void drawPlayer();
 /* BARREL METHODS */
 
 void drawBarrel(Barrel* barrel);
-void drawBarrels();
-void updateBarrelsPos();
+void drawCone(Cone* cone);
 
 
 

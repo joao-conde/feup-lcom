@@ -18,7 +18,7 @@ typedef struct {
 	int done, draw;
 
 	float speed;
-	int score;
+	float score;
 
 	MainMenu* main_menu;
 	SelectMenu* select_menu;
@@ -37,23 +37,105 @@ typedef struct {
 
 } MinixVice;
 
+
+/* SINGLETON IMPLEMENTATION */
+
 MinixVice* initMinixVice();
 
 MinixVice* getGame();
+
+
+/* INTERRUPT HANDLING */
+
+void subscribeInterrupts();
+
+void unsubscribeInterrupts();
+
+void mouseIH();
+
+void timerIH();
+
+void kbdIH();
+
+
+
+/* UPDATE-DRAW-END GAME*/
 
 void updateMinixVice();
 
 void drawMinixVice();
 
+void endMinixVice();
+
+
+
+/* GAME METHODS */
+
 void brake();
 
 void accelerate();
 
+void displayScore();
+
+void calculateScore();
+
+void initGameProperties();
+
+
+
+
+/* ENTITIES METHODS */
+
+void createEntities();
+
 void createBarrels();
+
+void createCones();
+
+void initPlayer();
+
+void initMainMenu();
+
+void initSelectMenu();
+
+void initBarrels();
+
+void initCones();
+
+void initTimer();
+
+void recalculateBarrelPos(Barrel* barrel);
+
+void recalculateConePos(Cone* cone);
+
+void drawBarrels();
+
+void drawCones();
+
+
+/* BACKGROUND */
+
+void drawMovingBackground();
+
+void updateBarrelsPos();
+
+void updateConesPos();
+
+
+
+/* BITMAP HANDLING */
+
+void loadBitmaps();
+
+void loadBarrelsBitmaps();
+
+void loadConesBitmaps();
+
+void loadDigitBitmaps();
+
+void loadCarBitmaps(int selectedCar);
 
 void deleteBitmaps();
 
-
-void endMinixVice();
 
 #endif /* MINIXVICE_H */

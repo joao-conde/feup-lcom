@@ -4,6 +4,7 @@
 
 #include "video_gr.h"
 #include "MinixVice.h"
+#include "utils.h"
 
 
 void play();

@@ -9,12 +9,12 @@ extern st_player playerState;
 void movePlayerLeft() {
 	MinixVice* game = getGame();
 
-	game->car->x -= 3*game->speed;
-	game->car->body->x1 -= 3*game->speed;
-	game->car->body->x2 -= 3*game->speed;
+	game->car->x -= TURN_SPEED * game->speed;
+	game->car->body->x1 -= TURN_SPEED * game->speed;
+	game->car->body->x2 -= TURN_SPEED * game->speed;
 
-	if(game->car->x <= 197)
-		game->car->x = 197;
+	if(game->car->x <= LEFT_ROAD_LIMIT)
+		game->car->x = LEFT_ROAD_LIMIT;
 }
 
 void movePlayerRight() {
@@ -22,13 +22,13 @@ void movePlayerRight() {
 	int carWidth = game->car->bmpForward->bitmapInfoHeader.width;
 
 
-	game->car->x += 3*game->speed;
-	game->car->body->x1 += 3*game->speed;
-	game->car->body->x2 += 3*game->speed;
+	game->car->x += TURN_SPEED * game->speed;
+	game->car->body->x1 += TURN_SPEED * game->speed;
+	game->car->body->x2 += TURN_SPEED * game->speed;
 
 
-	if(game->car->x >= (823 - carWidth))
-		game->car->x = (823 - carWidth);
+	if(game->car->x >= (RIGHT_ROAD_LIMIT - carWidth))
+		game->car->x = (RIGHT_ROAD_LIMIT - carWidth);
 }
 
 void drawPlayer() {
@@ -50,7 +50,7 @@ void drawPlayer() {
 }
 
 
-/* ENEMY METHODS */
+/* OBSTACLES METHODS */
 
 void drawBarrel(Barrel* barrel) {
 	drawBitmap(barrel->bitmap, barrel->x, barrel->y, ALIGN_LEFT);

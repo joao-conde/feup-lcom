@@ -25,3 +25,7 @@ const char* getImgPath(const char* img){
 
 	return str;
 }
+
+int generateRandomPos(int lowerBound, int higherBound) {
+	return rand() % (higherBound - lowerBound) + lowerBound;
+}
