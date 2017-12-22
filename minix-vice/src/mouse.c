@@ -14,6 +14,8 @@ static unsigned long g_packet[PACKET_SIZE];
 static unsigned int g_packet_index = 0;
 static int g_synched = FALSE;
 
+extern st_mouse mouseState;
+
 /* SINGLETON MOUSE IMPLEMENTATION */
 Mouse* mouse = NULL;
 
@@ -32,7 +34,8 @@ Mouse* newMouse() {
 
 	mouse->draw = 0;
 
-	mouse->bitmap = loadBitmap(getImgPath("seta"));
+	mouse->cursor = loadBitmap(getImgPath("seta"));
+	mouse->target = loadBitmap(getImgPath("mira"));
 
 	return mouse;
 }
@@ -51,7 +54,14 @@ Mouse* getMouse() {
 void drawMouse() {
 	Mouse* m = getMouse();
 
-	drawBitmap(m->bitmap, m->x, m->y, ALIGN_LEFT);
+	switch(mouseState){
+	case MENU:
+		drawBitmap(m->cursor, m->x, m->y, ALIGN_LEFT);
+		break;
+	case TARGET:
+		drawBitmap(m->target, m->x, m->y, ALIGN_LEFT);
+		break;
+	}
 
 	m->draw = 0;
 

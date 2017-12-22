@@ -67,7 +67,7 @@ void drawMinixVice() {
 				ALIGN_LEFT);
 		break;
 
-	case OPTIONS:
+	case SELECT_MENU:
 		drawBackgroundBitmap(game->select_menu->select_background, 0, 0,
 				ALIGN_LEFT);
 		break;
@@ -262,21 +262,22 @@ void handleEvents() {
 	case MAIN_MENU:
 
 		if (clicked(game->main_menu->playBtn, m)) {
-			updateGameState(SETTINGS);
+			updateGameState(SELECT_CAR);
 		}
 
 		if (clicked(game->main_menu->quitBtn, m)) {
-			game->done = 1;
+			updateGameState(TERMINATE);
 		}
 
 		break;
 
-	case OPTIONS:
+	case SELECT_MENU:
 
 		if (clicked(game->select_menu->select_blue, m)) {
 			loadCarBitmaps(1);
 			initPlayer();
 
+			updateMouseState(TARGET);
 			updateGameState(PLAY);
 		}
 
@@ -284,6 +285,7 @@ void handleEvents() {
 			loadCarBitmaps(2);
 			initPlayer();
 
+			updateMouseState(TARGET);
 			updateGameState(PLAY);
 		}
 
@@ -291,6 +293,7 @@ void handleEvents() {
 			loadCarBitmaps(3);
 			initPlayer();
 
+			updateMouseState(TARGET);
 			updateGameState(PLAY);
 		}
 
@@ -307,7 +310,7 @@ void handleEvents() {
 		for (i = 0; i < numberOfBarrels; i++) {
 
 			if (collide(game->car->body, game->barrels[i]->body)) {
-				game->done = 1;
+				updateGameState(TERMINATE);
 			}
 
 			//if barrel out of game screen re-calculate coordinates
@@ -319,11 +322,10 @@ void handleEvents() {
 		for (i = 0; i < numberOfCones; i++) {
 
 			if (collide(game->car->body, game->cones[i]->body)) {
-				game->done = 1;
+				updateGameState(TERMINATE);
 			}
 
 			if(clicked(game->cones[i]->body,m)){
-				printf("CONE SHOT!\n");
 				recalculateConePos(game->cones[i]);
 			}
 
@@ -333,6 +335,10 @@ void handleEvents() {
 			}
 		}
 
+		break;
+
+	case OVER:
+		game->done = 1;
 		break;
 
 	}
@@ -458,7 +464,6 @@ void createCones() {
 
 void loadBarrelsBitmaps() {
 	int i;
-	//Loads bitmap only once but stores it multiple times (not relevant)
 	Bitmap* barrelBitmap = loadBitmap(getImgPath("barrel"));
 	for (i = 0; i < numberOfBarrels; i++) {
 		game->barrels[i]->bitmap = barrelBitmap;
@@ -467,7 +472,6 @@ void loadBarrelsBitmaps() {
 
 void loadConesBitmaps() {
 	int i;
-	//Loads bitmap only once but stores it multiple times (not relevant)
 	Bitmap* coneBitmap = loadBitmap(getImgPath("traffic-cone"));
 	for (i = 0; i < numberOfCones; i++) {
 		game->cones[i]->bitmap = coneBitmap;
