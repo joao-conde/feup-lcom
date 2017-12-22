@@ -2,6 +2,7 @@
 #define MOUSE_H
 
 #include "bitmap.h"
+#include "state_machines.h"
 
 typedef struct {
     int x, y;
@@ -13,7 +14,8 @@ typedef struct {
 
     int draw;
 
-    Bitmap* bitmap;
+    Bitmap* cursor;
+    Bitmap* target;
 
 } Mouse;
 

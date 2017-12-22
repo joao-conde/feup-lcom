@@ -1,9 +1,14 @@
 #include "state_machines.h"
 
-//TODO: set to MAIN_MENU
 st_game gameState = MAIN_MENU;
 
 st_player playerState = DEFAULT;
+
+st_mouse mouseState = MENU;
+
+void updateMouseState(st_mouse newState){
+	mouseState = newState;
+}
 
 void updatePlayerState(st_player newState) {
 	playerState = newState;
@@ -15,19 +20,25 @@ void updateGameState(game_event_t event) {
 
 	case MAIN_MENU:
 
-		if (event == SETTINGS)
-			gameState = OPTIONS;
+		if (event == SELECT_CAR)
+			gameState = SELECT_MENU;
 
 		if (event == TERMINATE)
 			gameState = OVER;
 
 		break;
 
-	case OPTIONS:
+	case SELECT_MENU:
 
 		if (event == PLAY)
 			gameState = GAME;
 
+		break;
+
+	case GAME:
+
+		if(event == TERMINATE)
+			gameState = OVER;
 		break;
 
 	}
