@@ -33,13 +33,13 @@
 
 /* MOUSE COMMANDS */
 
-#define WRITE_BYTE  0xD4
-#define ENABLE_DATAREPORT 0xF4
-#define ENABLE_MOUSE 0xA8
+#define WRITE_BYTE         0xD4
+#define ENABLE_DATAREPORT  0xF4
+#define ENABLE_MOUSE       0xA8
 #define DISABLE_DATAREPORT 0xF5
-#define ENABLE_REMOTE	0xF0
-#define ENABLE_STREAM	0xEA
-#define READ_DATA	0xEB
+#define ENABLE_REMOTE	   0xF0
+#define ENABLE_STREAM	   0xEA
+#define READ_DATA	       0xEB
 
 /* I/O port addresses */
 

@@ -11,6 +11,335 @@ MinixVice* game = NULL;
 int numberOfBarrels = sizeof(game->barrels) / sizeof(Barrel*);
 int numberOfCones = sizeof(game->cones) / sizeof(Cone*);
 
+MinixVice* initMinixVice() {
+
+	/* GAME INITIALIZATION */
+	game = (MinixVice*) malloc(sizeof(MinixVice));
+
+	subscribeInterrupts();
+
+	createEntities();
+
+	loadBitmaps();
+
+	initGameProperties();
+
+	initMainMenu();
+
+	initSelectMenu();
+
+	initBarrels();
+
+	initCones();
+
+	initTimer();
+
+	return game;
+}
+
+MinixVice* getGame() {
+
+	if (!game) {
+		game = initMinixVice();
+	}
+
+	return game;
+}
+
+void updateMinixVice() {
+
+	MinixVice* game = getGame();
+	Mouse* m = getMouse();
+
+	int i, ipc_status, r = 0;
+	message msg;
+
+	game->timer->ticked = 0;
+
+	if (driver_receive(ANY, &msg, &ipc_status) != 0)
+		return;
+
+	if (is_ipc_notify(ipc_status)) {
+		switch (_ENDPOINT_P(msg.m_source)) {
+		case HARDWARE:
+
+			if (msg.NOTIFY_ARG & game->irq_kbd) {
+				kbdIH();
+			}
+
+			if (msg.NOTIFY_ARG & game->irq_timer) {
+				timerIH();
+			}
+
+			if (msg.NOTIFY_ARG & game->irq_mouse) {
+				mouseIH();
+			}
+
+			break;
+		default:
+			break;
+		}
+	}
+
+	switch (gameState) {
+	case MAIN_MENU:
+
+		if (clicked(game->main_menu->playBtn, m)) {
+			updateGameState(SETTINGS);
+		}
+
+		if (clicked(game->main_menu->quitBtn, m)) {
+			game->done = 1;
+		}
+
+		break;
+
+	case OPTIONS:
+
+		if (clicked(game->select_menu->select_blue, m)) {
+			loadCarBitmaps(1);
+			initPlayer();
+
+			updateGameState(PLAY);
+		}
+
+		if (clicked(game->select_menu->select_lamb, m)) {
+			loadCarBitmaps(2);
+			initPlayer();
+
+			updateGameState(PLAY);
+		}
+
+		if (clicked(game->select_menu->select_mercedes, m)) {
+			loadCarBitmaps(3);
+			initPlayer();
+
+			updateGameState(PLAY);
+		}
+
+		break;
+
+	case GAME:
+
+		if (game->timer->ticked) {
+			calculateScore();
+			updateBarrelsPos();
+			updateConesPos();
+		}
+
+		for (i = 0; i < numberOfBarrels; i++) {
+
+			if (collide(game->car->body, game->barrels[i]->body)) {
+				game->done = 1;
+			}
+
+			//if barrel out of game screen re-calculate coordinates
+			if (game->barrels[i]->y > vg_getVRES()) {
+				recalculateBarrelPos(game->barrels[i]);
+			}
+		}
+
+		for (i = 0; i < numberOfCones; i++) {
+
+			if (collide(game->car->body, game->cones[i]->body)) {
+				game->done = 1;
+			}
+
+			//if cone out of game screen re-calculate coordinates
+			if (game->cones[i]->y > vg_getVRES()) {
+				recalculateConePos(game->cones[i]);
+			}
+		}
+
+		break;
+
+	}
+
+}
+
+void drawMinixVice() {
+
+	MinixVice* game = getGame();
+
+	switch (gameState) {
+
+	case MAIN_MENU:
+		drawBackgroundBitmap(game->main_menu->menu_background, 0, 0,
+				ALIGN_LEFT);
+		break;
+
+	case OPTIONS:
+		drawBackgroundBitmap(game->select_menu->select_background, 0, 0,
+				ALIGN_LEFT);
+		break;
+
+	case GAME:
+		if (game->timer->ticked)
+			drawMovingBackground();
+
+		drawPlayer(game->car);
+		drawBarrels();
+		drawCones();
+
+		break;
+
+	}
+
+	if (game->timer->ticked) {
+		drawMouse();
+		game->timer->ticked = 0;
+		displayScore();
+		flipDB();
+	}
+
+}
+
+void endMinixVice() {
+//TODO: FREE ALL GAME ENTITIES AND BITMAPS
+	MinixVice* game = getGame();
+
+	unsubscribeInterrupts();
+
+	deleteBitmaps();
+	deleteMouse();
+
+	free(game->timer);
+	free(game->car);
+
+//	int i;
+//	for (i = 0; i < numberOfBarrels; i++) {
+//		free(game->barrels[i]);
+//	}
+
+	free(game);
+
+}
+
+void brake() {
+	MinixVice* game = getGame();
+
+	if (game->speed <= 1) {
+		game->speed = 1;
+		return;
+	}
+
+	game->speed -= BRAKE_SPEED;
+}
+
+void accelerate() {
+	MinixVice* game = getGame();
+
+	game->speed += ACCELERATE_SPEED;
+}
+
+void recalculateBarrelPos(Barrel* barrel) {
+	int width, height, newX;
+
+	width = barrel->bitmap->bitmapInfoHeader.width;
+	height = barrel->bitmap->bitmapInfoHeader.height;
+
+	newX = generateRandomPos(LEFT_ROAD_LIMIT, RIGHT_ROAD_LIMIT - width);
+
+	barrel->x = newX;
+	barrel->y = ORIGIN_COORDS;
+
+	barrel->body->x1 = newX;
+	barrel->body->y1 = ORIGIN_COORDS;
+
+	barrel->body->x2 = newX + width;
+	barrel->body->y2 = height;
+}
+
+void recalculateConePos(Cone* cone) {
+	int width, height, newX;
+
+	width = cone->bitmap->bitmapInfoHeader.width;
+	height = cone->bitmap->bitmapInfoHeader.height;
+
+	newX = generateRandomPos(LEFT_ROAD_LIMIT, RIGHT_ROAD_LIMIT - width);
+
+	cone->x = newX;
+	cone->y = ORIGIN_COORDS;
+
+	cone->body->x1 = newX;
+	cone->body->y1 = ORIGIN_COORDS;
+
+	cone->body->x2 = newX + width;
+	cone->body->y2 = height;
+}
+
+void calculateScore(){
+	game->score += SCORE_INCREASE(game->speed);
+}
+
+void drawMovingBackground() {
+	static float y = 0;
+
+	MinixVice* game = getGame();
+
+	y += game->speed;
+
+	if (y >= vg_getVRES())
+		y = ORIGIN_COORDS;
+
+	drawBackgroundBitmap(game->background, ORIGIN_COORDS, y, ALIGN_LEFT);
+	drawBackgroundBitmap(game->background, ORIGIN_COORDS, y - vg_getVRES(), ALIGN_LEFT);
+}
+
+void updateBarrelsPos() {
+	MinixVice* game = getGame();
+
+	int i;
+	for (i = 0; i < numberOfBarrels; i++) {
+		game->barrels[i]->y += game->speed;
+		game->barrels[i]->body->y1 += game->speed;
+		game->barrels[i]->body->y2 += game->speed;
+	}
+}
+
+void updateConesPos() {
+	MinixVice* game = getGame();
+
+	int i;
+	for (i = 0; i < numberOfCones; i++) {
+		game->cones[i]->y += game->speed;
+		game->cones[i]->body->y1 += game->speed;
+		game->cones[i]->body->y2 += game->speed;
+	}
+}
+
+void drawBarrels() {
+
+	int i;
+	for (i = 0; i < numberOfBarrels; i++) {
+		drawBarrel(game->barrels[i]);
+	}
+
+}
+
+void drawCones() {
+
+	int i;
+	for (i = 0; i < numberOfCones; i++) {
+		drawCone(game->cones[i]);
+	}
+
+}
+
+void displayScore() {
+	MinixVice* game = getGame();
+
+	int score = game->score;
+	int offset = SCORE_OFFSET, i = 0;
+
+	while (score >= 1) {
+		drawBitmap(game->digits[score % 10],
+				(vg_getHRES() - offset) - offset * i, 0, ALIGN_LEFT);
+		score /= 10;
+		i++;
+	}
+}
+
 void subscribeInterrupts() {
 	game->irq_kbd = kbd_subscribe_int();
 	game->irq_timer = timer_subscribe_int();
@@ -21,6 +350,57 @@ void unsubscribeInterrupts() {
 	kbd_unsubscribe_int();
 	timer_unsubscribe_int();
 	mouse_unsubscribe_int();
+}
+
+void mouseIH() {
+	mouseIntHandler();
+}
+
+void timerIH() {
+	MinixVice* game = getGame();
+
+	game->timer->counter++;
+	game->timer->ticked = 1;
+
+}
+
+void kbdIH() {
+	MinixVice* game = getGame();
+
+	game->scancode = kbc_read();
+
+	if (game->scancode != 0) {
+
+		if (game->scancode == ESC_BREAK) {
+			game->done = 1;
+		}
+
+		switch (game->scancode) {
+
+		case A_MAKE:
+			movePlayerLeft(game->car);
+			updatePlayerState(TLEFT);
+			break;
+		case D_MAKE:
+			movePlayerRight(game->car);
+			updatePlayerState(TRIGHT);
+			break;
+
+		case W_MAKE:
+			accelerate();
+			break;
+
+		case S_MAKE:
+			brake();
+			break;
+
+		default:
+			updatePlayerState(DEFAULT);
+			break;
+		}
+
+	}
+
 }
 
 void createEntities() {
@@ -135,7 +515,7 @@ void initPlayer() {
 	carHeight = game->car->bmpForward->bitmapInfoHeader.height;
 
 	game->car->x = vg_getHRES() / 2 - carWidth / 2;
-	game->car->y = vg_getVRES() - 125 - carHeight;
+	game->car->y = vg_getVRES() - CAR_OFFSET - carHeight;
 
 	game->car->body = newColliderBox(game->car->x, game->car->y,
 			game->car->x + carWidth, game->car->y + carHeight);
@@ -155,8 +535,8 @@ void initGameProperties() {
 void initMainMenu() {
 	MinixVice* game = getGame();
 
-	game->main_menu->playBtn = newColliderBox(95, 145, 392, 230);
-	game->main_menu->quitBtn = newColliderBox(95, 257, 392, 340);
+	game->main_menu->playBtn = newColliderBox(PLAYBTNX1, PLAYBTNY1, PLAYBTNX2, PLAYBTNY2);
+	game->main_menu->quitBtn = newColliderBox(QUITBTNX1, QUITBTNY1, QUITBTNX2, QUITBTNY2);
 
 }
 
@@ -216,399 +596,4 @@ void initTimer() {
 	game->timer->counter = 0;
 }
 
-int generateRandomPos(int lowerBound, int higherBound) {
-	return rand() % (higherBound - lowerBound) + lowerBound;
-}
-
-MinixVice* initMinixVice() {
-
-	/* GAME INITIALIZATION */
-	game = (MinixVice*) malloc(sizeof(MinixVice));
-
-	subscribeInterrupts();
-
-	createEntities();
-
-	loadBitmaps();
-
-//	initPlayer(); cannot be initialized right away, no car selected
-
-	initGameProperties();
-
-	initMainMenu();
-
-	initSelectMenu();
-
-	initBarrels();
-
-	initCones();
-
-	initTimer();
-
-	return game;
-}
-
-MinixVice* getGame() {
-
-	if (!game) {
-		game = initMinixVice();
-	}
-
-	return game;
-}
-
-void mouseIH() {
-	mouseIntHandler();
-}
-
-void timerIH() {
-	MinixVice* game = getGame();
-
-	game->timer->counter++;
-	game->timer->ticked = 1;
-
-//	/* first attempt at RTC */
-//	unsigned long *day, *month, *year;
-//
-//	do {
-//		if (!isRTCUpdating()) {
-//			getDate(day, month, year);
-//		}
-//
-//	} while (isRTCUpdating());
-
-
-}
-
-void kbdIH() {
-	MinixVice* game = getGame();
-
-	game->scancode = kbc_read();
-
-	if (game->scancode != 0) {
-
-		if (game->scancode == ESC_BREAK) {
-			game->done = 1;
-		}
-
-		switch (game->scancode) {
-
-		case A_MAKE:
-			movePlayerLeft(game->car);
-			updatePlayerState(TLEFT);
-			break;
-		case D_MAKE:
-			movePlayerRight(game->car);
-			updatePlayerState(TRIGHT);
-			break;
-
-		case W_MAKE:
-			accelerate();
-			break;
-
-		case S_MAKE:
-			brake();
-			break;
-
-		default:
-			updatePlayerState(DEFAULT);
-			break;
-		}
-
-	}
-
-}
-
-void brake() {
-	MinixVice* game = getGame();
-
-	if (game->speed <= 1) {
-		game->speed = 1;
-		return;
-	}
-
-	game->speed -= 1;
-}
-
-void accelerate() {
-	MinixVice* game = getGame();
-
-	game->speed += 0.5;
-}
-
-void recalculateBarrelPos(Barrel* barrel) {
-	int width, height, newX;
-
-	width = barrel->bitmap->bitmapInfoHeader.width;
-	height = barrel->bitmap->bitmapInfoHeader.height;
-
-	newX = generateRandomPos(197, 823 - width);
-
-	barrel->x = newX;
-	barrel->y = 0;
-
-	barrel->body->x1 = newX;
-	barrel->body->y1 = 0;
-
-	barrel->body->x2 = newX + width;
-	barrel->body->y2 = height;
-}
-
-void recalculateConePos(Cone* cone) {
-	int width, height, newX;
-
-	width = cone->bitmap->bitmapInfoHeader.width;
-	height = cone->bitmap->bitmapInfoHeader.height;
-
-	newX = generateRandomPos(197, 823 - width);
-
-	cone->x = newX;
-	cone->y = 0;
-
-	cone->body->x1 = newX;
-	cone->body->y1 = 0;
-
-	cone->body->x2 = newX + width;
-	cone->body->y2 = height;
-}
-
-void updateMinixVice() {
-
-	MinixVice* game = getGame();
-	Mouse* m = getMouse();
-
-	int i, ipc_status, r = 0;
-	message msg;
-
-	game->timer->ticked = 0;
-
-	if (driver_receive(ANY, &msg, &ipc_status) != 0)
-		return;
-
-	if (is_ipc_notify(ipc_status)) {
-		switch (_ENDPOINT_P(msg.m_source)) {
-		case HARDWARE:
-
-			if (msg.NOTIFY_ARG & game->irq_kbd) {
-				kbdIH();
-			}
-
-			if (msg.NOTIFY_ARG & game->irq_timer) {
-				timerIH();
-			}
-
-			if (msg.NOTIFY_ARG & game->irq_mouse) {
-				mouseIH();
-			}
-
-			break;
-		default:
-			break;
-		}
-	}
-
-	switch (gameState) {
-	case MAIN_MENU:
-
-		if (clicked(game->main_menu->playBtn, m)) {
-			updateGameState(SETTINGS);
-		}
-
-		if (clicked(game->main_menu->quitBtn, m)) {
-			game->done = 1;
-		}
-
-		break;
-
-	case OPTIONS:
-
-		if (clicked(game->select_menu->select_blue, m)) {
-			loadCarBitmaps(1);
-			initPlayer();
-
-			updateGameState(PLAY);
-		}
-
-		if (clicked(game->select_menu->select_lamb, m)) {
-			loadCarBitmaps(2);
-			initPlayer();
-
-			updateGameState(PLAY);
-		}
-
-		if (clicked(game->select_menu->select_mercedes, m)) {
-			loadCarBitmaps(3);
-			initPlayer();
-
-			updateGameState(PLAY);
-		}
-
-		break;
-
-	case GAME:
-
-		if (game->timer->ticked) {
-			game->score++;
-			updateBarrelsPos();
-			updateConesPos();
-		}
-
-		for (i = 0; i < numberOfBarrels; i++) {
-
-			if (collide(game->car->body, game->barrels[i]->body)) {
-				printf("Car collided with a barrel\n");
-				game->done = 1;
-			}
-
-			//if barrel out of game screen re-calculate coordinates
-			if (game->barrels[i]->y > vg_getVRES()) {
-				recalculateBarrelPos(game->barrels[i]);
-			}
-		}
-
-		for (i = 0; i < numberOfCones; i++) {
-
-			if (collide(game->car->body, game->cones[i]->body)) {
-				printf("Car collided with a cone\n");
-				game->done = 1;
-			}
-
-			//if barrel out of game screen re-calculate coordinates
-			if (game->cones[i]->y > vg_getVRES()) {
-				recalculateConePos(game->cones[i]);
-			}
-		}
-
-		break;
-
-	}
-
-}
-
-void drawMovingBackground() {
-	static float y = 0;
-
-	MinixVice* game = getGame();
-
-	y += game->speed;
-
-	if (y >= vg_getVRES())
-		y = 0;
-
-	drawBackgroundBitmap(game->background, 0, y, ALIGN_LEFT);
-	drawBackgroundBitmap(game->background, 0, y - vg_getVRES(), ALIGN_LEFT);
-}
-
-void updateBarrelsPos() {
-	MinixVice* game = getGame();
-
-	int i;
-	for (i = 0; i < numberOfBarrels; i++) {
-		game->barrels[i]->y += game->speed;
-		game->barrels[i]->body->y1 += game->speed;
-		game->barrels[i]->body->y2 += game->speed;
-	}
-}
-
-void updateConesPos() {
-	MinixVice* game = getGame();
-
-	int i;
-	for (i = 0; i < numberOfCones; i++) {
-		game->cones[i]->y += game->speed;
-		game->cones[i]->body->y1 += game->speed;
-		game->cones[i]->body->y2 += game->speed;
-	}
-}
-
-void drawBarrels() {
-
-	int i;
-	for (i = 0; i < numberOfBarrels; i++) {
-		drawBarrel(game->barrels[i]);
-	}
-
-}
-
-void drawCones() {
-
-	int i;
-	for (i = 0; i < numberOfCones; i++) {
-		drawCone(game->cones[i]);
-	}
-
-}
-
-void displayScore() {
-	MinixVice* game = getGame();
-
-	int score = game->score;
-	int offset = 50, i = 0;
-
-	while (score >= 1) {
-		drawBitmap(game->digits[score % 10],
-				(vg_getHRES() - offset) - offset * i, 0, ALIGN_LEFT);
-		score /= 10;
-		i++;
-	}
-}
-
-void drawMinixVice() {
-
-	MinixVice* game = getGame();
-
-	switch (gameState) {
-
-	case MAIN_MENU:
-//TODO: draw menu function
-		drawBackgroundBitmap(game->main_menu->menu_background, 0, 0,
-				ALIGN_LEFT);
-		break;
-
-	case OPTIONS:
-		drawBackgroundBitmap(game->select_menu->select_background, 0, 0,
-				ALIGN_LEFT);
-		break;
-
-	case GAME:
-		if (game->timer->ticked)
-			drawMovingBackground();
-
-		drawPlayer(game->car);
-		drawBarrels();
-		drawCones();
-
-		break;
-
-	}
-
-	if (game->timer->ticked) {
-		drawMouse();
-		game->timer->ticked = 0;
-		displayScore();
-		flipDB();
-	}
-
-}
-
-void endMinixVice() {
-//TODO: FREE ALL GAME ENTITIES AND BITMAPS
-	MinixVice* game = getGame();
-
-	unsubscribeInterrupts();
-
-	deleteBitmaps();
-	deleteMouse();
-
-	free(game->timer);
-	free(game->car);
-
-//	int i;
-//	for (i = 0; i < numberOfBarrels; i++) {
-//		free(game->barrels[i]);
-//	}
-
-	free(game);
-
-}
 
