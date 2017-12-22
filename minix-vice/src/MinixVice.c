@@ -543,9 +543,9 @@ void initMainMenu() {
 void initSelectMenu() {
 	MinixVice* game = getGame();
 
-	game->select_menu->select_lamb = newColliderBox(156, 230, 319, 568);
-	game->select_menu->select_blue = newColliderBox(431, 230, 579, 568);
-	game->select_menu->select_mercedes = newColliderBox(705, 230, 860, 568);
+	game->select_menu->select_lamb = newColliderBox(LAMBSELECTX1, LAMBSELECTY1, LAMBSELECTX2, LAMBSELECTY2);
+	game->select_menu->select_blue = newColliderBox(BLUESELECTX1, BLUESELECTY1, BLUESELECTX2, BLUESELECTY2);
+	game->select_menu->select_mercedes = newColliderBox(MERCEDESSELECTX1, MERCEDESSELECTY1, MERCEDESSELECTX2, MERCEDESSELECTY2);
 
 }
 
@@ -557,10 +557,8 @@ void initBarrels() {
 
 	for (i = 0; i < numberOfBarrels; i++) {
 
-		game->barrels[i]->x = generateRandomPos(197, 823 - barrelWidth);
-//		game->barrels[i]->y = generateRandomPos(0, vg_getVRES());
-
-		game->barrels[i]->y = 0;
+		game->barrels[i]->x = generateRandomPos(LEFT_ROAD_LIMIT, RIGHT_ROAD_LIMIT - barrelWidth);
+		game->barrels[i]->y = ORIGIN_COORDS;
 
 		game->barrels[i]->body = newColliderBox(game->barrels[i]->x,
 				game->barrels[i]->y, game->barrels[i]->x + barrelWidth,
@@ -577,8 +575,7 @@ void initCones() {
 
 	for (i = 0; i < numberOfCones; i++) {
 
-		game->cones[i]->x = generateRandomPos(197, 823 - coneWidth);
-//		game->cones[i]->y = generateRandomPos(0, vg_getVRES());
+		game->cones[i]->x = generateRandomPos(LEFT_ROAD_LIMIT, RIGHT_ROAD_LIMIT - coneWidth);
 
 		game->cones[i]->y = 0;
 

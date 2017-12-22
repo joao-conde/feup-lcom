@@ -41,8 +41,6 @@ int vg_exit(void);
 
 void flipDB();
 
-direction_t getDirection();
-
 unsigned vg_getHRES();
 unsigned vg_getVRES();
 char* getGraphicBuffer();
