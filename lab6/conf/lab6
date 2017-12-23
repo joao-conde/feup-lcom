@@ -1,0 +1,27 @@
+service lab6{
+    system
+        DEVIO
+        IRQCTL
+        UMAP
+        INT86
+        PRIVCTL
+        READBIOS
+        IOPENABLE
+        ;
+    ipc
+        SYSTEM
+        rs
+        vm
+        pm
+        vfs
+        ;
+    io
+        70:2      # RTC
+        ;               
+    irq
+        8         # RTC
+        ;       
+    uid
+        0
+        ;
+};
