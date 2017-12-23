@@ -7,26 +7,23 @@ int isRTCUpdating(){
 
 	unsigned long regA;
 
-	sys_outb(0x70, 10);
-	sys_inb(0x71, &regA);
+	sys_outb(RTC_ADDR_REG, REGA);
+	sys_inb(RTC_DATA_REG, &regA);
 
-	if ((regA & BIT(7)) != 0)
-		return 1;
+	//check UIP flag - 1 if updating
+	return (regA & BIT(7));
 
-	return 0;
 }
 
-// 1 if BCD
+// 1 if BCD 0 for binary
 int isBCD(){
 	unsigned long regB;
 
-	sys_outb(0x70, 11);
-	sys_inb(0x71, &regB);
+	sys_outb(RTC_ADDR_REG, REGB);
+	sys_inb(RTC_DATA_REG, &regB);
 
-	if(!(regB & BIT(2)))
-		return 1;
 
-	return 0;
+	return (!(regB & BIT(2)));
 }
 
 
@@ -36,12 +33,14 @@ unsigned long BCDtoBin(unsigned long* bcd){
 
 void getDate(unsigned long *day, unsigned long *month, unsigned long *year){
 
-	sys_outb(0x70, 7);
-	sys_inb(0x71, day);
-	sys_outb(0x70, 8);
-	sys_inb(0x71, month);
-	sys_outb(0x70, 9);
-	sys_inb(0x71, year);
+	sys_outb(RTC_ADDR_REG, 7);
+	sys_inb(RTC_DATA_REG, day);
+
+	sys_outb(RTC_ADDR_REG, 8);
+	sys_inb(RTC_DATA_REG, month);
+
+	sys_outb(RTC_ADDR_REG, 9);
+	sys_inb(RTC_DATA_REG, year);
 
 	if(isBCD()){
 		(*day) = BCDtoBin(day);
@@ -49,17 +48,21 @@ void getDate(unsigned long *day, unsigned long *month, unsigned long *year){
 		(*year) = BCDtoBin(year);
 	}
 
+	*year += CURRENT_MILLENIUM;
+
 }
 
 void getHour(unsigned long *hour, unsigned long *minutes,
 		unsigned long *seconds){
 
-	sys_outb(0x70, 4);
-	sys_inb(0x71, hour);
-	sys_outb(0x70, 2);
-	sys_inb(0x71, minutes);
-	sys_outb(0x70, 0);
-	sys_inb(0x71, seconds);
+	sys_outb(RTC_ADDR_REG, 4);
+	sys_inb(RTC_DATA_REG, hour);
+
+	sys_outb(RTC_ADDR_REG, 2);
+	sys_inb(RTC_DATA_REG, minutes);
+
+	sys_outb(RTC_ADDR_REG, 0);
+	sys_inb(RTC_DATA_REG, seconds);
 
 	if (isBCD()) {
 		(*hour) = BCDtoBin(hour);

@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 			getDate(day, month, year);
 			getHour(hours, minutes, seconds);
 			printf("Hello world for the x%d time\n",i);
-			printf("Today is %d/%d/%d\n", *day, *month, *year + 2000);
+			printf("Today is %d/%d/%d\n", *day, *month, *year);
 			printf("The time now is %d hours %d minutes and %d seconds\n", *hours,
 					*minutes, *seconds);
 		}
