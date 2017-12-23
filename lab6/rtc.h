@@ -12,8 +12,22 @@
 
 /* RTC’s Internal Address Space */
 
+/* REGISTER */
 #define REGA 10
 #define REGB 11
+
+/* INPUTS */
+#define DAY   7
+#define MONTH 8
+#define YEAR  9
+
+#define HOURS   4
+#define MINUTES 2
+#define SECONDS 0
+
+/* FLAGS */
+#define REGA_UIP BIT(7)
+#define REGB_BIN BIT(2)
 
 
 /* CURENT MILLENIUM  */

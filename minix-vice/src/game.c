@@ -18,12 +18,9 @@ MinixVice* startGame() {
 }
 
 void gameLoop(MinixVice* game) {
+
 	while (!game->done) {
-
-		if (game->draw) {
-			drawMinixVice(game);
-		}
-
+		drawMinixVice(game);
 		updateMinixVice(game);
 	}
 

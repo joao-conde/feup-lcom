@@ -8,14 +8,19 @@
 #include "entities.h"
 #include "utils.h"
 #include "state_machines.h"
-
+#include "rtc.h"
 
 
 typedef struct {
 
 	int irq_kbd, irq_timer, irq_mouse;
+	Timer* timer;
 
-	int done, draw;
+	unsigned long scancode;
+	unsigned long *hours, *minutes, *seconds;
+	unsigned long *day, *month, *year;
+
+	int done;
 
 	float speed;
 	float score;
@@ -23,15 +28,10 @@ typedef struct {
 	MainMenu* main_menu;
 	SelectMenu* select_menu;
 
-	unsigned long scancode;
-
 	Bitmap* background;
-
 	Bitmap* digits[10];
 
 	Player* car;
-	Timer* timer;
-
 	Barrel* barrels[2];
 	Cone* cones[2];
 
