@@ -10,10 +10,6 @@ int main(int argc, char** argv){
 
 	sef_startup();
 
-	while(isRTCUpdating()){
-		printf("RTC UPDATING\n");
-	}
-
 	unsigned long *day = (unsigned long*) malloc(sizeof(unsigned long));
 	unsigned long *month = (unsigned long*) malloc(sizeof(unsigned long));
 	unsigned long *year = (unsigned long*) malloc(sizeof(unsigned long));
@@ -26,7 +22,7 @@ int main(int argc, char** argv){
 	getHour(hours,minutes,seconds);
 
 	printf("Hello world\n");
-	printf("Today is %d of %d of %d\n", *day, *month, *year);
+	printf("Today is %d/%d/%d\n", *day, *month, *year + 2000);
 	printf("The time now is %d hours %d minutes and %d seconds\n", *hours, *minutes, *seconds);
 
 	return 0;
