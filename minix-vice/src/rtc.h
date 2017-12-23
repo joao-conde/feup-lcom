@@ -4,6 +4,23 @@
 #define BIT(n) (0x01<<(n))
 
 
+/* Access to RTC */
+
+#define RTC_ADDR_REG 0x70
+#define RTC_DATA_REG 0x71
+
+
+/* RTC’s Internal Address Space */
+
+#define REGA 10
+#define REGB 11
+
+
+/* CURENT MILLENIUM  */
+#define CURRENT_MILLENIUM 2000
+
+
+
 int isRTCUpdating();
 
 int isBCD();
