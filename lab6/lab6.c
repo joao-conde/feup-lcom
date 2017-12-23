@@ -4,9 +4,7 @@
 
 #include "rtc.h"
 
-
-
-int main(int argc, char** argv){
+int main(int argc, char** argv) {
 
 	sef_startup();
 
@@ -18,12 +16,23 @@ int main(int argc, char** argv){
 	unsigned long *minutes = (unsigned long*) malloc(sizeof(unsigned long));
 	unsigned long *seconds = (unsigned long*) malloc(sizeof(unsigned long));
 
-	getDate(day,month,year);
-	getHour(hours,minutes,seconds);
+	int i = 0;
+	while (i < 1000) {
+		if (isRTCUpdating()) {
+			printf("RTC UPDATING\n");
+		} else {
+			getDate(day, month, year);
+			getHour(hours, minutes, seconds);
+			printf("Hello world for the x%d time\n",i);
+			printf("Today is %d/%d/%d\n", *day, *month, *year + 2000);
+			printf("The time now is %d hours %d minutes and %d seconds\n", *hours,
+					*minutes, *seconds);
+		}
 
-	printf("Hello world\n");
-	printf("Today is %d/%d/%d\n", *day, *month, *year + 2000);
-	printf("The time now is %d hours %d minutes and %d seconds\n", *hours, *minutes, *seconds);
+		i++;
+	}
+
+
 
 	return 0;
 }
