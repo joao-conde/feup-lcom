@@ -11,7 +11,7 @@ int isRTCUpdating(){
 	sys_inb(RTC_DATA_REG, &regA);
 
 	//check UIP flag - 1 if updating
-	return (regA & BIT(7));
+	return (regA & REGA_UIP);
 
 }
 
@@ -23,23 +23,26 @@ int isBCD(){
 	sys_inb(RTC_DATA_REG, &regB);
 
 
-	return (!(regB & BIT(2)));
+	return (!(regB & REGB_BIN));
 }
 
 
 unsigned long BCDtoBin(unsigned long* bcd){
+	/* From:
+	 * https://stackoverflow.com/questions/28133020/how-to-convert-bcd-to-decimal
+	*/
 	return (((*bcd) & 0xF0) >> 4) * 10 + ((*bcd) & 0x0F);
 }
 
 void getDate(unsigned long *day, unsigned long *month, unsigned long *year){
 
-	sys_outb(RTC_ADDR_REG, 7);
+	sys_outb(RTC_ADDR_REG, DAY);
 	sys_inb(RTC_DATA_REG, day);
 
-	sys_outb(RTC_ADDR_REG, 8);
+	sys_outb(RTC_ADDR_REG, MONTH);
 	sys_inb(RTC_DATA_REG, month);
 
-	sys_outb(RTC_ADDR_REG, 9);
+	sys_outb(RTC_ADDR_REG, YEAR);
 	sys_inb(RTC_DATA_REG, year);
 
 	if(isBCD()){
@@ -55,13 +58,13 @@ void getDate(unsigned long *day, unsigned long *month, unsigned long *year){
 void getHour(unsigned long *hour, unsigned long *minutes,
 		unsigned long *seconds){
 
-	sys_outb(RTC_ADDR_REG, 4);
+	sys_outb(RTC_ADDR_REG, HOURS);
 	sys_inb(RTC_DATA_REG, hour);
 
-	sys_outb(RTC_ADDR_REG, 2);
+	sys_outb(RTC_ADDR_REG, MINUTES);
 	sys_inb(RTC_DATA_REG, minutes);
 
-	sys_outb(RTC_ADDR_REG, 0);
+	sys_outb(RTC_ADDR_REG, SECONDS);
 	sys_inb(RTC_DATA_REG, seconds);
 
 	if (isBCD()) {

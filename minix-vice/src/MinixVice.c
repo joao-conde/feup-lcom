@@ -1,7 +1,6 @@
 #include <minix/drivers.h>
 
 #include "MinixVice.h"
-#include "rtc.h"
 
 extern st_game gameState;
 
@@ -49,6 +48,17 @@ MinixVice* getGame() {
 void updateMinixVice() {
 
 	game->timer->ticked = 0;
+
+	do {
+		if (!isRTCUpdating()) {
+			getDate(game->day, game->month, game->year);
+			getHour(game->hours, game->minutes, game->seconds);
+			printf("Today is %d/%d/%d\n", *(game->day), *(game->month), *(game->year));
+			printf("The time now is %d hours %d minutes and %d seconds\n",
+					*(game->hours), *(game->minutes), *(game->seconds));
+		}
+
+	} while (isRTCUpdating());
 
 	interruptsHandler();
 
@@ -111,16 +121,16 @@ void endMinixVice() {
 
 }
 
-void freeBarrels(){
+void freeBarrels() {
 	int i;
-	for(i = 0; i < numberOfBarrels; i++){
+	for (i = 0; i < numberOfBarrels; i++) {
 		free(game->barrels[i]);
 	}
 }
 
-void freeCones(){
+void freeCones() {
 	int i;
-	for(i = 0; i < numberOfBarrels; i++){
+	for (i = 0; i < numberOfBarrels; i++) {
 		free(game->cones[i]);
 	}
 }
@@ -325,7 +335,7 @@ void handleEvents() {
 				updateGameState(TERMINATE);
 			}
 
-			if(clicked(game->cones[i]->body,m)){
+			if (clicked(game->cones[i]->body, m)) {
 				recalculateConePos(game->cones[i]);
 			}
 
@@ -529,7 +539,7 @@ void loadBitmaps() {
 
 }
 
-void deleteDigitBitmaps(){
+void deleteDigitBitmaps() {
 	deleteBitmap(game->digits[0]);
 	deleteBitmap(game->digits[1]);
 	deleteBitmap(game->digits[2]);
@@ -542,16 +552,16 @@ void deleteDigitBitmaps(){
 	deleteBitmap(game->digits[9]);
 }
 
-void deleteBarrelsBitmaps(){
+void deleteBarrelsBitmaps() {
 	int i;
-	for(i = 0; i < numberOfBarrels; i++){
+	for (i = 0; i < numberOfBarrels; i++) {
 		deleteBitmap(game->barrels[i]->bitmap);
 	}
 }
 
-void deleteConesBitmaps(){
+void deleteConesBitmaps() {
 	int i;
-	for(i = 0; i < numberOfCones; i++){
+	for (i = 0; i < numberOfCones; i++) {
 		deleteBitmap(game->cones[i]->bitmap);
 	}
 }
@@ -589,9 +599,16 @@ void initGameProperties() {
 	MinixVice* game = getGame();
 
 	game->done = 0;
-	game->draw = 1;
 	game->scancode = 0;
 	game->score = 0;
+
+	game->hours = (unsigned long*) malloc(sizeof(unsigned long));
+	game->minutes = (unsigned long*) malloc(sizeof(unsigned long));
+	game->seconds = (unsigned long*) malloc(sizeof(unsigned long));
+
+	game->day = (unsigned long*) malloc(sizeof(unsigned long));
+	game->month = (unsigned long*) malloc(sizeof(unsigned long));
+	game->year = (unsigned long*) malloc(sizeof(unsigned long));
 
 	game->speed = INITIAL_SPEED;
 }
@@ -662,5 +679,6 @@ void initTimer() {
 
 	game->timer->ticked = 0;
 	game->timer->counter = 0;
+
 }
 
