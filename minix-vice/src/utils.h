@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#define SCORE_INCREASE(s) (0.5 + s*s/10000)
+#define SCORE_INCREASE(s) (0.1 + (s*s)/100000)
 
 #define GRAPHIC_MODE 279
 
@@ -9,6 +9,8 @@
 #define TURN_SPEED 5
 #define BRAKE_SPEED 1
 #define ACCELERATE_SPEED 0.5
+
+#define CONESHOT_BONUS     10
 
 #define LEFT_ROAD_LIMIT 197
 #define RIGHT_ROAD_LIMIT 823
@@ -42,9 +44,6 @@
 #define MERCEDESSELECTY1 230
 #define MERCEDESSELECTX2 860
 #define MERCEDESSELECTY2 568
-
-
-
 
 
 

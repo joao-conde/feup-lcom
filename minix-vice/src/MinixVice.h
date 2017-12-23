@@ -21,6 +21,7 @@ typedef struct {
 	unsigned long *day, *month, *year;
 
 	int done;
+	int bonus;
 
 	float speed;
 	float score;
@@ -32,8 +33,8 @@ typedef struct {
 	Bitmap* digits[10];
 
 	Player* car;
-	Barrel* barrels[2];
-	Cone* cones[2];
+	Barrel* barrels[4];
+	Cone* cones[3];
 
 } MinixVice;
 
@@ -82,6 +83,10 @@ void brake();
 void accelerate();
 
 void displayScore();
+
+void displayDate();
+
+void displayHour();
 
 void calculateScore();
 

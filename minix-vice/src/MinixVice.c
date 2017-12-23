@@ -53,9 +53,6 @@ void updateMinixVice() {
 		if (!isRTCUpdating()) {
 			getDate(game->day, game->month, game->year);
 			getHour(game->hours, game->minutes, game->seconds);
-			printf("Today is %d/%d/%d\n", *(game->day), *(game->month), *(game->year));
-			printf("The time now is %d hours %d minutes and %d seconds\n",
-					*(game->hours), *(game->minutes), *(game->seconds));
 		}
 
 	} while (isRTCUpdating());
@@ -75,6 +72,7 @@ void drawMinixVice() {
 	case MAIN_MENU:
 		drawBackgroundBitmap(game->main_menu->menu_background, 0, 0,
 				ALIGN_LEFT);
+		displayDate();
 		break;
 
 	case SELECT_MENU:
@@ -83,12 +81,14 @@ void drawMinixVice() {
 		break;
 
 	case GAME:
-		if (game->timer->ticked)
-			drawMovingBackground();
 
-		drawPlayer(game->car);
-		drawBarrels();
-		drawCones();
+		if (game->timer->ticked) {
+			drawMovingBackground();
+			displayHour();
+			drawPlayer(game->car);
+			drawBarrels();
+			drawCones();
+		}
 
 		break;
 
@@ -153,39 +153,50 @@ void accelerate() {
 }
 
 void recalculateBarrelPos(Barrel* barrel) {
-	int width, height, newX;
+	int width, height, newX, newY;
 
 	width = barrel->bitmap->bitmapInfoHeader.width;
 	height = barrel->bitmap->bitmapInfoHeader.height;
 
 	newX = generateRandomPos(LEFT_ROAD_LIMIT, RIGHT_ROAD_LIMIT - width);
 
+	/* negative values ensure they come a while after disappearing
+	 * and is random so they aren't always in the same height cord
+	 */
+	newY = -generateRandomPos(50,600);
+
 	barrel->x = newX;
-	barrel->y = ORIGIN_COORDS;
+	barrel->y = newY;
 
 	barrel->body->x1 = newX;
-	barrel->body->y1 = ORIGIN_COORDS;
+	barrel->body->y1 = newY;
 
 	barrel->body->x2 = newX + width;
-	barrel->body->y2 = height;
+	barrel->body->y2 = newY + height;
+
 }
 
 void recalculateConePos(Cone* cone) {
-	int width, height, newX;
+	int width, height, newX, newY;
 
 	width = cone->bitmap->bitmapInfoHeader.width;
 	height = cone->bitmap->bitmapInfoHeader.height;
 
 	newX = generateRandomPos(LEFT_ROAD_LIMIT, RIGHT_ROAD_LIMIT - width);
+	/*
+	 * negative values for the same reason as the barrels
+	 */
+	newY = -generateRandomPos(50,600);
 
 	cone->x = newX;
-	cone->y = ORIGIN_COORDS;
+	cone->y = newY;
 
 	cone->body->x1 = newX;
-	cone->body->y1 = ORIGIN_COORDS;
+	cone->body->y1 = newY;
 
 	cone->body->x2 = newX + width;
-	cone->body->y2 = height;
+	cone->body->y2 = newY + height;
+
 }
 
 void calculateScore() {
@@ -250,13 +261,75 @@ void drawCones() {
 void displayScore() {
 	MinixVice* game = getGame();
 
-	int score = game->score;
+	int score = (int) game->score;
 	int offset = SCORE_OFFSET, i = 0;
 
 	while (score >= 1) {
 		drawBitmap(game->digits[score % 10],
 				(vg_getHRES() - offset) - offset * i, 0, ALIGN_LEFT);
 		score /= 10;
+		i++;
+	}
+}
+
+void displayDate() {
+	MinixVice* game = getGame();
+
+	unsigned long day = *(game->day);
+	unsigned long month = *(game->month);
+	unsigned long year = *(game->year);
+
+	int offset = SCORE_OFFSET, i = 0;
+
+	while (year >= 1) {
+		drawBitmap(game->digits[year % 10],
+				(vg_getHRES() - offset) - offset * i, 0, ALIGN_LEFT);
+		year /= 10;
+		i++;
+	}
+
+	while (month >= 1) {
+		drawBitmap(game->digits[month % 10],
+				(vg_getHRES() - offset) - offset * i, 0, ALIGN_LEFT);
+		month /= 10;
+		i++;
+	}
+
+	while (day >= 1) {
+		drawBitmap(game->digits[day % 10], (vg_getHRES() - offset) - offset * i,
+				0, ALIGN_LEFT);
+		day /= 10;
+		i++;
+	}
+}
+
+void displayHour() {
+	MinixVice* game = getGame();
+
+	unsigned long hours = *(game->hours);
+	unsigned long minutes = *(game->minutes);
+	unsigned long seconds = *(game->seconds);
+
+	int offset = SCORE_OFFSET, i = 0;
+
+	while (seconds >= 1) {
+		drawBitmap(game->digits[seconds % 10],
+				(vg_getHRES() - offset) - offset * i, 150, ALIGN_LEFT);
+		seconds /= 10;
+		i++;
+	}
+
+	while (minutes >= 1) {
+		drawBitmap(game->digits[minutes % 10],
+				(vg_getHRES() - offset) - offset * i, 150, ALIGN_LEFT);
+		minutes /= 10;
+		i++;
+	}
+
+	while (hours >= 1) {
+		drawBitmap(game->digits[hours % 10],
+				(vg_getHRES() - offset) - offset * i, 150, ALIGN_LEFT);
+		hours /= 10;
 		i++;
 	}
 }
@@ -317,6 +390,11 @@ void handleEvents() {
 			updateConesPos();
 		}
 
+		if(game->bonus){
+			game->bonus = 0;
+			game->score += CONESHOT_BONUS;
+		}
+
 		for (i = 0; i < numberOfBarrels; i++) {
 
 			if (collide(game->car->body, game->barrels[i]->body)) {
@@ -327,6 +405,8 @@ void handleEvents() {
 			if (game->barrels[i]->y > vg_getVRES()) {
 				recalculateBarrelPos(game->barrels[i]);
 			}
+
+
 		}
 
 		for (i = 0; i < numberOfCones; i++) {
@@ -335,8 +415,10 @@ void handleEvents() {
 				updateGameState(TERMINATE);
 			}
 
+			//shot cone
 			if (clicked(game->cones[i]->body, m)) {
 				recalculateConePos(game->cones[i]);
+				game->bonus = 1;
 			}
 
 			//if cone out of game screen re-calculate coordinates
@@ -602,6 +684,8 @@ void initGameProperties() {
 	game->scancode = 0;
 	game->score = 0;
 
+	game->bonus = 0;
+
 	game->hours = (unsigned long*) malloc(sizeof(unsigned long));
 	game->minutes = (unsigned long*) malloc(sizeof(unsigned long));
 	game->seconds = (unsigned long*) malloc(sizeof(unsigned long));
@@ -645,7 +729,9 @@ void initBarrels() {
 
 		game->barrels[i]->x = generateRandomPos(LEFT_ROAD_LIMIT,
 		RIGHT_ROAD_LIMIT - barrelWidth);
-		game->barrels[i]->y = ORIGIN_COORDS;
+
+		game->barrels[i]->y = -generateRandomPos(50,600);
+
 
 		game->barrels[i]->body = newColliderBox(game->barrels[i]->x,
 				game->barrels[i]->y, game->barrels[i]->x + barrelWidth,
@@ -665,7 +751,7 @@ void initCones() {
 		game->cones[i]->x = generateRandomPos(LEFT_ROAD_LIMIT,
 		RIGHT_ROAD_LIMIT - coneWidth);
 
-		game->cones[i]->y = 0;
+		game->cones[i]->y = -generateRandomPos(50,600);
 
 		game->cones[i]->body = newColliderBox(game->cones[i]->x,
 				game->cones[i]->y, game->cones[i]->x + coneWidth,
