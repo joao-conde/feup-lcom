@@ -80,6 +80,10 @@ void drawMinixVice() {
 				ALIGN_LEFT);
 		break;
 
+	case HELP_MENU:
+		drawBackgroundBitmap(game->help_screen, 0, 0, ALIGN_LEFT);
+		break;
+
 	case GAME:
 
 		if (game->timer->ticked) {
@@ -90,6 +94,10 @@ void drawMinixVice() {
 			drawCones();
 		}
 
+		break;
+
+	case STATS_MENU:
+		drawBackgroundBitmap(game->stats_screen, 0, 0, ALIGN_LEFT);
 		break;
 
 	}
@@ -163,7 +171,7 @@ void recalculateBarrelPos(Barrel* barrel) {
 	/* negative values ensure they come a while after disappearing
 	 * and is random so they aren't always in the same height cord
 	 */
-	newY = -generateRandomPos(50,600);
+	newY = -generateRandomPos(50, 600);
 
 	barrel->x = newX;
 	barrel->y = newY;
@@ -186,7 +194,7 @@ void recalculateConePos(Cone* cone) {
 	/*
 	 * negative values for the same reason as the barrels
 	 */
-	newY = -generateRandomPos(50,600);
+	newY = -generateRandomPos(50, 600);
 
 	cone->x = newX;
 	cone->y = newY;
@@ -352,6 +360,16 @@ void handleEvents() {
 			updateGameState(TERMINATE);
 		}
 
+		if (game->scancode == H_BREAK)
+			updateGameState(HELP);
+
+		break;
+
+	case HELP_MENU:
+
+		if (game->scancode == ESC_BREAK)
+			updateGameState(MAIN);
+
 		break;
 
 	case SELECT_MENU:
@@ -390,7 +408,7 @@ void handleEvents() {
 			updateConesPos();
 		}
 
-		if(game->bonus){
+		if (game->bonus) {
 			game->bonus = 0;
 			game->score += CONESHOT_BONUS;
 		}
@@ -406,7 +424,6 @@ void handleEvents() {
 				recalculateBarrelPos(game->barrels[i]);
 			}
 
-
 		}
 
 		for (i = 0; i < numberOfCones; i++) {
@@ -419,6 +436,7 @@ void handleEvents() {
 			if (clicked(game->cones[i]->body, m)) {
 				recalculateConePos(game->cones[i]);
 				game->bonus = 1;
+				game->conesShot++;
 			}
 
 			//if cone out of game screen re-calculate coordinates
@@ -426,6 +444,13 @@ void handleEvents() {
 				recalculateConePos(game->cones[i]);
 			}
 		}
+
+		break;
+
+	case STATS_MENU:
+
+		if (game->scancode == ESC_BREAK)
+			updateGameState(TERMINATE);
 
 		break;
 
@@ -467,9 +492,9 @@ void kbdIH() {
 
 	if (game->scancode != 0) {
 
-		if (game->scancode == ESC_BREAK) {
-			game->done = 1;
-		}
+//		if (game->scancode == ESC_BREAK) {
+//			game->done = 1;
+//		} TODO ONLY MOVE PLAYER IN GAME
 
 		switch (game->scancode) {
 
@@ -477,6 +502,7 @@ void kbdIH() {
 			movePlayerLeft(game->car);
 			updatePlayerState(TLEFT);
 			break;
+
 		case D_MAKE:
 			movePlayerRight(game->car);
 			updatePlayerState(TRIGHT);
@@ -613,6 +639,8 @@ void loadBitmaps() {
 	game->background = loadBitmap(getImgPath("road"));
 	game->main_menu->menu_background = loadBitmap(getImgPath("main-menu"));
 	game->select_menu->select_background = loadBitmap(getImgPath("carselect"));
+	game->help_screen = loadBitmap(getImgPath("help-placeholder"));
+	game->stats_screen = loadBitmap(getImgPath("stats"));
 
 	loadDigitBitmaps();
 
@@ -685,6 +713,7 @@ void initGameProperties() {
 	game->score = 0;
 
 	game->bonus = 0;
+	game->conesShot = 0;
 
 	game->hours = (unsigned long*) malloc(sizeof(unsigned long));
 	game->minutes = (unsigned long*) malloc(sizeof(unsigned long));
@@ -730,8 +759,7 @@ void initBarrels() {
 		game->barrels[i]->x = generateRandomPos(LEFT_ROAD_LIMIT,
 		RIGHT_ROAD_LIMIT - barrelWidth);
 
-		game->barrels[i]->y = -generateRandomPos(50,600);
-
+		game->barrels[i]->y = -generateRandomPos(50, 600);
 
 		game->barrels[i]->body = newColliderBox(game->barrels[i]->x,
 				game->barrels[i]->y, game->barrels[i]->x + barrelWidth,
@@ -751,7 +779,7 @@ void initCones() {
 		game->cones[i]->x = generateRandomPos(LEFT_ROAD_LIMIT,
 		RIGHT_ROAD_LIMIT - coneWidth);
 
-		game->cones[i]->y = -generateRandomPos(50,600);
+		game->cones[i]->y = -generateRandomPos(50, 600);
 
 		game->cones[i]->body = newColliderBox(game->cones[i]->x,
 				game->cones[i]->y, game->cones[i]->x + coneWidth,

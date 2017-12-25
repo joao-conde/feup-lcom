@@ -6,7 +6,7 @@ st_player playerState = DEFAULT;
 
 st_mouse mouseState = MENU;
 
-void updateMouseState(st_mouse newState){
+void updateMouseState(st_mouse newState) {
 	mouseState = newState;
 }
 
@@ -23,8 +23,18 @@ void updateGameState(game_event_t event) {
 		if (event == SELECT_CAR)
 			gameState = SELECT_MENU;
 
+		if (event == HELP)
+			gameState = HELP_MENU;
+
 		if (event == TERMINATE)
 			gameState = OVER;
+
+		break;
+
+	case HELP_MENU:
+
+		if(event == MAIN)
+			gameState = MAIN_MENU;
 
 		break;
 
@@ -37,8 +47,16 @@ void updateGameState(game_event_t event) {
 
 	case GAME:
 
+		if (event == TERMINATE)
+			gameState = STATS_MENU;
+
+		break;
+
+	case STATS_MENU:
+
 		if(event == TERMINATE)
 			gameState = OVER;
+
 		break;
 
 	}

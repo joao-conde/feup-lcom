@@ -23,11 +23,14 @@ typedef struct {
 	int done;
 	int bonus;
 
+	int conesShot; //TODO use coneshot statistic
 	float speed;
 	float score;
 
 	MainMenu* main_menu;
 	SelectMenu* select_menu;
+	Bitmap* help_screen;
+	Bitmap* stats_screen;
 
 	Bitmap* background;
 	Bitmap* digits[10];

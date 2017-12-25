@@ -15,7 +15,8 @@
 
 /* USEFUL MACROS */
 
-#define ESC_BREAK 		0x81
+#define ESC_BREAK   0x81
+#define H_BREAK     0xA3
 #define W_MAKE 		0x11
 #define A_MAKE 		0x1E
 #define S_MAKE 		0x1F

@@ -9,14 +9,11 @@
 
 /* Constants for VBE */
 
-#define VBE_MODE105 	  0x105
 #define BITS_PER_BYTE 	  8
 
 enum direction {
 	UP, DOWN, LEFT, RIGHT, STOP
 };
-
-typedef enum direction direction_t;
 
 
 /**
