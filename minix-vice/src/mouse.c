@@ -29,10 +29,7 @@ Mouse* newMouse() {
 	mouse->deltaY = 0;
 
 	mouse->LBtnDown = 0;
-	mouse->MBtnDown = 0;
 	mouse->RBtnDown = 0;
-
-	mouse->draw = 0;
 
 	mouse->cursor = loadBitmap(getImgPath("seta"));
 	mouse->target = loadBitmap(getImgPath("mira"));
@@ -42,6 +39,7 @@ Mouse* newMouse() {
 
 Mouse* getMouse() {
 	if (mouse == NULL) {
+
 		enable_mouse();
 		enable_DataReporting();
 		setStreamMode();
@@ -55,15 +53,15 @@ void drawMouse() {
 	Mouse* m = getMouse();
 
 	switch(mouseState){
+
 	case MENU:
 		drawBitmap(m->cursor, m->x, m->y, ALIGN_LEFT);
 		break;
+
 	case TARGET:
 		drawBitmap(m->target, m->x, m->y, ALIGN_LEFT);
 		break;
 	}
-
-	m->draw = 0;
 
 }
 
@@ -80,40 +78,45 @@ void updateMouse() {
 	if (BIT(6) & g_packet[0]) //X overflow
 		return;
 
-	m->LBtnDown = g_packet[0] & BIT(0);
-	m->RBtnDown = g_packet[0] & BIT(1);
-	m->MBtnDown = g_packet[0] & BIT(2);
+	m->LBtnDown = g_packet[0] & LB_DOWN;
+	m->RBtnDown = g_packet[0] & RB_DOWN;
 
 	//calculate deltas depending on whether its 2's comp or not
 
-	if (g_packet[0] & BIT(4)) {
-		m->deltaX = -((g_packet[1] ^= 0xFF) + 1);
+	if (g_packet[0] & X_SIGN) {
+		m->deltaX = - CONVERT2DECIMAL(g_packet[1]);
 	} else
 		m->deltaX = g_packet[1];
 
-	if (g_packet[0] & BIT(5)) {
-		m->deltaY = ((g_packet[2] ^= 0xFF) + 1);
+	if (g_packet[0] & Y_SIGN) {
+		m->deltaY = CONVERT2DECIMAL(g_packet[2]);
 	} else
 		m->deltaY = -g_packet[2];
 
+
 	//Boundaries check
 
-	if (m->x + m->deltaX >= vg_getHRES() - 6) {
-		m->x = vg_getHRES() - 6;
-	}else if (m->x + m->deltaX < 0)
-		m->x = 0;
+	if (m->x + m->deltaX >= vg_getHRES() - MOUSE_MARGIN) {
+		m->x = vg_getHRES() - MOUSE_MARGIN;
+	}
+
+	if (m->x + m->deltaX <= ORIGIN_COORDS){
+		m->x = ORIGIN_COORDS;
+	}
 	else
 		m->x += m->deltaX;
 
-	if (m->y + m->deltaY >= vg_getVRES() - 6) {
-		m->y = vg_getVRES() - 6;
-	}else if (m->y + m->deltaY < 6)
-		m->y = 0;
+
+	if (m->y + m->deltaY >= vg_getVRES() - MOUSE_MARGIN) {
+		m->y = vg_getVRES() - MOUSE_MARGIN;
+	}
+
+	if (m->y + m->deltaY <= ORIGIN_COORDS){
+		m->y = ORIGIN_COORDS;
+	}
 	else
 		m->y += m->deltaY;
 
-
-	m->draw = 1;
 
 //	if(m->LBtnDown)
 //		printf("%d - %d\n",m->x, m->y);
@@ -297,6 +300,7 @@ int mouse_write_cmd(unsigned long cmd, unsigned long word) {
 	return TRIES_EXCEED;
 
 }
+
 
 int enable_DataReporting() {
 	if (mouse_write_cmd(WRITE_BYTE, ENABLE_DATAREPORT) != OK)
