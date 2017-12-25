@@ -112,6 +112,7 @@ void updateMouse() {
 	else
 		m->y += m->deltaY;
 
+
 	m->draw = 1;
 
 //	if(m->LBtnDown)
