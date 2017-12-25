@@ -85,13 +85,15 @@ void brake();
 
 void accelerate();
 
+void calculateScore();
+
 void displayScore();
 
 void displayDate();
 
 void displayHour();
 
-void calculateScore();
+void displayConesShot();
 
 void initGameProperties();
 

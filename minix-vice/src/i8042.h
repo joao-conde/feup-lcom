@@ -23,14 +23,17 @@
 #define D_MAKE 		0x20
 
 
-#define SET2_SCANCODE	0xE0
 #define OUTBUF_FULL_ASS 1
 #define BREAKCODE		BIT(7)
 #define KBD_IRQ			1
 #define MOUSE_IRQ		12
 #define PACKET_SIZE     3
+
+#define LB_DOWN         BIT(0)
 #define RB_DOWN         BIT(1)
-#define BYTE_MINUS1	0xFF
+
+#define X_SIGN BIT(4)
+#define Y_SIGN BIT(5)
 
 /* MOUSE COMMANDS */
 
@@ -46,7 +49,7 @@
 
 #define STAT_REG 0x64
 #define OUT_BUF  0x60
-#define INP_BUF 0x60
+#define INP_BUF  0x60
 
 
 /* ERROR CONTROL  */

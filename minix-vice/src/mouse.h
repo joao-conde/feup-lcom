@@ -9,10 +9,7 @@ typedef struct {
     int deltaX, deltaY;
 
     int LBtnDown;
-    int MBtnDown;
     int RBtnDown;
-
-    int draw;
 
     Bitmap* cursor;
     Bitmap* target;

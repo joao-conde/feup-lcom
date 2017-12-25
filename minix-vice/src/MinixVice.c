@@ -98,6 +98,7 @@ void drawMinixVice() {
 
 	case STATS_MENU:
 		drawBackgroundBitmap(game->stats_screen, 0, 0, ALIGN_LEFT);
+		displayConesShot();
 		break;
 
 	}
@@ -342,6 +343,25 @@ void displayHour() {
 	}
 }
 
+void displayConesShot() {
+	MinixVice* game = getGame();
+
+	int conesShot = game->conesShot;
+	int offset = 150, i = 0;
+
+	if(conesShot == 0){
+		drawBitmap(game->digits[0], (vg_getHRES() - offset) - offset * i, 300, ALIGN_LEFT);
+		return;
+	}
+
+	while (conesShot >= 1) {
+		drawBitmap(game->digits[conesShot % 10],
+				(vg_getHRES() - offset) - offset * i, 300, ALIGN_LEFT);
+		conesShot /= 10;
+		i++;
+	}
+}
+
 void handleEvents() {
 
 	MinixVice* game = getGame();
@@ -493,32 +513,34 @@ void kbdIH() {
 	if (game->scancode != 0) {
 
 //		if (game->scancode == ESC_BREAK) {
-//			game->done = 1;
-//		} TODO ONLY MOVE PLAYER IN GAME
+//			game->done = 1; //TODO DELETE THIS -> TEST PURPOSES
+//		}
 
-		switch (game->scancode) {
+		if (gameState == GAME) {
+			switch (game->scancode) {
 
-		case A_MAKE:
-			movePlayerLeft(game->car);
-			updatePlayerState(TLEFT);
-			break;
+			case A_MAKE:
+				movePlayerLeft(game->car);
+				updatePlayerState(TLEFT);
+				break;
 
-		case D_MAKE:
-			movePlayerRight(game->car);
-			updatePlayerState(TRIGHT);
-			break;
+			case D_MAKE:
+				movePlayerRight(game->car);
+				updatePlayerState(TRIGHT);
+				break;
 
-		case W_MAKE:
-			accelerate();
-			break;
+			case W_MAKE:
+				accelerate();
+				break;
 
-		case S_MAKE:
-			brake();
-			break;
+			case S_MAKE:
+				brake();
+				break;
 
-		default:
-			updatePlayerState(DEFAULT);
-			break;
+			default:
+				updatePlayerState(DEFAULT);
+				break;
+			}
 		}
 
 	}
@@ -549,6 +571,7 @@ void interruptsHandler() {
 			}
 
 			break;
+
 		default:
 			break;
 		}

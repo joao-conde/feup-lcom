@@ -3,26 +3,9 @@
 #include <minix/sysutil.h>
 #include <minix/drivers.h>
 
-#ifdef LAB3
-
-int sysinb_counter = 0;
-
-int sys_inb_cnt(port_t port, unsigned long *byte) {
-	sysinb_counter++;
-	return sys_inb(port,byte);
-}
-
-void print_sysinb_calls() {
-	printf("no. of sys_inb() kernel calls: %d\n",sysinb_counter);
-}
-
-#else
-#define sys_inb_cnt(p,q) sys_inb(p,q)
-#endif
 
 int kbd_hookID;
 int twobytes = 0;
-
 
 
 int kbd_subscribe_int(void) {
@@ -65,7 +48,7 @@ int kbc_read() {
 	int retry = 0;
 	while (retry < 5) {
 
-		if (sys_inb_cnt(STAT_REG, &status) != OK) {
+		if (sys_inb(STAT_REG, &status) != OK) {
 			printf("kbc_read(): Failure reading status register of KBC\n");
 			return FAIL_READ_STATUS;
 		}
@@ -73,7 +56,7 @@ int kbc_read() {
 		//loop while KBC output buffer is empty
 		if (status & OBF) {
 
-			if (sys_inb_cnt(OUT_BUF, &data) != OK) {
+			if (sys_inb(OUT_BUF, &data) != OK) {
 				printf("kbc_read(): Failure reading output buffer of KBC\n");
 				return FAIL_READ_OUTBUF;
 			}

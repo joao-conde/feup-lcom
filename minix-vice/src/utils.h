@@ -1,7 +1,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+
 #define SCORE_INCREASE(s) (0.1 + (s*s)/100000)
+#define CONVERT2DECIMAL(x) ((x ^= 0xFF) + 1)
+
 
 #define GRAPHIC_MODE 279
 
@@ -17,7 +20,8 @@
 #define ORIGIN_COORDS   0
 
 #define SCORE_OFFSET 50
-#define CAR_OFFSET 10
+#define CAR_OFFSET   10
+#define MOUSE_MARGIN 6
 
 #define PLAYBTNX1 95
 #define PLAYBTNY1 145
@@ -45,6 +49,8 @@
 #define MERCEDESSELECTX2 860
 #define MERCEDESSELECTY2 568
 
+/* OTHERS */
+#define BYTE_MINUS1	    0xFF
 
 
 int fileExists(const char* filename);
