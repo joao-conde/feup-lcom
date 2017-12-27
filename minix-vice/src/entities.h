@@ -13,6 +13,7 @@
  * Definition of game entities and functions to operate on them
  */
 
+
 typedef struct{
 
 	ColliderBox* playBtn;
@@ -24,7 +25,7 @@ typedef struct{
 typedef struct{
 
 	ColliderBox* select_lamb;
-	ColliderBox* select_blue;
+	ColliderBox* select_red;
 	ColliderBox* select_mercedes;
 	Bitmap* select_background;
 

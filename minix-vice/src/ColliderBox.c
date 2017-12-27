@@ -29,6 +29,7 @@ int clicked(ColliderBox* collider, Mouse* mouse) {
 	return 1;
 }
 
+
 int collide(ColliderBox* c1, ColliderBox* c2) {
 
 	/*

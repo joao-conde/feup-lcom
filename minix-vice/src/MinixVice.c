@@ -381,8 +381,14 @@ void handleEvents() {
 			updateGameState(SELECT_CAR);
 		}
 
+		if(hovered(game->main_menu->playBtn, m)){
+		}
+
 		if (clicked(game->main_menu->quitBtn, m)) {
 			updateGameState(TERMINATE);
+		}
+
+		if(hovered(game->main_menu->quitBtn, m)){
 		}
 
 		if (game->scancode == H_BREAK)
@@ -399,7 +405,7 @@ void handleEvents() {
 
 	case SELECT_MENU:
 
-		if (clicked(game->select_menu->select_blue, m)) {
+		if (clicked(game->select_menu->select_red, m)) {
 			loadCarBitmaps(1);
 			initPlayer();
 
@@ -673,10 +679,10 @@ void loadCarBitmaps(int selectedCar) {
 
 
 	switch (selectedCar) {
-	case 1: //blue car
-		game->car->bmpForward = loadBitmap(getImgPath("blue-car"));
-		game->car->bmpTLeft = loadBitmap(getImgPath("blue-car-tl"));
-		game->car->bmpTRight = loadBitmap(getImgPath("blue-car-tr"));
+	case 1: //red car
+		game->car->bmpForward = loadBitmap(getImgPath("red"));
+		game->car->bmpTLeft = loadBitmap(getImgPath("red-tl"));
+		game->car->bmpTRight = loadBitmap(getImgPath("red-tr"));
 		break;
 
 	case 2: //black lamb
@@ -771,8 +777,8 @@ void initPlayer() {
 	game->car->x = vg_getHRES() / 2 - carWidth / 2;
 	game->car->y = vg_getVRES() - CAR_OFFSET - carHeight;
 
-	game->car->body = newColliderBox(game->car->x, game->car->y,
-			game->car->x + carWidth, game->car->y + carHeight);
+	game->car->body = newColliderBox(game->car->x + COLBOX_MARGIN, game->car->y + COLBOX_MARGIN,
+			game->car->x + carWidth - COLBOX_MARGIN, game->car->y + carHeight - COLBOX_MARGIN);
 }
 
 void initGameProperties() {
@@ -811,8 +817,8 @@ void initSelectMenu() {
 
 	game->select_menu->select_lamb = newColliderBox(LAMBSELECTX1, LAMBSELECTY1,
 	LAMBSELECTX2, LAMBSELECTY2);
-	game->select_menu->select_blue = newColliderBox(BLUESELECTX1, BLUESELECTY1,
-	BLUESELECTX2, BLUESELECTY2);
+	game->select_menu->select_red = newColliderBox(REDSELECTX1, REDSELECTY1,
+	REDSELECTX2, REDSELECTY2);
 	game->select_menu->select_mercedes = newColliderBox(MERCEDESSELECTX1,
 	MERCEDESSELECTY1, MERCEDESSELECTX2, MERCEDESSELECTY2);
 
