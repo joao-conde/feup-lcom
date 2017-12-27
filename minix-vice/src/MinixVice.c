@@ -477,12 +477,6 @@ void handleEvents() {
 		if (game->scancode == ESC_BREAK)
 			updateGameState(TERMINATE);
 
-//		if (game->scancode == ESC_BREAK){
-//			game = NULL;
-//			initMinixVice();
-//			updateGameState(MAIN_MENU);
-//		}
-
 		break;
 
 	case OVER:
@@ -491,6 +485,7 @@ void handleEvents() {
 
 	}
 }
+
 
 void subscribeInterrupts() {
 	MinixVice* game = getGame();
