@@ -52,7 +52,7 @@ Mouse* getMouse() {
 void drawMouse() {
 	Mouse* m = getMouse();
 
-	switch(mouseState){
+	switch (mouseState) {
 
 	case MENU:
 		drawBitmap(m->cursor, m->x, m->y, ALIGN_LEFT);
@@ -84,7 +84,7 @@ void updateMouse() {
 	//calculate deltas depending on whether its 2's comp or not
 
 	if (g_packet[0] & X_SIGN) {
-		m->deltaX = - CONVERT2DECIMAL(g_packet[1]);
+		m->deltaX = -CONVERT2DECIMAL(g_packet[1]);
 	} else
 		m->deltaX = g_packet[1];
 
@@ -93,30 +93,24 @@ void updateMouse() {
 	} else
 		m->deltaY = -g_packet[2];
 
-
 	//Boundaries check
 
-	if (m->x + m->deltaX >= vg_getHRES() - MOUSE_MARGIN) {
+	int newX = m->x + m->deltaX;
+	int newY = m->y + m->deltaY;
+
+	if (newX >= vg_getHRES() - MOUSE_MARGIN) {
 		m->x = vg_getHRES() - MOUSE_MARGIN;
-	}
-
-	if (m->x + m->deltaX <= ORIGIN_COORDS){
-		m->x = ORIGIN_COORDS;
-	}
+	} else if (newX < 0)
+		m->x = 0;
 	else
-		m->x += m->deltaX;
+		m->x = newX;
 
-
-	if (m->y + m->deltaY >= vg_getVRES() - MOUSE_MARGIN) {
+	if (newY >= vg_getVRES() - MOUSE_MARGIN) {
 		m->y = vg_getVRES() - MOUSE_MARGIN;
-	}
-
-	if (m->y + m->deltaY <= ORIGIN_COORDS){
-		m->y = ORIGIN_COORDS;
-	}
+	} else if (newY < 1)
+		m->y = 1;
 	else
-		m->y += m->deltaY;
-
+		m->y = newY;
 
 //	if(m->LBtnDown)
 //		printf("%d - %d\n",m->x, m->y);
@@ -300,7 +294,6 @@ int mouse_write_cmd(unsigned long cmd, unsigned long word) {
 	return TRIES_EXCEED;
 
 }
-
 
 int enable_DataReporting() {
 	if (mouse_write_cmd(WRITE_BYTE, ENABLE_DATAREPORT) != OK)

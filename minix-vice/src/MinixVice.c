@@ -47,15 +47,11 @@ MinixVice* getGame() {
 
 void updateMinixVice() {
 
+	MinixVice* game = getGame();
+
 	game->timer->ticked = 0;
 
-	do {
-		if (!isRTCUpdating()) {
-			getDate(game->day, game->month, game->year);
-			getHour(game->hours, game->minutes, game->seconds);
-		}
-
-	} while (isRTCUpdating());
+	readRTC();
 
 	interruptsHandler();
 
@@ -131,6 +127,8 @@ void endMinixVice() {
 }
 
 void freeBarrels() {
+	MinixVice* game = getGame();
+
 	int i;
 	for (i = 0; i < numberOfBarrels; i++) {
 		free(game->barrels[i]);
@@ -138,6 +136,8 @@ void freeBarrels() {
 }
 
 void freeCones() {
+	MinixVice* game = getGame();
+
 	int i;
 	for (i = 0; i < numberOfBarrels; i++) {
 		free(game->cones[i]);
@@ -209,6 +209,8 @@ void recalculateConePos(Cone* cone) {
 }
 
 void calculateScore() {
+	MinixVice* game = getGame();
+
 	game->score += SCORE_INCREASE(game->speed);
 }
 
@@ -250,6 +252,7 @@ void updateConesPos() {
 }
 
 void drawBarrels() {
+	MinixVice* game = getGame();
 
 	int i;
 	for (i = 0; i < numberOfBarrels; i++) {
@@ -259,6 +262,7 @@ void drawBarrels() {
 }
 
 void drawCones() {
+	MinixVice* game = getGame();
 
 	int i;
 	for (i = 0; i < numberOfCones; i++) {
@@ -482,12 +486,16 @@ void handleEvents() {
 }
 
 void subscribeInterrupts() {
+	MinixVice* game = getGame();
+
 	game->irq_kbd = kbd_subscribe_int();
 	game->irq_timer = timer_subscribe_int();
 	game->irq_mouse = mouse_subscribe_int();
 }
 
 void unsubscribeInterrupts() {
+	MinixVice* game = getGame();
+
 	kbd_unsubscribe_int();
 	timer_unsubscribe_int();
 	mouse_unsubscribe_int();
@@ -547,6 +555,19 @@ void kbdIH() {
 
 }
 
+void readRTC(){
+	MinixVice* game = getGame();
+
+	do {
+		if (!isRTCUpdating()) {
+			getDate(game->day, game->month, game->year);
+			getHour(game->hours, game->minutes, game->seconds);
+		}
+
+	} while (isRTCUpdating());
+
+}
+
 void interruptsHandler() {
 	int ipc_status, r = 0;
 	message msg;
@@ -579,6 +600,8 @@ void interruptsHandler() {
 }
 
 void createEntities() {
+	MinixVice* game = getGame();
+
 	game->main_menu = (MainMenu*) malloc(sizeof(MainMenu));
 	game->select_menu = (SelectMenu*) malloc(sizeof(SelectMenu));
 
@@ -590,6 +613,8 @@ void createEntities() {
 }
 
 void createBarrels() {
+	MinixVice* game = getGame();
+
 	int i;
 	for (i = 0; i < numberOfBarrels; i++) {
 		game->barrels[i] = (Barrel*) malloc(sizeof(Barrel));
@@ -597,6 +622,8 @@ void createBarrels() {
 }
 
 void createCones() {
+	MinixVice* game = getGame();
+
 	int i;
 	for (i = 0; i < numberOfCones; i++) {
 		game->cones[i] = (Cone*) malloc(sizeof(Cone));
@@ -604,6 +631,8 @@ void createCones() {
 }
 
 void loadBarrelsBitmaps() {
+	MinixVice* game = getGame();
+
 	int i;
 	Bitmap* barrelBitmap = loadBitmap(getImgPath("barrel"));
 	for (i = 0; i < numberOfBarrels; i++) {
@@ -612,6 +641,8 @@ void loadBarrelsBitmaps() {
 }
 
 void loadConesBitmaps() {
+	MinixVice* game = getGame();
+
 	int i;
 	Bitmap* coneBitmap = loadBitmap(getImgPath("traffic-cone"));
 	for (i = 0; i < numberOfCones; i++) {
@@ -620,6 +651,8 @@ void loadConesBitmaps() {
 }
 
 void loadDigitBitmaps() {
+	MinixVice* game = getGame();
+
 	game->digits[0] = loadBitmap(getImgPath("0"));
 	game->digits[1] = loadBitmap(getImgPath("1"));
 	game->digits[2] = loadBitmap(getImgPath("2"));
@@ -633,6 +666,9 @@ void loadDigitBitmaps() {
 }
 
 void loadCarBitmaps(int selectedCar) {
+
+	MinixVice* game = getGame();
+
 
 	switch (selectedCar) {
 	case 1: //blue car
@@ -658,6 +694,7 @@ void loadCarBitmaps(int selectedCar) {
 }
 
 void loadBitmaps() {
+	MinixVice* game = getGame();
 
 	game->background = loadBitmap(getImgPath("road"));
 	game->main_menu->menu_background = loadBitmap(getImgPath("main-menu"));
@@ -673,6 +710,8 @@ void loadBitmaps() {
 }
 
 void deleteDigitBitmaps() {
+	MinixVice* game = getGame();
+
 	deleteBitmap(game->digits[0]);
 	deleteBitmap(game->digits[1]);
 	deleteBitmap(game->digits[2]);
@@ -686,6 +725,8 @@ void deleteDigitBitmaps() {
 }
 
 void deleteBarrelsBitmaps() {
+	MinixVice* game = getGame();
+
 	int i;
 	for (i = 0; i < numberOfBarrels; i++) {
 		deleteBitmap(game->barrels[i]->bitmap);
@@ -693,6 +734,8 @@ void deleteBarrelsBitmaps() {
 }
 
 void deleteConesBitmaps() {
+	MinixVice* game = getGame();
+
 	int i;
 	for (i = 0; i < numberOfCones; i++) {
 		deleteBitmap(game->cones[i]->bitmap);
@@ -700,6 +743,8 @@ void deleteConesBitmaps() {
 }
 
 void deleteBitmaps() {
+	MinixVice* game = getGame();
+
 	deleteBitmap(game->background);
 	deleteBitmap(game->main_menu->menu_background);
 	deleteBitmap(game->select_menu->select_background);
@@ -714,9 +759,9 @@ void deleteBitmaps() {
 }
 
 void initPlayer() {
-	int carWidth, carHeight;
-
 	MinixVice* game = getGame();
+
+	int carWidth, carHeight;
 
 	carWidth = game->car->bmpForward->bitmapInfoHeader.width;
 	carHeight = game->car->bmpForward->bitmapInfoHeader.height;
@@ -772,6 +817,8 @@ void initSelectMenu() {
 }
 
 void initBarrels() {
+	MinixVice* game = getGame();
+
 	int i, barrelWidth, barrelHeight;
 
 	barrelWidth = game->barrels[0]->bitmap->bitmapInfoHeader.width;
@@ -792,6 +839,8 @@ void initBarrels() {
 }
 
 void initCones() {
+	MinixVice* game = getGame();
+
 	int i, coneWidth, coneHeight;
 
 	coneWidth = game->cones[0]->bitmap->bitmapInfoHeader.width;
