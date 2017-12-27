@@ -49,7 +49,7 @@ MinixVice* initMinixVice();
 MinixVice* getGame();
 
 
-/* INTERRUPT HANDLING */
+/* I/O HANDLING */
 
 void subscribeInterrupts();
 
@@ -60,6 +60,8 @@ void mouseIH();
 void timerIH();
 
 void kbdIH();
+
+void readRTC();
 
 void interruptsHandler();
 
