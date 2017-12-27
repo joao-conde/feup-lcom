@@ -28,7 +28,7 @@ typedef struct {
 	int done;
 	int bonus;
 
-	int conesShot; //TODO use coneshot statistic
+	int conesShot;
 	float speed;
 	float score;
 
