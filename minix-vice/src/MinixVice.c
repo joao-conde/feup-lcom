@@ -111,6 +111,7 @@ void drawMinixVice() {
 void endMinixVice() {
 	MinixVice* game = getGame();
 
+	cleanOBF();
 	unsubscribeInterrupts();
 
 	deleteBitmaps();
@@ -475,6 +476,12 @@ void handleEvents() {
 
 		if (game->scancode == ESC_BREAK)
 			updateGameState(TERMINATE);
+
+//		if (game->scancode == ESC_BREAK){
+//			game = NULL;
+//			initMinixVice();
+//			updateGameState(MAIN_MENU);
+//		}
 
 		break;
 
