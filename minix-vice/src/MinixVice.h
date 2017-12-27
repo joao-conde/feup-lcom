@@ -10,6 +10,11 @@
 #include "state_machines.h"
 #include "rtc.h"
 
+/** @defgroup MinixVice MinixVice
+ * @{
+ *
+ * Game manager and methods
+ */
 
 typedef struct {
 
@@ -42,41 +47,92 @@ typedef struct {
 } MinixVice;
 
 
+
+
 /* SINGLETON IMPLEMENTATION */
 
+/**
+ * @brief Initializes the game variables
+ *
+ * @return a pointer to the game initialized
+ */
 MinixVice* initMinixVice();
 
+
+/**
+ * @brief Returns the existing game. If no game exists, creates a new one. Guarantees singleton design pattern.
+ * Singleton DP limits the existence of a "object" (pointer) to 1.
+ *
+ * @return a pointer to the existent game
+ */
 MinixVice* getGame();
 
 
 /* I/O HANDLING */
 
+
+/**
+ * @brief Subscribes all interrupts (keyboard, timer, mouse)
+ */
 void subscribeInterrupts();
 
+/**
+ * @brief Unsubscribes all interrupts (keyboard, timer, mouse)
+ */
 void unsubscribeInterrupts();
 
+/**
+ * @brief Mouse interrupt handler
+ */
 void mouseIH();
 
+/**
+ * @brief Timer interrupt handler
+ */
 void timerIH();
 
+/**
+ * @brief Keyboard interrupt handler
+ */
 void kbdIH();
 
+
+/**
+ * @brief Read date and hour from the RTC (Real-Time Clock)
+ */
 void readRTC();
 
+/**
+ * @brief All interrupts handler. Calls appropriate handler for each interrupt.
+ */
 void interruptsHandler();
 
 
 /* EVENT HANDLING */
 
+/**
+ * @brief Handles game events and takes care of switching game states
+ */
 void handleEvents();
 
 
 /* UPDATE-DRAW-END GAME*/
 
+/**
+ * @brief Updates game. Calls IH and events handler
+ */
 void updateMinixVice();
 
+
+/**
+ * @brief Draws game.
+ */
 void drawMinixVice();
 
+
+/**
+ * @brief Ends game. Frees all memory.
+ */
 void endMinixVice();
 
 

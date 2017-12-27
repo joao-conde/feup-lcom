@@ -25,7 +25,6 @@ enum direction {
  *  and the number of colors
  * 
  * @param mode 16-bit VBE mode to set
- * @return Virtual address VRAM was mapped to. NULL, upon failure.
  */
 void *vg_init(unsigned short mode);
 

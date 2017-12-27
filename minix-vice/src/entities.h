@@ -7,6 +7,12 @@
 #include "state_machines.h"
 #include "utils.h"
 
+/** @defgroup entities entities
+ * @{
+ *
+ * Definition of game entities and functions to operate on them
+ */
+
 typedef struct{
 
 	ColliderBox* playBtn;
@@ -60,14 +66,36 @@ typedef struct{
 
 /* PLAYER METHODS */
 
+/**
+ * @brief Moves the player left (decreases X coordinate)
+ */
 void movePlayerLeft();
+
+/**
+ * @brief Moves the player right (increases X coordinate)
+ */
 void movePlayerRight();
+
+/**
+ * @brief Draws the player bitmap on the screen
+ */
 void drawPlayer();
 
 
 /* BARREL METHODS */
 
+/**
+ * @brief Draws the barrel on the screen
+ *
+ * @param barrel a barrel pointer with the bitmap to be drawn
+ */
 void drawBarrel(Barrel* barrel);
+
+/**
+ * @brief Draws the cone on the screen
+ *
+ * @param cone a cone pointer with the bitmap to be drawn
+ */
 void drawCone(Cone* cone);
 
 
