@@ -53,10 +53,41 @@
 #define BYTE_MINUS1	    0xFF
 
 
+/** @defgroup utils utils
+ * @{
+ *
+ * Useful project functions
+ */
+
+
+/**
+ * @brief Checks if a file exists or not
+ *
+ * @param filename a C string with filename
+ *
+ * @return 1 if exists 0 otherwise
+ */
 int fileExists(const char* filename);
 
+
+/**
+ * @brief Returns the image path
+ *
+ * @param img image name to create the path
+ *
+ * @return pointer to C string with the full image path
+ */
 const char* getImgPath(const char* img);
 
+
+/**
+ * @brief Returns a random number between 2 limits
+ *
+ * @param lowerBound lower limit of the number generated
+ * @param higherBound upper limit of the number generated
+ *
+ * @return a random number
+ */
 int generateRandomPos(int lowerBound, int higherBound);
 
 

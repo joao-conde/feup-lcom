@@ -114,6 +114,15 @@ typedef struct{
 int vbe_get_mode_info(unsigned short mode, vbe_mode_info_t *vmi_p);
 
 
+/**
+ * @brief Returns information on the VBE
+ *
+ *  Initializes unpacked vbe_info_t structure passed as an address with
+ *  the information of the VBE mode, by calling VBE function 0x00
+ *
+ * @param vmi_p address of vbe_info_t structure to be initialized
+ * @return 0 on success, non-zero otherwise
+ */
 int vbe_get_info(vbe_info_t *vmi_p);
 
 

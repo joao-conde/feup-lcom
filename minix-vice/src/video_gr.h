@@ -35,10 +35,32 @@ void *vg_init(unsigned short mode);
  */
 int vg_exit(void);
 
+
+/**
+* @brief Copies the graphic memory from double buffer to VRAM, to display it on screen
+*/
 void flipDB();
 
+
+/**
+* @brief Returns screen horizontal resolution
+*
+* @return screen width
+*/
 unsigned vg_getHRES();
+
+/**
+* @brief Returns screen vertical resolution
+*
+* @return screen height
+*/
 unsigned vg_getVRES();
+
+/**
+* @brief Returns double buffer pointer
+*
+* @param pointer to double buffer
+*/
 char* getGraphicBuffer();
 
  /** @} end of video_gr */
