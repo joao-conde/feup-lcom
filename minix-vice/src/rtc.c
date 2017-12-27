@@ -2,7 +2,6 @@
 
 #include <minix/drivers.h>
 
-// 1 if updating
 int isRTCUpdating(){
 
 	unsigned long regA;
@@ -15,7 +14,6 @@ int isRTCUpdating(){
 
 }
 
-// 1 if BCD 0 for binary
 int isBCD(){
 	unsigned long regB;
 
