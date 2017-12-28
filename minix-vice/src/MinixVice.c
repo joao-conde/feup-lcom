@@ -62,12 +62,33 @@ void updateMinixVice() {
 void drawMinixVice() {
 
 	MinixVice* game = getGame();
+	Mouse* m = getMouse();
 
 	switch (gameState) {
 
 	case MAIN_MENU:
 		drawBackgroundBitmap(game->main_menu->menu_background, 0, 0,
 				ALIGN_LEFT);
+
+		if (hovered(game->main_menu->playBtn->button, m))
+			drawBitmap(game->main_menu->playBtn->hover,
+					game->main_menu->playBtn->button->x1,
+					game->main_menu->playBtn->button->y1, ALIGN_LEFT);
+		else
+			drawBitmap(game->main_menu->playBtn->normal,
+					game->main_menu->playBtn->button->x1,
+					game->main_menu->playBtn->button->y1, ALIGN_LEFT);
+
+
+		if (hovered(game->main_menu->quitBtn->button, m))
+			drawBitmap(game->main_menu->quitBtn->hover,
+					game->main_menu->quitBtn->button->x1,
+					game->main_menu->quitBtn->button->y1, ALIGN_LEFT);
+		else
+			drawBitmap(game->main_menu->quitBtn->normal,
+					game->main_menu->quitBtn->button->x1,
+					game->main_menu->quitBtn->button->y1, ALIGN_LEFT);
+
 		displayDate();
 		break;
 
@@ -354,8 +375,9 @@ void displayConesShot() {
 	int conesShot = game->conesShot;
 	int offset = 150, i = 0;
 
-	if(conesShot == 0){
-		drawBitmap(game->digits[0], (vg_getHRES() - offset) - offset * i, 300, ALIGN_LEFT);
+	if (conesShot == 0) {
+		drawBitmap(game->digits[0], (vg_getHRES() - offset) - offset * i, 300,
+				ALIGN_LEFT);
 		return;
 	}
 
@@ -377,18 +399,12 @@ void handleEvents() {
 
 	case MAIN_MENU:
 
-		if (clicked(game->main_menu->playBtn, m)) {
+		if (clicked(game->main_menu->playBtn->button, m)) {
 			updateGameState(SELECT_CAR);
 		}
 
-		if(hovered(game->main_menu->playBtn, m)){
-		}
-
-		if (clicked(game->main_menu->quitBtn, m)) {
+		if (clicked(game->main_menu->quitBtn->button, m)) {
 			updateGameState(TERMINATE);
-		}
-
-		if(hovered(game->main_menu->quitBtn, m)){
 		}
 
 		if (game->scancode == H_BREAK)
@@ -492,7 +508,6 @@ void handleEvents() {
 	}
 }
 
-
 void subscribeInterrupts() {
 	MinixVice* game = getGame();
 
@@ -563,7 +578,7 @@ void kbdIH() {
 
 }
 
-void readRTC(){
+void readRTC() {
 	MinixVice* game = getGame();
 
 	do {
@@ -611,6 +626,9 @@ void createEntities() {
 	MinixVice* game = getGame();
 
 	game->main_menu = (MainMenu*) malloc(sizeof(MainMenu));
+	game->main_menu->playBtn = (Button*) malloc(sizeof(Button));
+	game->main_menu->quitBtn = (Button*) malloc(sizeof(Button));
+
 	game->select_menu = (SelectMenu*) malloc(sizeof(SelectMenu));
 
 	createBarrels();
@@ -677,7 +695,6 @@ void loadCarBitmaps(int selectedCar) {
 
 	MinixVice* game = getGame();
 
-
 	switch (selectedCar) {
 	case 1: //red car
 		game->car->bmpForward = loadBitmap(getImgPath("red"));
@@ -705,7 +722,15 @@ void loadBitmaps() {
 	MinixVice* game = getGame();
 
 	game->background = loadBitmap(getImgPath("road"));
+
 	game->main_menu->menu_background = loadBitmap(getImgPath("main-menu"));
+	game->main_menu->playBtn->normal = loadBitmap(getImgPath("playbtn"));
+	game->main_menu->quitBtn->normal = loadBitmap(getImgPath("quitbtn"));
+
+	//TODO CHANGE HOVER SPRITES
+	game->main_menu->playBtn->hover = loadBitmap(getImgPath("playbtnhover"));
+	game->main_menu->quitBtn->hover = loadBitmap(getImgPath("quitbtnhover"));
+
 	game->select_menu->select_background = loadBitmap(getImgPath("carselect"));
 	game->help_screen = loadBitmap(getImgPath("help-placeholder"));
 	game->stats_screen = loadBitmap(getImgPath("stats"));
@@ -777,8 +802,10 @@ void initPlayer() {
 	game->car->x = vg_getHRES() / 2 - carWidth / 2;
 	game->car->y = vg_getVRES() - CAR_OFFSET - carHeight;
 
-	game->car->body = newColliderBox(game->car->x + COLBOX_MARGIN, game->car->y + COLBOX_MARGIN,
-			game->car->x + carWidth - COLBOX_MARGIN, game->car->y + carHeight - COLBOX_MARGIN);
+	game->car->body = newColliderBox(game->car->x + COLBOX_MARGIN,
+			game->car->y + COLBOX_MARGIN,
+			game->car->x + carWidth - COLBOX_MARGIN,
+			game->car->y + carHeight - COLBOX_MARGIN);
 }
 
 void initGameProperties() {
@@ -805,9 +832,12 @@ void initGameProperties() {
 void initMainMenu() {
 	MinixVice* game = getGame();
 
-	game->main_menu->playBtn = newColliderBox(PLAYBTNX1, PLAYBTNY1, PLAYBTNX2,
+	game->main_menu->playBtn->button = newColliderBox(PLAYBTNX1, PLAYBTNY1,
+	PLAYBTNX2,
 	PLAYBTNY2);
-	game->main_menu->quitBtn = newColliderBox(QUITBTNX1, QUITBTNY1, QUITBTNX2,
+
+	game->main_menu->quitBtn->button = newColliderBox(QUITBTNX1, QUITBTNY1,
+	QUITBTNX2,
 	QUITBTNY2);
 
 }
@@ -817,8 +847,10 @@ void initSelectMenu() {
 
 	game->select_menu->select_lamb = newColliderBox(LAMBSELECTX1, LAMBSELECTY1,
 	LAMBSELECTX2, LAMBSELECTY2);
+
 	game->select_menu->select_red = newColliderBox(REDSELECTX1, REDSELECTY1,
 	REDSELECTX2, REDSELECTY2);
+
 	game->select_menu->select_mercedes = newColliderBox(MERCEDESSELECTX1,
 	MERCEDESSELECTY1, MERCEDESSELECTX2, MERCEDESSELECTY2);
 

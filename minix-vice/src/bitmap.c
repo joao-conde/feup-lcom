@@ -76,6 +76,7 @@ Bitmap* loadBitmap(const char* filename) {
 }
 
 void drawBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
+
 	if (bmp == NULL)
 		return;
 
