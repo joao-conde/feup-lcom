@@ -39,6 +39,16 @@ ColliderBox* newColliderBox(int x1, int y1, int x2, int y2);
  */
 int clicked(ColliderBox* collider, Mouse* mouse);
 
+/**
+ * @brief Checks if a ColliderBox is being mouse 'hovered' (mouse on it)
+ *
+ * @param collider a ColliderBox pointer
+ * @param mouse a Mouse pointer (contains mouse information)
+ *
+ * @return 1 if hovering, 0 if not
+ */
+int hovered(ColliderBox* collider, Mouse* mouse);
+
 
 /**
  * @brief Checks if a ColliderBox collided with another (overlap)

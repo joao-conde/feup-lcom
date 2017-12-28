@@ -29,6 +29,20 @@ int clicked(ColliderBox* collider, Mouse* mouse) {
 	return 1;
 }
 
+int hovered(ColliderBox* collider, Mouse* mouse) {
+
+	int x = mouse->x;
+	int y = mouse->y;
+
+	if (!(x >= collider->x1 && x <= collider->x2))
+		return 0;
+
+	if (!(y >= collider->y1 && y <= collider->y2))
+		return 0;
+
+	return 1;
+}
+
 
 int collide(ColliderBox* c1, ColliderBox* c2) {
 

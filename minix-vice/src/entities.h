@@ -13,11 +13,18 @@
  * Definition of game entities and functions to operate on them
  */
 
+typedef struct{
+
+	ColliderBox* button;
+	Bitmap* normal;
+	Bitmap* hover;
+
+}Button;
 
 typedef struct{
 
-	ColliderBox* playBtn;
-	ColliderBox* quitBtn;
+	Button* playBtn;
+	Button* quitBtn;
 	Bitmap* menu_background;
 
 }MainMenu;
