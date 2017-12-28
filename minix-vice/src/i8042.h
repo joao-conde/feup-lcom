@@ -17,6 +17,8 @@
 
 #define ESC_BREAK   0x81
 #define H_BREAK     0xA3
+#define R_BREAK     0x93
+
 #define W_MAKE 		0x11
 #define A_MAKE 		0x1E
 #define S_MAKE 		0x1F
