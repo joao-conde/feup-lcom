@@ -8,10 +8,11 @@
 
 #define GRAPHIC_MODE 279
 
-#define INITIAL_SPEED 3
+#define INITIAL_SPEED 4
 #define TURN_SPEED 5
 #define BRAKE_SPEED 1
 #define ACCELERATE_SPEED 0.5
+#define MIN_SPEED  2
 
 #define CONESHOT_BONUS     10
 

@@ -243,6 +243,10 @@ void initCones();
  */
 void initTimer();
 
+/**
+ * @brief Restarts the game, initializing new game variable
+ */
+void startNewGame();
 
 /**
  * @brief Recalculates a barrel position
