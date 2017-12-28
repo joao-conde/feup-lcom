@@ -2,7 +2,7 @@
 #define UTILS_H
 
 
-#define SCORE_INCREASE(s) (0.1 + (s*s)/100000)
+#define SCORE_INCREASE(s) (0.1 + (s*s)/10000)
 #define CONVERT2DECIMAL(x) ((x ^= 0xFF) + 1)
 
 

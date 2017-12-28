@@ -38,7 +38,7 @@ MinixVice* initMinixVice() {
 
 MinixVice* getGame() {
 
-	if (!game) {
+	if (game == NULL) {
 		game = initMinixVice();
 	}
 
@@ -499,6 +499,11 @@ void handleEvents() {
 		if (game->scancode == ESC_BREAK)
 			updateGameState(TERMINATE);
 
+		if(game->scancode == R_BREAK){
+			updateGameState(PLAY);
+			game = NULL;
+		}
+
 		break;
 
 	case OVER:
@@ -783,7 +788,7 @@ void deleteBitmaps() {
 	deleteBitmap(game->select_menu->select_background);
 
 	deleteDigitBitmaps();
-//	deleteBarrelsBitmaps(); FIXME: game stops on end
+//	deleteBarrelsBitmaps();
 //	deleteConesBitmaps();
 
 	deleteBitmap(game->car->bmpForward);

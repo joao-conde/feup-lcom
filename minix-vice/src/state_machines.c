@@ -57,6 +57,9 @@ void updateGameState(game_event_t event) {
 		if(event == TERMINATE)
 			gameState = OVER;
 
+		if(event == PLAY)
+			gameState = MAIN_MENU;
+
 		break;
 
 	}
