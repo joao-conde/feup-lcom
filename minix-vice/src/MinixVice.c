@@ -169,8 +169,8 @@ void freeCones() {
 void brake() {
 	MinixVice* game = getGame();
 
-	if (game->speed <= 1) {
-		game->speed = 1;
+	if (game->speed < MIN_SPEED) {
+		game->speed = MIN_SPEED;
 		return;
 	}
 
@@ -214,6 +214,7 @@ void recalculateConePos(Cone* cone) {
 	height = cone->bitmap->bitmapInfoHeader.height;
 
 	newX = generateRandomPos(LEFT_ROAD_LIMIT, RIGHT_ROAD_LIMIT - width);
+
 	/*
 	 * negative values for the same reason as the barrels
 	 */
@@ -389,6 +390,12 @@ void displayConesShot() {
 	}
 }
 
+void startNewGame(){
+	free(game);
+	game = initMinixVice();
+	updateGameState(PLAY);
+}
+
 void handleEvents() {
 
 	MinixVice* game = getGame();
@@ -500,8 +507,7 @@ void handleEvents() {
 			updateGameState(TERMINATE);
 
 		if(game->scancode == R_BREAK){
-			updateGameState(PLAY);
-			game = NULL;
+			startNewGame();
 		}
 
 		break;
