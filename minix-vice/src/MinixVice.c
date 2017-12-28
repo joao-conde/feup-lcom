@@ -79,7 +79,6 @@ void drawMinixVice() {
 					game->main_menu->playBtn->button->x1,
 					game->main_menu->playBtn->button->y1, ALIGN_LEFT);
 
-
 		if (hovered(game->main_menu->quitBtn->button, m))
 			drawBitmap(game->main_menu->quitBtn->hover,
 					game->main_menu->quitBtn->button->x1,
@@ -390,10 +389,29 @@ void displayConesShot() {
 	}
 }
 
-void startNewGame(){
-	free(game);
-	game = initMinixVice();
+void startNewGame() {
+
+	recalculateBarrelsPos();
+	recalculateConesPos();
+
+	game->speed = INITIAL_SPEED;
+
 	updateGameState(PLAY);
+	updateMouseState(MENU);
+}
+
+void recalculateBarrelsPos() {
+	int i;
+	for (i = 0; i < numberOfBarrels; i++) {
+		recalculateBarrelPos(game->barrels[i]);
+	}
+}
+
+void recalculateConesPos() {
+	int i;
+	for (i = 0; i < numberOfCones; i++) {
+		recalculateConePos(game->cones[i]);
+	}
 }
 
 void handleEvents() {
@@ -503,10 +521,7 @@ void handleEvents() {
 
 	case STATS_MENU:
 
-		if (game->scancode == ESC_BREAK)
-			updateGameState(TERMINATE);
-
-		if(game->scancode == R_BREAK){
+		if (game->scancode == R_BREAK) {
 			startNewGame();
 		}
 
@@ -553,10 +568,6 @@ void kbdIH() {
 	game->scancode = kbc_read();
 
 	if (game->scancode != 0) {
-
-//		if (game->scancode == ESC_BREAK) {
-//			game->done = 1; //TODO DELETE THIS -> TEST PURPOSES
-//		}
 
 		if (gameState == GAME) {
 			switch (game->scancode) {
@@ -788,10 +799,10 @@ void deleteConesBitmaps() {
 
 void deleteBitmaps() {
 	MinixVice* game = getGame();
-
-	deleteBitmap(game->background);
-	deleteBitmap(game->main_menu->menu_background);
-	deleteBitmap(game->select_menu->select_background);
+//
+//	deleteBitmap(game->background);
+//	deleteBitmap(game->main_menu->menu_background);
+//	deleteBitmap(game->select_menu->select_background);
 
 	deleteDigitBitmaps();
 //	deleteBarrelsBitmaps();

@@ -98,17 +98,17 @@ void updateMouse() {
 	int newX = m->x + m->deltaX;
 	int newY = m->y + m->deltaY;
 
-	if (newX >= vg_getHRES() - MOUSE_MARGIN) {
+	if (newX >= (int)vg_getHRES() - MOUSE_MARGIN) {
 		m->x = vg_getHRES() - MOUSE_MARGIN;
 	} else if (newX < 0)
 		m->x = 0;
 	else
 		m->x = newX;
 
-	if (newY >= vg_getVRES() - MOUSE_MARGIN) {
+	if (newY >= (int)vg_getVRES() - MOUSE_MARGIN) {
 		m->y = vg_getVRES() - MOUSE_MARGIN;
-	} else if (newY < 1)
-		m->y = 1;
+	} else if (newY < 0)
+		m->y = 0;
 	else
 		m->y = newY;
 
