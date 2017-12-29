@@ -39,6 +39,7 @@ typedef struct {
 
 	Bitmap* background;
 	Bitmap* digits[10];
+	Bitmap* utils[2];
 
 	Player* car;
 	Barrel* barrels[4];
@@ -158,7 +159,7 @@ void calculateScore();
 /**
  * @brief Displays the game score.
  */
-void displayScore();
+void displayScore(int offsetX, int offsetY);
 
 
 /**
@@ -263,6 +264,10 @@ void recalculateBarrelPos(Barrel* barrel);
  */
 void recalculateConePos(Cone* cone);
 
+
+
+void recalculateBarrelsPos();
+void recalculateConesPos();
 
 /**
  * @brief Draws the barrel entities
