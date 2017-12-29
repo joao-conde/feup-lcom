@@ -521,7 +521,7 @@ void handleEvents() {
 
 	case STATS_MENU:
 
-		if (game->scancode == R_BREAK) {
+		if (game->scancode == ESC_BREAK) {
 			startNewGame();
 		}
 
