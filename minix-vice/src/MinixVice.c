@@ -754,7 +754,7 @@ void loadBitmaps() {
 	game->main_menu->quitBtn->hover = loadBitmap(getImgPath("quitbtnhover"));
 
 	game->select_menu->select_background = loadBitmap(getImgPath("carselect"));
-	game->help_screen = loadBitmap(getImgPath("help-placeholder"));
+	game->help_screen = loadBitmap(getImgPath("help"));
 	game->stats_screen = loadBitmap(getImgPath("stats"));
 
 	loadDigitBitmaps();
