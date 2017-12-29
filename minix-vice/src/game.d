@@ -16,6 +16,7 @@ game.o:	i8042.h
 game.o:	i8254.h
 game.o:	kbd.h
 game.o:	mouse.h
+game.o:	rtc.h
 game.o:	state_machines.h
 game.o:	timer.h
 game.o:	utils.h

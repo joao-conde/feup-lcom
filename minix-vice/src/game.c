@@ -7,6 +7,7 @@ void play(){
 }
 
 MinixVice* startGame() {
+
 	srand(time(NULL));
 	sef_startup();
 
