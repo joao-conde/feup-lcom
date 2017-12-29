@@ -88,7 +88,6 @@ void drawMinixVice() {
 					game->main_menu->quitBtn->button->x1,
 					game->main_menu->quitBtn->button->y1, ALIGN_LEFT);
 
-		displayDate();
 		break;
 
 	case SELECT_MENU:
@@ -104,10 +103,10 @@ void drawMinixVice() {
 
 		if (game->timer->ticked) {
 			drawMovingBackground();
-			displayHour();
 			drawPlayer(game->car);
 			drawBarrels();
 			drawCones();
+			displayScore(SCOREX_OFFSET,SCOREY_OFFSET);
 		}
 
 		break;
@@ -115,15 +114,17 @@ void drawMinixVice() {
 	case STATS_MENU:
 		drawBackgroundBitmap(game->stats_screen, 0, 0, ALIGN_LEFT);
 		displayConesShot();
+		displayDate();
+		displayHour();
+		displayScore(FINALSCOREX_OFFSET,FINALSCOREY_OFFSET);
 		break;
 
 	}
 
 	if (game->timer->ticked) {
 		drawMouse();
-		game->timer->ticked = 0;
-		displayScore();
 		flipDB();
+		game->timer->ticked = 0;
 	}
 
 }
@@ -293,15 +294,25 @@ void drawCones() {
 
 }
 
-void displayScore() {
+void displayScore(int offsetX, int offsetY) {
 	MinixVice* game = getGame();
 
 	int score = (int) game->score;
-	int offset = SCORE_OFFSET, i = 0;
+	int i = 0, startX, startY;
+	startX = vg_getHRES() - offsetX;
+	startY = vg_getVRES() - offsetY;
+
+	if (score == 0) {
+		drawBitmap(game->digits[0],
+				startX - CHAR_DISTANCE * i,
+				startY,
+				ALIGN_LEFT);
+		return;
+	}
 
 	while (score >= 1) {
-		drawBitmap(game->digits[score % 10],
-				(vg_getHRES() - offset) - offset * i, 0, ALIGN_LEFT);
+		drawBitmap(game->digits[score % 10], startX - CHAR_DISTANCE * i,
+				startY, ALIGN_LEFT);
 		score /= 10;
 		i++;
 	}
@@ -314,25 +325,37 @@ void displayDate() {
 	unsigned long month = *(game->month);
 	unsigned long year = *(game->year);
 
-	int offset = SCORE_OFFSET, i = 0;
+	int i = 0, startX, startY;
+	startX = vg_getHRES()/2 + DATEX_OFFSET;
+	startY = vg_getVRES()/2 + DATEY_OFFSET;
 
 	while (year >= 1) {
 		drawBitmap(game->digits[year % 10],
-				(vg_getHRES() - offset) - offset * i, 0, ALIGN_LEFT);
+				startX - CHAR_DISTANCE * i,
+				startY, ALIGN_LEFT);
 		year /= 10;
 		i++;
 	}
 
+	drawBitmap(game->utils[0], startX - CHAR_DISTANCE * i,
+			startY, ALIGN_LEFT);
+	i++;
+
 	while (month >= 1) {
 		drawBitmap(game->digits[month % 10],
-				(vg_getHRES() - offset) - offset * i, 0, ALIGN_LEFT);
+				startX - CHAR_DISTANCE * i,
+				startY, ALIGN_LEFT);
 		month /= 10;
 		i++;
 	}
 
+	drawBitmap(game->utils[0], startX - CHAR_DISTANCE * i,
+			startY, ALIGN_LEFT);
+	i++;
+
 	while (day >= 1) {
-		drawBitmap(game->digits[day % 10], (vg_getHRES() - offset) - offset * i,
-				0, ALIGN_LEFT);
+		drawBitmap(game->digits[day % 10], startX - CHAR_DISTANCE * i,
+				startY, ALIGN_LEFT);
 		day /= 10;
 		i++;
 	}
@@ -345,25 +368,33 @@ void displayHour() {
 	unsigned long minutes = *(game->minutes);
 	unsigned long seconds = *(game->seconds);
 
-	int offset = SCORE_OFFSET, i = 0;
+	int i = 0, startX, startY;
+	startX = vg_getHRES()/2 + HOURX_OFFSET;
+	startY = vg_getVRES()/2 + HOURY_OFFSET;
 
 	while (seconds >= 1) {
 		drawBitmap(game->digits[seconds % 10],
-				(vg_getHRES() - offset) - offset * i, 150, ALIGN_LEFT);
+				startX - CHAR_DISTANCE * i, startY, ALIGN_LEFT);
 		seconds /= 10;
 		i++;
 	}
 
+	drawBitmap(game->utils[1], startX - CHAR_DISTANCE * i, startY, ALIGN_LEFT);
+	i++;
+
 	while (minutes >= 1) {
 		drawBitmap(game->digits[minutes % 10],
-				(vg_getHRES() - offset) - offset * i, 150, ALIGN_LEFT);
+				startX - CHAR_DISTANCE * i, startY, ALIGN_LEFT);
 		minutes /= 10;
 		i++;
 	}
 
+	drawBitmap(game->utils[1], startX - CHAR_DISTANCE * i, startY, ALIGN_LEFT);
+	i++;
+
 	while (hours >= 1) {
 		drawBitmap(game->digits[hours % 10],
-				(vg_getHRES() - offset) - offset * i, 150, ALIGN_LEFT);
+				startX - CHAR_DISTANCE * i, startY, ALIGN_LEFT);
 		hours /= 10;
 		i++;
 	}
@@ -373,17 +404,20 @@ void displayConesShot() {
 	MinixVice* game = getGame();
 
 	int conesShot = game->conesShot;
-	int offset = 150, i = 0;
+	int i = 0, startX, startY;
+	startX = vg_getHRES() - CONESX_OFFSET;
+	startY = vg_getVRES() - CONESY_OFFSET;
 
 	if (conesShot == 0) {
-		drawBitmap(game->digits[0], (vg_getHRES() - offset) - offset * i, 300,
-				ALIGN_LEFT);
+		drawBitmap(game->digits[0],
+				startX - CHAR_DISTANCE * i,
+				startY,	ALIGN_LEFT);
 		return;
 	}
 
 	while (conesShot >= 1) {
 		drawBitmap(game->digits[conesShot % 10],
-				(vg_getHRES() - offset) - offset * i, 300, ALIGN_LEFT);
+				startX - CHAR_DISTANCE * i, startY,	ALIGN_LEFT);
 		conesShot /= 10;
 		i++;
 	}
@@ -395,6 +429,9 @@ void startNewGame() {
 	recalculateConesPos();
 
 	game->speed = INITIAL_SPEED;
+	game->bonus = 0;
+	game->score = 0;
+	game->conesShot = 0;
 
 	updateGameState(PLAY);
 	updateMouseState(MENU);
@@ -749,13 +786,15 @@ void loadBitmaps() {
 	game->main_menu->playBtn->normal = loadBitmap(getImgPath("playbtn"));
 	game->main_menu->quitBtn->normal = loadBitmap(getImgPath("quitbtn"));
 
-	//TODO CHANGE HOVER SPRITES
 	game->main_menu->playBtn->hover = loadBitmap(getImgPath("playbtnhover"));
 	game->main_menu->quitBtn->hover = loadBitmap(getImgPath("quitbtnhover"));
 
 	game->select_menu->select_background = loadBitmap(getImgPath("carselect"));
 	game->help_screen = loadBitmap(getImgPath("help"));
 	game->stats_screen = loadBitmap(getImgPath("stats"));
+
+	game->utils[0] = loadBitmap(getImgPath("slash"));
+	game->utils[1] = loadBitmap(getImgPath("points"));
 
 	loadDigitBitmaps();
 
@@ -803,6 +842,7 @@ void deleteBitmaps() {
 //	deleteBitmap(game->background);
 //	deleteBitmap(game->main_menu->menu_background);
 //	deleteBitmap(game->select_menu->select_background);
+
 
 	deleteDigitBitmaps();
 //	deleteBarrelsBitmaps();
