@@ -7,6 +7,7 @@
 #include "state_machines.h"
 #include "utils.h"
 
+
 /** @defgroup entities entities
  * @{
  *
@@ -84,27 +85,59 @@ void movePlayerLeft();
  */
 void movePlayerRight();
 
-/**
- * @brief Draws the player bitmap on the screen
- */
-void drawPlayer();
-
-
-/* BARREL METHODS */
 
 /**
- * @brief Draws the barrel on the screen
- *
- * @param barrel a barrel pointer with the bitmap to be drawn
+ * @brief Creates game entities
  */
-void drawBarrel(Barrel* barrel);
+void createEntities();
+
 
 /**
- * @brief Draws the cone on the screen
- *
- * @param cone a cone pointer with the bitmap to be drawn
+ * @brief Creates barrel entities
  */
-void drawCone(Cone* cone);
+void createBarrels();
+
+
+/**
+ * @brief Creates cone entities
+ */
+void createCones();
+
+
+/**
+ * @brief Initializes player variables
+ */
+void initPlayer();
+
+
+/**
+ * @brief Initializes main menu variables
+ */
+void initMainMenu();
+
+
+/**
+ * @brief Initializes select menu variables
+ */
+void initSelectMenu();
+
+
+/**
+ * @brief Initializes barrel entities variables
+ */
+void initBarrels();
+
+
+/**
+ * @brief Initializes cone entities variables
+ */
+void initCones();
+
+
+/**
+ * @brief Initializes struct Timer variables
+ */
+void initTimer();
 
 
 

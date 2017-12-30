@@ -52,4 +52,6 @@ void updateMouseState(st_mouse newState);
  */
 void updateGameState(game_event_t event);
 
+
+
 #endif /* STATE_H */
