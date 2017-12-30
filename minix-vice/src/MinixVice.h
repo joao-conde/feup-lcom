@@ -3,7 +3,6 @@
 
 #include <minix/drivers.h>
 
-
 #include "kbd.h"
 #include "timer.h"
 #include "mouse.h"
@@ -15,6 +14,8 @@
 #include "IO.h"
 #include "logic.h"
 #include "graphics.h"
+#include "bmpHandling.h"
+
 
 /** @defgroup MinixVice MinixVice
  * @{
@@ -44,8 +45,8 @@ typedef struct {
 	Bitmap* stats_screen;
 
 	Bitmap* background;
-	Bitmap* digits[10];
-	Bitmap* utils[2];
+	Bitmap* digits[DECIMAL_ALG];
+	Bitmap* utils[UTILS_LENGTH];
 
 	Player* car;
 	Barrel* barrels[NUMBER_OF_BARRELS];
@@ -77,10 +78,6 @@ MinixVice* getGame();
 
 /* EVENT HANDLING */
 
-/**
- * @brief Handles game events and takes care of switching game states
- */
-void handleEvents();
 
 
 /* UPDATE-DRAW-END GAME*/
@@ -102,31 +99,7 @@ void drawMinixVice();
  */
 void endMinixVice();
 
-
-
-/**
- * @brief Displays the game score.
- */
-void displayScore(int offsetX, int offsetY);
-
-
-/**
- * @brief Displays date
- */
-void displayDate();
-
-
-/**
- * @brief Displays hour
- */
-void displayHour();
-
-
-/**
- * @brief Displays number of cones shot
- */
-void displayConesShot();
-
+void handleEvents();
 
 /**
  * @brief Initializes some game properties
@@ -134,80 +107,13 @@ void displayConesShot();
 void initGameProperties();
 
 
-
-
-/* ENTITIES METHODS */
-
-
-/**
- * @brief Creates game entities
- */
-void createEntities();
-
-
-/**
- * @brief Creates barrel entities
- */
-void createBarrels();
-
-
-/**
- * @brief Creates cone entities
- */
-void createCones();
-
-
-/**
- * @brief Initializes player variables
- */
-void initPlayer();
-
-
-/**
- * @brief Initializes main menu variables
- */
-void initMainMenu();
-
-
-/**
- * @brief Initializes select menu variables
- */
-void initSelectMenu();
-
-
-/**
- * @brief Initializes barrel entities variables
- */
-void initBarrels();
-
-
-/**
- * @brief Initializes cone entities variables
- */
-void initCones();
-
-
-/**
- * @brief Initializes struct Timer variables
- */
-void initTimer();
-
 /**
  * @brief Restarts the game, initializing new game variable
  */
 void startNewGame();
 
 
-/**
- * @brief Draws the barrel entities
- */
-void drawBarrels();
 
-
-/**
- * @brief Draws the cone entities
- */
-void drawCones();
 
 
 /**
@@ -231,65 +137,6 @@ void freeCones();
 void drawMovingBackground();
 
 
-/* BITMAP LOADING */
-
-/**
- * @brief Loads bitmaps
- */
-void loadBitmaps();
-
-
-/**
- * @brief Loads barrel entities bitmaps
- */
-void loadBarrelsBitmaps();
-
-
-/**
- * @brief Loads cone entities bitmaps
- */
-void loadConesBitmaps();
-
-
-/**
- * @brief Loads digits bitmaps
- */
-void loadDigitBitmaps();
-
-
-/**
- * @brief Loads car bitmaps according to the selected car
- *
- * @param selectedCar a number matching the selected car
- */
-void loadCarBitmaps(int selectedCar);
-
-
-/* BITMAP DELETING */
-
-
-/**
- * @brief Deletes bitmaps
- */
-void deleteBitmaps();
-
-
-/**
- * @brief Deletes digit bitmaps
- */
-void deleteDigitBitmaps();
-
-
-/**
- * @brief Deletes barrel entities bitmaps
- */
-void deleteBarrelsBitmaps();
-
-
-/**
- * @brief Deletes cone entities bitmaps
- */
-void deleteConesBitmaps();
 
 
 

@@ -1,10 +1,11 @@
+#ifndef GAME_H
+#define GAME_H
+
 #include <stdio.h>
 #include <time.h>
 
-
 #include "video_gr.h"
 #include "MinixVice.h"
-#include "utils.h"
 
 
 /** @defgroup game game
@@ -42,3 +43,6 @@ void gameLoop(MinixVice* game);
  * @param game a pointer to the game created
  */
 void endGame(MinixVice* game);
+
+
+#endif /* GAME_H */
