@@ -1,6 +1,9 @@
 #ifndef MINIXVICE_H
 #define MINIXVICE_H
 
+#include <minix/drivers.h>
+
+
 #include "kbd.h"
 #include "timer.h"
 #include "mouse.h"
@@ -9,6 +12,9 @@
 #include "utils.h"
 #include "state_machines.h"
 #include "rtc.h"
+#include "IO.h"
+#include "logic.h"
+#include "graphics.h"
 
 /** @defgroup MinixVice MinixVice
  * @{
@@ -42,8 +48,8 @@ typedef struct {
 	Bitmap* utils[2];
 
 	Player* car;
-	Barrel* barrels[4];
-	Cone* cones[3];
+	Barrel* barrels[NUMBER_OF_BARRELS];
+	Cone* cones[NUMBER_OF_CONES];
 
 } MinixVice;
 
@@ -62,51 +68,11 @@ MinixVice* initMinixVice();
 
 /**
  * @brief Returns the existing game. If no game exists, creates a new one. Guarantees singleton design pattern.
- * Singleton DP limits the existence of a "object" (pointer) to 1.
+ * Singleton design pattern limits the existence of an "object" (MinixVice pointer) to 1.
  *
  * @return a pointer to the existent game
  */
 MinixVice* getGame();
-
-
-/* I/O HANDLING */
-
-
-/**
- * @brief Subscribes all interrupts (keyboard, timer, mouse)
- */
-void subscribeInterrupts();
-
-/**
- * @brief Unsubscribes all interrupts (keyboard, timer, mouse)
- */
-void unsubscribeInterrupts();
-
-/**
- * @brief Mouse interrupt handler
- */
-void mouseIH();
-
-/**
- * @brief Timer interrupt handler
- */
-void timerIH();
-
-/**
- * @brief Keyboard interrupt handler
- */
-void kbdIH();
-
-
-/**
- * @brief Read date and hour from the RTC (Real-Time Clock)
- */
-void readRTC();
-
-/**
- * @brief All interrupts handler. Calls appropriate handler for each interrupt.
- */
-void interruptsHandler();
 
 
 /* EVENT HANDLING */
@@ -136,24 +102,6 @@ void drawMinixVice();
  */
 void endMinixVice();
 
-
-
-/* GAME METHODS */
-
-/**
- * @brief De-accelerates the car.
- */
-void brake();
-
-/**
- * @brief Accelerates the car.
- */
-void accelerate();
-
-/**
- * @brief Calculates the game score.
- */
-void calculateScore();
 
 
 /**
@@ -249,25 +197,6 @@ void initTimer();
  */
 void startNewGame();
 
-/**
- * @brief Recalculates a barrel position
- *
- * @param barrel a barrel pointer to the barrel to recalculate the position
- */
-void recalculateBarrelPos(Barrel* barrel);
-
-
-/**
- * @brief Recalculates a cone position
- *
- * @param cone a cone pointer to the cone to recalculate the position
- */
-void recalculateConePos(Cone* cone);
-
-
-
-void recalculateBarrelsPos();
-void recalculateConesPos();
 
 /**
  * @brief Draws the barrel entities
@@ -300,19 +229,6 @@ void freeCones();
  * @brief Draws a moving background giving the sense of movement
  */
 void drawMovingBackground();
-
-
-/**
- * @brief Updates barrel entities positions
- */
-void updateBarrelsPos();
-
-
-/**
- * @brief Updates cone entities positions
- */
-void updateConesPos();
-
 
 
 /* BITMAP LOADING */

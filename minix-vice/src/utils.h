@@ -8,6 +8,9 @@
 
 #define GRAPHIC_MODE 279
 
+#define NUMBER_OF_BARRELS 4
+#define NUMBER_OF_CONES   3
+
 #define INITIAL_SPEED 4
 #define TURN_SPEED 5
 #define BRAKE_SPEED 1
