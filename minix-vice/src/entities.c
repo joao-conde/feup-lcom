@@ -60,6 +60,9 @@ void createEntities() {
 	game->main_menu->quitBtn = (Button*) malloc(sizeof(Button));
 
 	game->select_menu = (SelectMenu*) malloc(sizeof(SelectMenu));
+	game->select_menu->select_lamb = (Button*) malloc(sizeof(Button));
+	game->select_menu->select_red = (Button*) malloc(sizeof(Button));
+	game->select_menu->select_mercedes = (Button*) malloc(sizeof(Button));
 
 	createBarrels();
 	createCones();
@@ -121,13 +124,14 @@ void initMainMenu() {
 void initSelectMenu() {
 	MinixVice* game = getGame();
 
-	game->select_menu->select_lamb = newColliderBox(LAMBSELECTX1, LAMBSELECTY1,
+
+	game->select_menu->select_lamb->button = newColliderBox(LAMBSELECTX1, LAMBSELECTY1,
 	LAMBSELECTX2, LAMBSELECTY2);
 
-	game->select_menu->select_red = newColliderBox(REDSELECTX1, REDSELECTY1,
+	game->select_menu->select_red->button = newColliderBox(REDSELECTX1, REDSELECTY1,
 	REDSELECTX2, REDSELECTY2);
 
-	game->select_menu->select_mercedes = newColliderBox(MERCEDESSELECTX1,
+	game->select_menu->select_mercedes->button = newColliderBox(MERCEDESSELECTX1,
 	MERCEDESSELECTY1, MERCEDESSELECTX2, MERCEDESSELECTY2);
 
 }
@@ -182,5 +186,23 @@ void initTimer() {
 	game->timer->ticked = 0;
 	game->timer->counter = 0;
 
+}
+
+void freeBarrels() {
+	MinixVice* game = getGame();
+
+	int i;
+	for (i = 0; i < NUMBER_OF_BARRELS; i++) {
+		free(game->barrels[i]);
+	}
+}
+
+void freeCones() {
+	MinixVice* game = getGame();
+
+	int i;
+	for (i = 0; i < NUMBER_OF_BARRELS; i++) {
+		free(game->cones[i]);
+	}
 }
 

@@ -3,6 +3,11 @@
 
 #include "MinixVice.h"
 
+/**
+ * @brief Draws a moving background giving the sense of movement
+ */
+void drawMovingBackground();
+
 
 /**
  * @brief Displays the game score.
@@ -26,6 +31,8 @@ void displayHour();
  * @brief Displays number of cones shot
  */
 void displayConesShot();
+
+//void drawConeBonus(int x, int y);
 
 /**
  * @brief Draws the player bitmap on the screen

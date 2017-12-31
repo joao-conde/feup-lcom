@@ -32,9 +32,9 @@ typedef struct{
 
 typedef struct{
 
-	ColliderBox* select_lamb;
-	ColliderBox* select_red;
-	ColliderBox* select_mercedes;
+	Button* select_lamb;
+	Button* select_red;
+	Button* select_mercedes;
 	Bitmap* select_background;
 
 }SelectMenu;
@@ -138,6 +138,18 @@ void initCones();
  * @brief Initializes struct Timer variables
  */
 void initTimer();
+
+
+/**
+ * @brief Frees the barrel entities
+ */
+void freeBarrels();
+
+
+/**
+ * @brief Frees the cone entities
+ */
+void freeCones();
 
 
 

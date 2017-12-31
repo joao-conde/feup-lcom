@@ -76,11 +76,24 @@ void loadBitmaps() {
 	game->main_menu->quitBtn->hover = loadBitmap(getImgPath("quitbtnhover"));
 
 	game->select_menu->select_background = loadBitmap(getImgPath("carselect"));
+	game->select_menu->select_lamb->normal = loadBitmap(getImgPath("lambbtn-normal"));
+	game->select_menu->select_lamb->hover = loadBitmap(getImgPath("lambbtn-hover"));
+
+	game->select_menu->select_red->normal = loadBitmap(getImgPath("redbtn-normal"));
+	game->select_menu->select_red->hover = loadBitmap(getImgPath("redbtn-hover"));
+
+	game->select_menu->select_mercedes->normal = loadBitmap(getImgPath("mercedesbtn-normal"));
+	game->select_menu->select_mercedes->hover = loadBitmap(getImgPath("mercedesbtn-hover"));
+
+
 	game->help_screen = loadBitmap(getImgPath("help"));
 	game->stats_screen = loadBitmap(getImgPath("stats"));
 
-	game->utils[0] = loadBitmap(getImgPath("slash"));
-	game->utils[1] = loadBitmap(getImgPath("points"));
+	game->utils[0] = loadBitmap(getImgPath("slash")); // '/'
+	game->utils[1] = loadBitmap(getImgPath("points")); // ':'
+//	game->utils[2] = loadBitmap(getImgPath("+10")); // '+10'
+
+	game->score_tag = loadBitmap(getImgPath("score-display"));
 
 	loadDigitBitmaps();
 

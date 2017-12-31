@@ -44,6 +44,7 @@ typedef struct {
 	Bitmap* help_screen;
 	Bitmap* stats_screen;
 
+	Bitmap* score_tag;
 	Bitmap* background;
 	Bitmap* digits[DECIMAL_ALG];
 	Bitmap* utils[UTILS_LENGTH];
@@ -76,10 +77,6 @@ MinixVice* initMinixVice();
 MinixVice* getGame();
 
 
-/* EVENT HANDLING */
-
-
-
 /* UPDATE-DRAW-END GAME*/
 
 /**
@@ -99,6 +96,10 @@ void drawMinixVice();
  */
 void endMinixVice();
 
+
+
+//
+
 void handleEvents();
 
 /**
@@ -111,33 +112,6 @@ void initGameProperties();
  * @brief Restarts the game, initializing new game variable
  */
 void startNewGame();
-
-
-
-
-
-/**
- * @brief Frees the barrel entities
- */
-void freeBarrels();
-
-
-/**
- * @brief Frees the cone entities
- */
-void freeCones();
-
-
-/* BACKGROUND */
-
-
-/**
- * @brief Draws a moving background giving the sense of movement
- */
-void drawMovingBackground();
-
-
-
 
 
 #endif /* MINIXVICE_H */
