@@ -159,3 +159,26 @@ void displayConesShot() {
 		i++;
 	}
 }
+
+
+void drawMovingBackground() {
+	static float y = 0;
+
+	MinixVice* game = getGame();
+
+	y += game->speed;
+
+	if (y >= vg_getVRES())
+		y = ORIGIN_COORDS;
+
+	drawBackgroundBitmap(game->background, ORIGIN_COORDS, y, ALIGN_LEFT);
+	drawBackgroundBitmap(game->background, ORIGIN_COORDS, y - vg_getVRES(),
+			ALIGN_LEFT);
+}
+
+
+//void drawConeBonus(int x, int y){
+//	MinixVice* game = getGame();
+//
+//	drawBitmap(game->utils[2], x, y, ALIGN_LEFT);
+//}

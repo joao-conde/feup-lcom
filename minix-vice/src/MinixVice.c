@@ -88,6 +88,37 @@ void drawMinixVice() {
 	case SELECT_MENU:
 		drawBackgroundBitmap(game->select_menu->select_background, 0, 0,
 				ALIGN_LEFT);
+
+		if (hovered(game->select_menu->select_lamb->button, m))
+			drawBitmap(game->select_menu->select_lamb->hover,
+					game->select_menu->select_lamb->button->x1,
+					game->select_menu->select_lamb->button->y1, ALIGN_LEFT);
+		else
+			drawBitmap(game->select_menu->select_lamb->normal,
+					game->select_menu->select_lamb->button->x1,
+					game->select_menu->select_lamb->button->y1, ALIGN_LEFT);
+
+
+		if (hovered(game->select_menu->select_red->button, m))
+			drawBitmap(game->select_menu->select_red->hover,
+					game->select_menu->select_red->button->x1,
+					game->select_menu->select_red->button->y1, ALIGN_LEFT);
+		else
+			drawBitmap(game->select_menu->select_red->normal,
+					game->select_menu->select_red->button->x1,
+					game->select_menu->select_red->button->y1, ALIGN_LEFT);
+
+
+
+		if (hovered(game->select_menu->select_mercedes->button, m))
+			drawBitmap(game->select_menu->select_mercedes->hover,
+					game->select_menu->select_mercedes->button->x1,
+					game->select_menu->select_mercedes->button->y1, ALIGN_LEFT);
+		else
+			drawBitmap(game->select_menu->select_mercedes->normal,
+					game->select_menu->select_mercedes->button->x1,
+					game->select_menu->select_mercedes->button->y1, ALIGN_LEFT);
+
 		break;
 
 	case HELP_MENU:
@@ -98,10 +129,11 @@ void drawMinixVice() {
 
 		if (game->timer->ticked) {
 			drawMovingBackground();
+			drawBitmap(game->score_tag, SCOREX_DISPLAY, SCOREY_DISPLAY, ALIGN_LEFT);
 			drawPlayer(game->car);
 			drawBarrels();
 			drawCones();
-			displayScore(SCOREX_OFFSET,SCOREY_OFFSET);
+			displayScore(SCOREX_OFFSET, SCOREY_OFFSET);
 		}
 
 		break;
@@ -111,7 +143,7 @@ void drawMinixVice() {
 		displayConesShot();
 		displayDate();
 		displayHour();
-		displayScore(FINALSCOREX_OFFSET,FINALSCOREY_OFFSET);
+		displayScore(FINALSCOREX_OFFSET, FINALSCOREY_OFFSET);
 		break;
 
 	}
@@ -143,42 +175,6 @@ void endMinixVice() {
 
 }
 
-void freeBarrels() {
-	MinixVice* game = getGame();
-
-	int i;
-	for (i = 0; i < NUMBER_OF_BARRELS; i++) {
-		free(game->barrels[i]);
-	}
-}
-
-void freeCones() {
-	MinixVice* game = getGame();
-
-	int i;
-	for (i = 0; i < NUMBER_OF_BARRELS; i++) {
-		free(game->cones[i]);
-	}
-}
-
-void drawMovingBackground() {
-	static float y = 0;
-
-	MinixVice* game = getGame();
-
-	y += game->speed;
-
-	if (y >= vg_getVRES())
-		y = ORIGIN_COORDS;
-
-	drawBackgroundBitmap(game->background, ORIGIN_COORDS, y, ALIGN_LEFT);
-	drawBackgroundBitmap(game->background, ORIGIN_COORDS, y - vg_getVRES(),
-			ALIGN_LEFT);
-}
-
-
-
-
 
 void startNewGame() {
 
@@ -193,7 +189,6 @@ void startNewGame() {
 	updateGameState(PLAY);
 	updateMouseState(MENU);
 }
-
 
 void handleEvents() {
 
@@ -227,7 +222,7 @@ void handleEvents() {
 
 	case SELECT_MENU:
 
-		if (clicked(game->select_menu->select_red, m)) {
+		if (clicked(game->select_menu->select_red->button, m)) {
 			loadCarBitmaps(1);
 			initPlayer();
 
@@ -235,7 +230,7 @@ void handleEvents() {
 			updateGameState(PLAY);
 		}
 
-		if (clicked(game->select_menu->select_lamb, m)) {
+		if (clicked(game->select_menu->select_lamb->button, m)) {
 			loadCarBitmaps(2);
 			initPlayer();
 
@@ -243,7 +238,7 @@ void handleEvents() {
 			updateGameState(PLAY);
 		}
 
-		if (clicked(game->select_menu->select_mercedes, m)) {
+		if (clicked(game->select_menu->select_mercedes->button, m)) {
 			loadCarBitmaps(3);
 			initPlayer();
 
@@ -315,8 +310,6 @@ void handleEvents() {
 	}
 }
 
-
-
 void initGameProperties() {
 	MinixVice* game = getGame();
 
@@ -337,5 +330,4 @@ void initGameProperties() {
 
 	game->speed = INITIAL_SPEED;
 }
-
 
