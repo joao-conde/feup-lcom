@@ -54,9 +54,7 @@ typedef struct {
 	Cone* cones[NUMBER_OF_CONES];
 
 
-	//TESTING
-
-	Shot* shotAnimations[3];
+	Shot* shotAnimations[3]; //cone shooting explosion animation
 
 } MinixVice;
 
