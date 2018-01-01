@@ -70,15 +70,9 @@ void createEntities() {
 	game->timer = (Timer*) malloc(sizeof(Timer));
 	game->car = (Player*) malloc(sizeof(Player));
 
+	createShotAnimations();
 
-	int i;
-	for(i = 0; i < 3; i++){
-		game->shotAnimations[i] = (Shot*) malloc(sizeof(Shot));
-		game->shotAnimations[i]->bmpIndex = 0;
-		game->shotAnimations[i]->useAnimation = 0;
-//		game->shotAnimations[i]->x = 50*i;
-//		game->shotAnimations[i]->y = 50*i;
-	}
+	createBonusAnimations();
 }
 
 void createBarrels() {
@@ -87,6 +81,29 @@ void createBarrels() {
 	int i;
 	for (i = 0; i < NUMBER_OF_BARRELS; i++) {
 		game->barrels[i] = (Barrel*) malloc(sizeof(Barrel));
+	}
+}
+
+void createBonusAnimations(){
+	MinixVice* game = getGame();
+
+	int i;
+	for(i = 0; i < MAX_CONESHOT_ANIM; i++){
+		game->bonusAnimations[i] = (Bonus*) malloc(sizeof(Bonus));
+		game->bonusAnimations[i]->frame = 0;
+		game->bonusAnimations[i]->useAnimation = 0;
+	}
+}
+
+
+void createShotAnimations(){
+	MinixVice* game = getGame();
+
+	int i;
+	for(i = 0; i < MAX_CONESHOT_ANIM; i++){
+		game->shotAnimations[i] = (Shot*) malloc(sizeof(Shot));
+		game->shotAnimations[i]->bmpIndex = 0;
+		game->shotAnimations[i]->useAnimation = 0;
 	}
 }
 

@@ -15,6 +15,15 @@
  */
 
 typedef struct{
+	int x, y;
+	int frame;
+	int useAnimation;
+
+	Bitmap* bonusBmp;
+}Bonus;
+
+
+typedef struct{
 	int x, y; //shot location
 	int bmpIndex; //current bmp to be drawn off of sprites array
 	int useAnimation; //display or not
