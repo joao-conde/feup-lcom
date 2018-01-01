@@ -82,6 +82,7 @@ void handleEvents() {
 			updateConesPos();
 
 			updateShotAnimations();
+			updateBonusAnimations();
 
 
 		}
@@ -118,6 +119,7 @@ void handleEvents() {
 				game->conesShot++;
 
 				startShotAnimation(game->cones[i]->x, game->cones[i]->y);
+				startBonusAnimation(game->cones[i]->x, game->cones[i]->y);
 				recalculateConePos(game->cones[i]);
 
 
@@ -257,11 +259,26 @@ void updateConesPos() {
 	}
 }
 
+void startBonusAnimation(int x, int y){
+	MinixVice* game = getGame();
+
+	int i;
+	for (i = 0; i < 3; i++) {
+
+		if (game->bonusAnimations[i]->useAnimation == 0) {
+			game->bonusAnimations[i]->x = x;
+			game->bonusAnimations[i]->y = y;
+			game->bonusAnimations[i]->frame = 0;
+			game->bonusAnimations[i]->useAnimation = 1;
+			return;
+		}
+	}
+}
 
 void startShotAnimation(int x, int y){
 	MinixVice* game = getGame();
 
-	int i, index;
+	int i;
 	for (i = 0; i < 3; i++) {
 
 		if (game->shotAnimations[i]->useAnimation == 0) {
@@ -277,7 +294,7 @@ void startShotAnimation(int x, int y){
 void updateShotAnimations() {
 	MinixVice* game = getGame();
 
-	int i, index;
+	int i;
 	for (i = 0; i < 3; i++) {
 
 		if (game->shotAnimations[i]->useAnimation != 0) {
@@ -285,6 +302,23 @@ void updateShotAnimations() {
 				game->shotAnimations[i]->useAnimation = 0;
 			else
 				game->shotAnimations[i]->bmpIndex++;
+		}
+	}
+}
+
+void updateBonusAnimations() {
+	MinixVice* game = getGame();
+
+	int i;
+	for (i = 0; i < 3; i++) {
+
+		if (game->bonusAnimations[i]->useAnimation != 0) {
+			if (game->bonusAnimations[i]->frame == 45)
+				game->bonusAnimations[i]->useAnimation = 0;
+			else{
+				game->bonusAnimations[i]->frame++;
+				game->bonusAnimations[i]->y++;
+			}
 		}
 	}
 }

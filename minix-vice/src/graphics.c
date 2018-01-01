@@ -81,6 +81,7 @@ void drawMinixVice() {
 			drawCones();
 			drawAnimations();
 
+
 			drawBitmap(game->score_tag, SCOREX_DISPLAY, SCOREY_DISPLAY,
 					ALIGN_LEFT);
 
@@ -109,6 +110,28 @@ void drawMinixVice() {
 }
 
 void drawAnimations() {
+	drawShotAnimations();
+	drawBonusAnimations();
+}
+
+void drawBonusAnimations(){
+	MinixVice* game = getGame();
+
+	int i, x, y;
+
+	for (i = 0; i < 3; i++) {
+		if (game->bonusAnimations[i]->useAnimation != 0) {
+			x = game->bonusAnimations[i]->x;
+			y = game->bonusAnimations[i]->y;
+			drawBitmap(game->bonusAnimations[i]->bonusBmp, x, y,
+					ALIGN_LEFT);
+
+		}
+	}
+}
+
+
+void drawShotAnimations(){
 	MinixVice* game = getGame();
 
 	int i, x, y, index;

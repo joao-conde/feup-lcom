@@ -10,6 +10,7 @@
 
 #define NUMBER_OF_BARRELS 4
 #define NUMBER_OF_CONES   3
+#define MAX_CONESHOT_ANIM 3
 #define UTILS_LENGTH      2
 #define DECIMAL_ALG       10
 
