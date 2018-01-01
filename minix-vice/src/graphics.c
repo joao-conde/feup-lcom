@@ -174,6 +174,44 @@ void displayScore(int offsetX, int offsetY) {
 	}
 }
 
+
+int drawTimeInfo(int info, int startX, int startY, int offsetX, Bitmap* div, int lastElem){
+	MinixVice* game = getGame();
+
+	int timesOffset = offsetX;
+
+	if (info < 10) {
+
+		drawBitmap(game->digits[info % 10], startX - CHAR_DISTANCE * offsetX, startY,
+				ALIGN_LEFT);
+
+		offsetX++;
+		timesOffset++;
+
+		drawBitmap(game->digits[0], startX - CHAR_DISTANCE * offsetX, startY,
+				ALIGN_LEFT);
+		offsetX++;
+		timesOffset++;
+
+	} else {
+
+		while (info > 0) {
+			drawBitmap(game->digits[info % 10], startX - CHAR_DISTANCE * offsetX,
+					startY, ALIGN_LEFT);
+			info /= 10;
+			offsetX++;
+			timesOffset++;
+		}
+	}
+
+	if(!lastElem){
+		drawBitmap(div, startX - CHAR_DISTANCE * offsetX, startY, ALIGN_LEFT);
+		timesOffset++;
+	}
+
+	return timesOffset;
+}
+
 void displayDate() {
 	MinixVice* game = getGame();
 
@@ -181,37 +219,18 @@ void displayDate() {
 	unsigned long month = *(game->month);
 	unsigned long year = *(game->year);
 
-	int i = 0, startX, startY;
+	int offsetX = 0, startX, startY;
+	Bitmap* div = game->utils[0];
+
 	startX = vg_getHRES() / 2 + DATEX_OFFSET;
 	startY = vg_getVRES() / 2 + DATEY_OFFSET;
 
-	while (year >= 1) {
-		drawBitmap(game->digits[year % 10], startX - CHAR_DISTANCE * i, startY,
-				ALIGN_LEFT);
-		year /= 10;
-		i++;
-	}
-
-	drawBitmap(game->utils[0], startX - CHAR_DISTANCE * i, startY, ALIGN_LEFT);
-	i++;
-
-	while (month >= 1) {
-		drawBitmap(game->digits[month % 10], startX - CHAR_DISTANCE * i, startY,
-				ALIGN_LEFT);
-		month /= 10;
-		i++;
-	}
-
-	drawBitmap(game->utils[0], startX - CHAR_DISTANCE * i, startY, ALIGN_LEFT);
-	i++;
-
-	while (day >= 1) {
-		drawBitmap(game->digits[day % 10], startX - CHAR_DISTANCE * i, startY,
-				ALIGN_LEFT);
-		day /= 10;
-		i++;
-	}
+	offsetX = drawTimeInfo(year, startX, startY, offsetX, div, FALSE);
+	offsetX = drawTimeInfo(month, startX, startY,offsetX, div, FALSE);
+	offsetX = drawTimeInfo(day, startX, startY, offsetX, div, TRUE);
 }
+
+
 
 void displayHour() {
 	MinixVice* game = getGame();
@@ -220,36 +239,16 @@ void displayHour() {
 	unsigned long minutes = *(game->minutes);
 	unsigned long seconds = *(game->seconds);
 
-	int i = 0, startX, startY;
+	int offsetX = 0, startX, startY;
+	Bitmap* div = game->utils[1];
+
 	startX = vg_getHRES() / 2 + HOURX_OFFSET;
 	startY = vg_getVRES() / 2 + HOURY_OFFSET;
 
-	while (seconds >= 1) {
-		drawBitmap(game->digits[seconds % 10], startX - CHAR_DISTANCE * i,
-				startY, ALIGN_LEFT);
-		seconds /= 10;
-		i++;
-	}
+	offsetX = drawTimeInfo(seconds, startX, startY, offsetX, div, FALSE);
+	offsetX = drawTimeInfo(minutes, startX, startY,offsetX, div, FALSE);
+	offsetX = drawTimeInfo(hours, startX, startY, offsetX, div, TRUE);
 
-	drawBitmap(game->utils[1], startX - CHAR_DISTANCE * i, startY, ALIGN_LEFT);
-	i++;
-
-	while (minutes >= 1) {
-		drawBitmap(game->digits[minutes % 10], startX - CHAR_DISTANCE * i,
-				startY, ALIGN_LEFT);
-		minutes /= 10;
-		i++;
-	}
-
-	drawBitmap(game->utils[1], startX - CHAR_DISTANCE * i, startY, ALIGN_LEFT);
-	i++;
-
-	while (hours >= 1) {
-		drawBitmap(game->digits[hours % 10], startX - CHAR_DISTANCE * i, startY,
-				ALIGN_LEFT);
-		hours /= 10;
-		i++;
-	}
 }
 
 void displayConesShot() {
