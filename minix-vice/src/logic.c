@@ -49,7 +49,7 @@ void handleEvents() {
 	case SELECT_MENU:
 
 		if (clicked(game->select_menu->select_red->button, m)) {
-			loadCarBitmaps(1);
+			loadCarBitmaps(SELECTED_RED);
 			initPlayer();
 
 			updateMouseState(TARGET);
@@ -57,7 +57,7 @@ void handleEvents() {
 		}
 
 		if (clicked(game->select_menu->select_lamb->button, m)) {
-			loadCarBitmaps(2);
+			loadCarBitmaps(SELECTED_LAMB);
 			initPlayer();
 
 			updateMouseState(TARGET);
@@ -65,7 +65,7 @@ void handleEvents() {
 		}
 
 		if (clicked(game->select_menu->select_mercedes->button, m)) {
-			loadCarBitmaps(3);
+			loadCarBitmaps(SELECTED_MERCEDES);
 			initPlayer();
 
 			updateMouseState(TARGET);
@@ -81,10 +81,7 @@ void handleEvents() {
 			updateBarrelsPos();
 			updateConesPos();
 
-			updateShotAnimations();
-			updateBonusAnimations();
-
-
+			updateAnimations();
 		}
 
 		if (game->bonus) {
@@ -118,11 +115,10 @@ void handleEvents() {
 				game->bonus = 1;
 				game->conesShot++;
 
-				startShotAnimation(game->cones[i]->x, game->cones[i]->y);
-				startBonusAnimation(game->cones[i]->x, game->cones[i]->y);
+				//Cone shot + bonus animation
+				startConeShotAnimations(game->cones[i]->x, game->cones[i]->y);
+
 				recalculateConePos(game->cones[i]);
-
-
 			}
 
 			//if cone out of game screen re-calculate coordinates
@@ -176,7 +172,7 @@ void recalculateBarrelPos(Barrel* barrel) {
 	/* negative values ensure they come a while after disappearing
 	 * and is random so they aren't always in the same height cord
 	 */
-	newY = -generateRandomPos(50, 600);
+	newY = -generateRandomPos(RANDOM_LOWERB, RANDOM_UPPERB);
 
 	barrel->x = newX;
 	barrel->y = newY;
@@ -200,7 +196,7 @@ void recalculateConePos(Cone* cone) {
 	/*
 	 * negative values for the same reason as the barrels
 	 */
-	newY = -generateRandomPos(50, 600);
+	newY = -generateRandomPos(RANDOM_LOWERB, RANDOM_UPPERB);
 
 	cone->x = newX;
 	cone->y = newY;
@@ -259,15 +255,20 @@ void updateConesPos() {
 	}
 }
 
+void startConeShotAnimations(int x, int y){
+	startBonusAnimation(x,y);
+	startShotAnimation(x,y);
+}
+
 void startBonusAnimation(int x, int y){
 	MinixVice* game = getGame();
 
 	int i;
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < MAX_CONESHOT_ANIM; i++) {
 
 		if (game->bonusAnimations[i]->useAnimation == 0) {
-			game->bonusAnimations[i]->x = x;
-			game->bonusAnimations[i]->y = y;
+			game->bonusAnimations[i]->x = x + BONUSANIM_OFFSETX;
+			game->bonusAnimations[i]->y = y + BONUSANIM_OFFSETY;
 			game->bonusAnimations[i]->frame = 0;
 			game->bonusAnimations[i]->useAnimation = 1;
 			return;
@@ -279,7 +280,7 @@ void startShotAnimation(int x, int y){
 	MinixVice* game = getGame();
 
 	int i;
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < MAX_CONESHOT_ANIM; i++) {
 
 		if (game->shotAnimations[i]->useAnimation == 0) {
 			game->shotAnimations[i]->x = x;
@@ -291,14 +292,19 @@ void startShotAnimation(int x, int y){
 	}
 }
 
+void updateAnimations(){
+	updateShotAnimations();
+	updateBonusAnimations();
+}
+
 void updateShotAnimations() {
 	MinixVice* game = getGame();
 
 	int i;
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < MAX_CONESHOT_ANIM; i++) {
 
 		if (game->shotAnimations[i]->useAnimation != 0) {
-			if (game->shotAnimations[i]->bmpIndex == 15)
+			if (game->shotAnimations[i]->bmpIndex == SPRITESHEET_SHOT_SIZE - 1)
 				game->shotAnimations[i]->useAnimation = 0;
 			else
 				game->shotAnimations[i]->bmpIndex++;
@@ -310,10 +316,10 @@ void updateBonusAnimations() {
 	MinixVice* game = getGame();
 
 	int i;
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < MAX_CONESHOT_ANIM; i++) {
 
 		if (game->bonusAnimations[i]->useAnimation != 0) {
-			if (game->bonusAnimations[i]->frame == 45)
+			if (game->bonusAnimations[i]->frame == BONUS_FRAMES_DISPLAY)
 				game->bonusAnimations[i]->useAnimation = 0;
 			else{
 				game->bonusAnimations[i]->frame++;

@@ -28,7 +28,7 @@ typedef struct{
 	int bmpIndex; //current bmp to be drawn off of sprites array
 	int useAnimation; //display or not
 
-	Bitmap* sprites[16]; //animation bmps
+	Bitmap* sprites[SPRITESHEET_SHOT_SIZE]; //animation bmps
 
 }Shot;
 
@@ -168,6 +168,12 @@ void freeBarrels();
  * @brief Frees the cone entities
  */
 void freeCones();
+
+void createAnimations();
+
+void createBonusAnimations();
+
+void createShotAnimations();
 
 
 

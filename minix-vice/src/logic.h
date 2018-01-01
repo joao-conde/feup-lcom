@@ -60,10 +60,17 @@ void updateBarrelsPos();
  */
 void updateConesPos();
 
+void startConeShotAnimations(int x, int y);
 
 void startShotAnimation(int x, int y);
 
+void startBonusAnimation(int x, int y);
+
+void updateAnimations();
+
 void updateShotAnimations();
+
+void updateBonusAnimations();
 
 
 #endif /* LOGIC_H */
