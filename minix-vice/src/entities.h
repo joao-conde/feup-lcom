@@ -15,6 +15,15 @@
  */
 
 typedef struct{
+	int x, y; //shot location
+	int bmpIndex; //current bmp to be drawn off of sprites array
+	int displayAnimation; //display or not
+
+	Bitmap* sprites[16]; //animation bmps
+
+}Shot;
+
+typedef struct{
 
 	ColliderBox* button;
 	Bitmap* normal;

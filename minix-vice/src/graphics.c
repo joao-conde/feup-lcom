@@ -2,6 +2,128 @@
 
 /* OBSTACLES METHODS */
 
+extern st_game gameState;
+
+
+void drawMinixVice() {
+
+	MinixVice* game = getGame();
+	Mouse* m = getMouse();
+
+	switch (gameState) {
+
+	case MAIN_MENU:
+		drawBackgroundBitmap(game->main_menu->menu_background, 0, 0,
+				ALIGN_LEFT);
+
+		if (hovered(game->main_menu->playBtn->button, m))
+			drawBitmap(game->main_menu->playBtn->hover,
+					game->main_menu->playBtn->button->x1,
+					game->main_menu->playBtn->button->y1, ALIGN_LEFT);
+		else
+			drawBitmap(game->main_menu->playBtn->normal,
+					game->main_menu->playBtn->button->x1,
+					game->main_menu->playBtn->button->y1, ALIGN_LEFT);
+
+		if (hovered(game->main_menu->quitBtn->button, m))
+			drawBitmap(game->main_menu->quitBtn->hover,
+					game->main_menu->quitBtn->button->x1,
+					game->main_menu->quitBtn->button->y1, ALIGN_LEFT);
+		else
+			drawBitmap(game->main_menu->quitBtn->normal,
+					game->main_menu->quitBtn->button->x1,
+					game->main_menu->quitBtn->button->y1, ALIGN_LEFT);
+
+		drawAnimations();
+
+		break;
+
+	case SELECT_MENU:
+		drawBackgroundBitmap(game->select_menu->select_background, 0, 0,
+				ALIGN_LEFT);
+
+		if (hovered(game->select_menu->select_lamb->button, m))
+			drawBitmap(game->select_menu->select_lamb->hover,
+					game->select_menu->select_lamb->button->x1,
+					game->select_menu->select_lamb->button->y1, ALIGN_LEFT);
+		else
+			drawBitmap(game->select_menu->select_lamb->normal,
+					game->select_menu->select_lamb->button->x1,
+					game->select_menu->select_lamb->button->y1, ALIGN_LEFT);
+
+
+		if (hovered(game->select_menu->select_red->button, m))
+			drawBitmap(game->select_menu->select_red->hover,
+					game->select_menu->select_red->button->x1,
+					game->select_menu->select_red->button->y1, ALIGN_LEFT);
+		else
+			drawBitmap(game->select_menu->select_red->normal,
+					game->select_menu->select_red->button->x1,
+					game->select_menu->select_red->button->y1, ALIGN_LEFT);
+
+
+
+		if (hovered(game->select_menu->select_mercedes->button, m))
+			drawBitmap(game->select_menu->select_mercedes->hover,
+					game->select_menu->select_mercedes->button->x1,
+					game->select_menu->select_mercedes->button->y1, ALIGN_LEFT);
+		else
+			drawBitmap(game->select_menu->select_mercedes->normal,
+					game->select_menu->select_mercedes->button->x1,
+					game->select_menu->select_mercedes->button->y1, ALIGN_LEFT);
+
+		break;
+
+	case HELP_MENU:
+		drawBackgroundBitmap(game->help_screen, 0, 0, ALIGN_LEFT);
+		break;
+
+	case GAME:
+
+		if (game->timer->ticked) {
+			drawMovingBackground();
+			drawPlayer(game->car);
+			drawBarrels();
+			drawCones();
+			drawBitmap(game->score_tag, SCOREX_DISPLAY, SCOREY_DISPLAY, ALIGN_LEFT);
+			displayScore(SCOREX_OFFSET, SCOREY_OFFSET);
+
+
+		}
+
+		break;
+
+	case STATS_MENU:
+		drawBackgroundBitmap(game->stats_screen, 0, 0, ALIGN_LEFT);
+		displayConesShot();
+		displayDate();
+		displayHour();
+		displayScore(FINALSCOREX_OFFSET, FINALSCOREY_OFFSET);
+		break;
+
+	}
+
+	if (game->timer->ticked) {
+		drawMouse();
+		flipDB();
+		game->timer->ticked = 0;
+	}
+
+}
+
+
+void drawAnimations(){
+	MinixVice* game = getGame();
+
+	int i, x, y, index;
+	for(i = 0; i < 3; i++){
+		x = game->shotAnimations[i]->x;
+		y = game->shotAnimations[i]->y;
+		index = game->shotAnimations[i]->bmpIndex;
+		drawBitmap(game->shotAnimations[i]->sprites[index], x, y, ALIGN_LEFT);
+	}
+}
+
 void drawBarrel(Barrel* barrel) {
 	drawBitmap(barrel->bitmap, barrel->x, barrel->y, ALIGN_LEFT);
 }

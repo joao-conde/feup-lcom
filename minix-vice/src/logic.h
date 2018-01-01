@@ -4,7 +4,13 @@
 #include "MinixVice.h"
 
 
-/* GAME METHODS */
+/**
+ * @brief Updates game. Calls IH and events handler
+ */
+void updateMinixVice();
+
+
+void handleEvents();
 
 /**
  * @brief De-accelerates the car.

@@ -53,9 +53,12 @@ typedef struct {
 	Barrel* barrels[NUMBER_OF_BARRELS];
 	Cone* cones[NUMBER_OF_CONES];
 
+
+	//TESTING
+
+	Shot* shotAnimations[3];
+
 } MinixVice;
-
-
 
 
 /* SINGLETON IMPLEMENTATION */
@@ -77,41 +80,22 @@ MinixVice* initMinixVice();
 MinixVice* getGame();
 
 
-/* UPDATE-DRAW-END GAME*/
-
-/**
- * @brief Updates game. Calls IH and events handler
- */
-void updateMinixVice();
-
-
-/**
- * @brief Draws game.
- */
-void drawMinixVice();
-
-
 /**
  * @brief Ends game. Frees all memory.
  */
 void endMinixVice();
 
 
+/**
+ * @brief Restarts the game.
+ */
+void startNewGame();
 
-//
-
-void handleEvents();
 
 /**
  * @brief Initializes some game properties
  */
 void initGameProperties();
-
-
-/**
- * @brief Restarts the game, initializing new game variable
- */
-void startNewGame();
 
 
 #endif /* MINIXVICE_H */

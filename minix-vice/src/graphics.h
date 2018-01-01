@@ -3,6 +3,12 @@
 
 #include "MinixVice.h"
 
+
+/**
+ * @brief Draws game.
+ */
+void drawMinixVice();
+
 /**
  * @brief Draws a moving background giving the sense of movement
  */
