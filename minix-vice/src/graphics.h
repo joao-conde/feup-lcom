@@ -38,6 +38,9 @@ void displayHour();
  */
 void displayConesShot();
 
+
+int drawTimeInfo(int info, int startX, int startY, int offsetX, Bitmap* div, int lastElem);
+
 //void drawConeBonus(int x, int y);
 
 /**
@@ -72,5 +75,8 @@ void drawBarrels();
  * @brief Draws the cone entities
  */
 void drawCones();
+
+void drawAnimations();
+
 
 #endif /* GRAPHICS_H */

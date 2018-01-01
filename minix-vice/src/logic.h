@@ -61,6 +61,9 @@ void updateBarrelsPos();
 void updateConesPos();
 
 
+void startShotAnimation(int x, int y);
+
+void updateShotAnimations();
 
 
 #endif /* LOGIC_H */
