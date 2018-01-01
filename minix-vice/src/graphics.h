@@ -39,7 +39,7 @@ void displayHour();
 void displayConesShot();
 
 
-int drawTimeInfo(int info, int startX, int startY, int offsetX, Bitmap* div, int lastElem);
+int drawInfo(int info, int startX, int startY, int offsetX, Bitmap* div, int lastElem);
 
 //void drawConeBonus(int x, int y);
 
@@ -78,5 +78,8 @@ void drawCones();
 
 void drawAnimations();
 
+void drawBonusAnimations();
+
+void drawShotAnimations();
 
 #endif /* GRAPHICS_H */

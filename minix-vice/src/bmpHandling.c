@@ -40,19 +40,19 @@ void loadCarBitmaps(int selectedCar) {
 	MinixVice* game = getGame();
 
 	switch (selectedCar) {
-	case 1: //red car
+	case SELECTED_RED: //red car
 		game->car->bmpForward = loadBitmap(getImgPath("red"));
 		game->car->bmpTLeft = loadBitmap(getImgPath("red-tl"));
 		game->car->bmpTRight = loadBitmap(getImgPath("red-tr"));
 		break;
 
-	case 2: //black lamb
+	case SELECTED_LAMB: //black lamb
 		game->car->bmpForward = loadBitmap(getImgPath("lamb"));
 		game->car->bmpTLeft = loadBitmap(getImgPath("lamb-tl"));
 		game->car->bmpTRight = loadBitmap(getImgPath("lamb-tr"));
 		break;
 
-	case 3: //gray mercedes
+	case SELECTED_MERCEDES: //gray mercedes
 		game->car->bmpForward = loadBitmap(getImgPath("mercedes"));
 		game->car->bmpTLeft = loadBitmap(getImgPath("mercedes-tl"));
 		game->car->bmpTRight = loadBitmap(getImgPath("mercedes-tr"));
@@ -66,7 +66,7 @@ void loadShotAnimations() {
 	MinixVice* game = getGame();
 
 	int i;
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < MAX_CONESHOT_ANIM; i++) {
 		game->shotAnimations[i]->sprites[0] = loadBitmap(getImgPath("00"));
 		game->shotAnimations[i]->sprites[1] = loadBitmap(getImgPath("01"));
 		game->shotAnimations[i]->sprites[2] = loadBitmap(getImgPath("02"));
@@ -90,7 +90,7 @@ void loadBonusAnimations(){
 	MinixVice* game = getGame();
 
 	int i = 0;
-	for (i = 0; i < 3; i++){
+	for (i = 0; i < MAX_CONESHOT_ANIM; i++){
 		game->bonusAnimations[i]->bonusBmp = loadBitmap(getImgPath("+10"));
 	}
 }

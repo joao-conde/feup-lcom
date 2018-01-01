@@ -70,9 +70,8 @@ void createEntities() {
 	game->timer = (Timer*) malloc(sizeof(Timer));
 	game->car = (Player*) malloc(sizeof(Player));
 
-	createShotAnimations();
+	createAnimations();
 
-	createBonusAnimations();
 }
 
 void createBarrels() {
@@ -82,6 +81,11 @@ void createBarrels() {
 	for (i = 0; i < NUMBER_OF_BARRELS; i++) {
 		game->barrels[i] = (Barrel*) malloc(sizeof(Barrel));
 	}
+}
+
+void createAnimations(){
+	createShotAnimations();
+	createBonusAnimations();
 }
 
 void createBonusAnimations(){

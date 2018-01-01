@@ -81,7 +81,7 @@ void drawMinixVice() {
 			drawCones();
 			drawAnimations();
 
-
+			//score game 'tag'
 			drawBitmap(game->score_tag, SCOREX_DISPLAY, SCOREY_DISPLAY,
 					ALIGN_LEFT);
 
@@ -183,22 +183,12 @@ void displayScore(int offsetX, int offsetY) {
 	startX = vg_getHRES() - offsetX;
 	startY = vg_getVRES() - offsetY;
 
-	if (score == 0) {
-		drawBitmap(game->digits[0], startX - CHAR_DISTANCE * i, startY,
-				ALIGN_LEFT);
-		return;
-	}
+	drawInfo(score, startX, startY, i, NULL, TRUE);
 
-	while (score >= 1) {
-		drawBitmap(game->digits[score % 10], startX - CHAR_DISTANCE * i, startY,
-				ALIGN_LEFT);
-		score /= 10;
-		i++;
-	}
 }
 
 
-int drawTimeInfo(int info, int startX, int startY, int offsetX, Bitmap* div, int lastElem){
+int drawInfo(int info, int startX, int startY, int offsetX, Bitmap* div, int lastElem){
 	MinixVice* game = getGame();
 
 	int timesOffset = offsetX;
@@ -248,9 +238,9 @@ void displayDate() {
 	startX = vg_getHRES() / 2 + DATEX_OFFSET;
 	startY = vg_getVRES() / 2 + DATEY_OFFSET;
 
-	offsetX = drawTimeInfo(year, startX, startY, offsetX, div, FALSE);
-	offsetX = drawTimeInfo(month, startX, startY,offsetX, div, FALSE);
-	offsetX = drawTimeInfo(day, startX, startY, offsetX, div, TRUE);
+	offsetX = drawInfo(year, startX, startY, offsetX, div, FALSE);
+	offsetX = drawInfo(month, startX, startY,offsetX, div, FALSE);
+	offsetX = drawInfo(day, startX, startY, offsetX, div, TRUE);
 }
 
 
@@ -268,9 +258,9 @@ void displayHour() {
 	startX = vg_getHRES() / 2 + HOURX_OFFSET;
 	startY = vg_getVRES() / 2 + HOURY_OFFSET;
 
-	offsetX = drawTimeInfo(seconds, startX, startY, offsetX, div, FALSE);
-	offsetX = drawTimeInfo(minutes, startX, startY,offsetX, div, FALSE);
-	offsetX = drawTimeInfo(hours, startX, startY, offsetX, div, TRUE);
+	offsetX = drawInfo(seconds, startX, startY, offsetX, div, FALSE);
+	offsetX = drawInfo(minutes, startX, startY,offsetX, div, FALSE);
+	offsetX = drawInfo(hours, startX, startY, offsetX, div, TRUE);
 
 }
 
@@ -278,41 +268,24 @@ void displayConesShot() {
 	MinixVice* game = getGame();
 
 	int conesShot = game->conesShot;
-	int i = 0, startX, startY;
+	int offsetX = 0, startX, startY;
 	startX = vg_getHRES() - CONESX_OFFSET;
 	startY = vg_getVRES() - CONESY_OFFSET;
 
-	if (conesShot == 0) {
-		drawBitmap(game->digits[0], startX - CHAR_DISTANCE * i, startY,
-				ALIGN_LEFT);
-		return;
-	}
-
-	while (conesShot >= 1) {
-		drawBitmap(game->digits[conesShot % 10], startX - CHAR_DISTANCE * i,
-				startY, ALIGN_LEFT);
-		conesShot /= 10;
-		i++;
-	}
+	drawInfo(conesShot, startX, startY, offsetX, NULL, TRUE);
 }
 
 void drawMovingBackground() {
-	static float y = 0;
+	static float backgroundY = 0;
 
 	MinixVice* game = getGame();
 
-	y += game->speed;
+	backgroundY += game->speed;
 
-	if (y >= vg_getVRES())
-		y = ORIGIN_COORDS;
+	if (backgroundY >= vg_getVRES())
+		backgroundY = ORIGIN_COORDS;
 
-	drawBackgroundBitmap(game->background, ORIGIN_COORDS, y, ALIGN_LEFT);
-	drawBackgroundBitmap(game->background, ORIGIN_COORDS, y - vg_getVRES(),
+	drawBackgroundBitmap(game->background, ORIGIN_COORDS, backgroundY, ALIGN_LEFT);
+	drawBackgroundBitmap(game->background, ORIGIN_COORDS, backgroundY - vg_getVRES(),
 			ALIGN_LEFT);
 }
-
-//void drawConeBonus(int x, int y){
-//	MinixVice* game = getGame();
-//
-//	drawBitmap(game->utils[2], x, y, ALIGN_LEFT);
-//}
