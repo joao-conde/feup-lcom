@@ -1,6 +1,5 @@
 #include "bmpHandling.h"
 
-
 void loadBarrelsBitmaps() {
 	MinixVice* game = getGame();
 
@@ -76,15 +75,20 @@ void loadBitmaps() {
 	game->main_menu->quitBtn->hover = loadBitmap(getImgPath("quitbtnhover"));
 
 	game->select_menu->select_background = loadBitmap(getImgPath("carselect"));
-	game->select_menu->select_lamb->normal = loadBitmap(getImgPath("lambbtn-normal"));
-	game->select_menu->select_lamb->hover = loadBitmap(getImgPath("lambbtn-hover"));
+	game->select_menu->select_lamb->normal = loadBitmap(
+			getImgPath("lambbtn-normal"));
+	game->select_menu->select_lamb->hover = loadBitmap(
+			getImgPath("lambbtn-hover"));
 
-	game->select_menu->select_red->normal = loadBitmap(getImgPath("redbtn-normal"));
-	game->select_menu->select_red->hover = loadBitmap(getImgPath("redbtn-hover"));
+	game->select_menu->select_red->normal = loadBitmap(
+			getImgPath("redbtn-normal"));
+	game->select_menu->select_red->hover = loadBitmap(
+			getImgPath("redbtn-hover"));
 
-	game->select_menu->select_mercedes->normal = loadBitmap(getImgPath("mercedesbtn-normal"));
-	game->select_menu->select_mercedes->hover = loadBitmap(getImgPath("mercedesbtn-hover"));
-
+	game->select_menu->select_mercedes->normal = loadBitmap(
+			getImgPath("mercedesbtn-normal"));
+	game->select_menu->select_mercedes->hover = loadBitmap(
+			getImgPath("mercedesbtn-hover"));
 
 	game->help_screen = loadBitmap(getImgPath("help"));
 	game->stats_screen = loadBitmap(getImgPath("stats"));
@@ -99,6 +103,26 @@ void loadBitmaps() {
 
 	loadBarrelsBitmaps();
 	loadConesBitmaps();
+
+	int i;
+	for (i = 0; i < 3; i++) {
+		game->shotAnimations[i]->sprites[0] = loadBitmap(getImgPath("00"));
+		game->shotAnimations[i]->sprites[1] = loadBitmap(getImgPath("01"));
+		game->shotAnimations[i]->sprites[2] = loadBitmap(getImgPath("02"));
+		game->shotAnimations[i]->sprites[3] = loadBitmap(getImgPath("03"));
+		game->shotAnimations[i]->sprites[4] = loadBitmap(getImgPath("04"));
+		game->shotAnimations[i]->sprites[5] = loadBitmap(getImgPath("05"));
+		game->shotAnimations[i]->sprites[6] = loadBitmap(getImgPath("06"));
+		game->shotAnimations[i]->sprites[7] = loadBitmap(getImgPath("07"));
+		game->shotAnimations[i]->sprites[8] = loadBitmap(getImgPath("08"));
+		game->shotAnimations[i]->sprites[9] = loadBitmap(getImgPath("09"));
+		game->shotAnimations[i]->sprites[10] = loadBitmap(getImgPath("10"));
+		game->shotAnimations[i]->sprites[11] = loadBitmap(getImgPath("11"));
+		game->shotAnimations[i]->sprites[12] = loadBitmap(getImgPath("12"));
+		game->shotAnimations[i]->sprites[13] = loadBitmap(getImgPath("13"));
+		game->shotAnimations[i]->sprites[14] = loadBitmap(getImgPath("14"));
+		game->shotAnimations[i]->sprites[15] = loadBitmap(getImgPath("15"));
+	}
 
 }
 
@@ -141,7 +165,6 @@ void deleteBitmaps() {
 //	deleteBitmap(game->background);
 //	deleteBitmap(game->main_menu->menu_background);
 //	deleteBitmap(game->select_menu->select_background);
-
 
 	deleteDigitBitmaps();
 //	deleteBarrelsBitmaps();

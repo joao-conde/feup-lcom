@@ -1,6 +1,149 @@
 #include "logic.h"
 
+extern st_game gameState;
 
+void updateMinixVice() {
+
+	MinixVice* game = getGame();
+
+	game->timer->ticked = 0;
+
+	readRTC();
+
+	interruptsHandler();
+
+	handleEvents();
+
+}
+
+void handleEvents() {
+
+	MinixVice* game = getGame();
+	Mouse* m = getMouse();
+	int i;
+
+	switch (gameState) {
+
+	case MAIN_MENU:
+
+		if (clicked(game->main_menu->playBtn->button, m)) {
+			updateGameState(SELECT_CAR);
+		}
+
+		if (clicked(game->main_menu->quitBtn->button, m)) {
+			updateGameState(TERMINATE);
+		}
+
+		if (game->scancode == H_BREAK)
+			updateGameState(HELP);
+
+		updateShotAnimations();
+		break;
+
+	case HELP_MENU:
+
+		if (game->scancode == ESC_BREAK)
+			updateGameState(MAIN);
+
+		break;
+
+	case SELECT_MENU:
+
+		if (clicked(game->select_menu->select_red->button, m)) {
+			loadCarBitmaps(1);
+			initPlayer();
+
+			updateMouseState(TARGET);
+			updateGameState(PLAY);
+		}
+
+		if (clicked(game->select_menu->select_lamb->button, m)) {
+			loadCarBitmaps(2);
+			initPlayer();
+
+			updateMouseState(TARGET);
+			updateGameState(PLAY);
+		}
+
+		if (clicked(game->select_menu->select_mercedes->button, m)) {
+			loadCarBitmaps(3);
+			initPlayer();
+
+			updateMouseState(TARGET);
+			updateGameState(PLAY);
+		}
+
+		break;
+
+	case GAME:
+
+		if (game->timer->ticked) {
+			calculateScore();
+			updateBarrelsPos();
+			updateConesPos();
+
+//			if (game->shotAnim->bmpIndex == 15)
+//				game->shotAnim->bmpIndex = 0;
+//			else
+//				game->shotAnim->bmpIndex++;
+
+		}
+
+		if (game->bonus) {
+			game->bonus = 0;
+			game->score += CONESHOT_BONUS;
+		}
+
+		for (i = 0; i < NUMBER_OF_BARRELS; i++) {
+
+			if (collide(game->car->body, game->barrels[i]->body)) {
+				updateGameState(TERMINATE);
+				game->scancode = ESC_BREAK;
+			}
+
+			//if barrel out of game screen re-calculate coordinates
+			if (game->barrels[i]->y > vg_getVRES()) {
+				recalculateBarrelPos(game->barrels[i]);
+			}
+
+		}
+
+		for (i = 0; i < NUMBER_OF_CONES; i++) {
+
+			if (collide(game->car->body, game->cones[i]->body)) {
+				updateGameState(TERMINATE);
+				game->scancode = ESC_BREAK;
+			}
+
+			//shot cone
+			if (clicked(game->cones[i]->body, m)) {
+				recalculateConePos(game->cones[i]);
+				game->bonus = 1;
+				game->conesShot++;
+			}
+
+			//if cone out of game screen re-calculate coordinates
+			if (game->cones[i]->y > vg_getVRES()) {
+				recalculateConePos(game->cones[i]);
+			}
+		}
+
+		break;
+
+	case STATS_MENU:
+
+		if (game->scancode != ESC_BREAK) {
+			startNewGame();
+		}
+
+		break;
+
+	case OVER:
+		game->done = 1;
+		break;
+
+	}
+}
 
 void brake() {
 	MinixVice* game = getGame();
@@ -91,7 +234,6 @@ void calculateScore() {
 	game->score += SCORE_INCREASE(game->speed);
 }
 
-
 void updateBarrelsPos() {
 	MinixVice* game = getGame();
 
@@ -111,6 +253,19 @@ void updateConesPos() {
 		game->cones[i]->y += game->speed;
 		game->cones[i]->body->y1 += game->speed;
 		game->cones[i]->body->y2 += game->speed;
+	}
+}
+
+
+void updateShotAnimations(){
+	MinixVice* game = getGame();
+
+	int i, x, y, index;
+	for(i = 0; i < 3; i++){
+		if(game->shotAnimations[i]->bmpIndex == 15)
+			game->shotAnimations[i]->bmpIndex = 0;
+		else
+			game->shotAnimations[i]->bmpIndex++;
 	}
 }
 
