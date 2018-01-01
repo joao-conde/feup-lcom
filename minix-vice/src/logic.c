@@ -37,7 +37,6 @@ void handleEvents() {
 		if (game->scancode == H_BREAK)
 			updateGameState(HELP);
 
-		updateShotAnimations();
 		break;
 
 	case HELP_MENU:
@@ -82,10 +81,8 @@ void handleEvents() {
 			updateBarrelsPos();
 			updateConesPos();
 
-//			if (game->shotAnim->bmpIndex == 15)
-//				game->shotAnim->bmpIndex = 0;
-//			else
-//				game->shotAnim->bmpIndex++;
+			updateShotAnimations();
+
 
 		}
 
@@ -117,9 +114,13 @@ void handleEvents() {
 
 			//shot cone
 			if (clicked(game->cones[i]->body, m)) {
-				recalculateConePos(game->cones[i]);
 				game->bonus = 1;
 				game->conesShot++;
+
+				startShotAnimation(game->cones[i]->x, game->cones[i]->y);
+				recalculateConePos(game->cones[i]);
+
+
 			}
 
 			//if cone out of game screen re-calculate coordinates
@@ -257,15 +258,34 @@ void updateConesPos() {
 }
 
 
-void updateShotAnimations(){
+void startShotAnimation(int x, int y){
 	MinixVice* game = getGame();
 
-	int i, x, y, index;
-	for(i = 0; i < 3; i++){
-		if(game->shotAnimations[i]->bmpIndex == 15)
+	int i, index;
+	for (i = 0; i < 3; i++) {
+
+		if (game->shotAnimations[i]->useAnimation == 0) {
+			game->shotAnimations[i]->x = x;
+			game->shotAnimations[i]->y = y;
 			game->shotAnimations[i]->bmpIndex = 0;
-		else
-			game->shotAnimations[i]->bmpIndex++;
+			game->shotAnimations[i]->useAnimation = 1;
+			return;
+		}
+	}
+}
+
+void updateShotAnimations() {
+	MinixVice* game = getGame();
+
+	int i, index;
+	for (i = 0; i < 3; i++) {
+
+		if (game->shotAnimations[i]->useAnimation != 0) {
+			if (game->shotAnimations[i]->bmpIndex == 15)
+				game->shotAnimations[i]->useAnimation = 0;
+			else
+				game->shotAnimations[i]->bmpIndex++;
+		}
 	}
 }
 

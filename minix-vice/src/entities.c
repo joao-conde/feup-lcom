@@ -75,9 +75,9 @@ void createEntities() {
 	for(i = 0; i < 3; i++){
 		game->shotAnimations[i] = (Shot*) malloc(sizeof(Shot));
 		game->shotAnimations[i]->bmpIndex = 0;
-		game->shotAnimations[i]->displayAnimation = 0;
-		game->shotAnimations[i]->x = 50*i;
-		game->shotAnimations[i]->y = 50*i;
+		game->shotAnimations[i]->useAnimation = 0;
+//		game->shotAnimations[i]->x = 50*i;
+//		game->shotAnimations[i]->y = 50*i;
 	}
 }
 
