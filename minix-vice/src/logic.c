@@ -20,127 +20,166 @@ void handleEvents() {
 
 	MinixVice* game = getGame();
 	Mouse* m = getMouse();
-	int i;
 
 	switch (gameState) {
 
 	case MAIN_MENU:
-
-		if (clicked(game->main_menu->playBtn->button, m)) {
-			updateGameState(SELECT_CAR);
-		}
-
-		if (clicked(game->main_menu->quitBtn->button, m)) {
-			updateGameState(TERMINATE);
-		}
-
-		if (game->scancode == H_BREAK)
-			updateGameState(HELP);
-
+		handleMainMenuEvents();
 		break;
 
 	case HELP_MENU:
-
-		if (game->scancode == ESC_BREAK)
-			updateGameState(MAIN);
-
+		handleHelpMenuEvents();
 		break;
 
 	case SELECT_MENU:
-
-		if (clicked(game->select_menu->select_red->button, m)) {
-			loadCarBitmaps(SELECTED_RED);
-			initPlayer();
-
-			updateMouseState(TARGET);
-			updateGameState(PLAY);
-		}
-
-		if (clicked(game->select_menu->select_lamb->button, m)) {
-			loadCarBitmaps(SELECTED_LAMB);
-			initPlayer();
-
-			updateMouseState(TARGET);
-			updateGameState(PLAY);
-		}
-
-		if (clicked(game->select_menu->select_mercedes->button, m)) {
-			loadCarBitmaps(SELECTED_MERCEDES);
-			initPlayer();
-
-			updateMouseState(TARGET);
-			updateGameState(PLAY);
-		}
-
+		handleSelectMenuEvents();
 		break;
 
 	case GAME:
-
-		if (game->timer->ticked) {
-			calculateScore();
-			updateBarrelsPos();
-			updateConesPos();
-
-			updateAnimations();
-		}
-
-		if (game->bonus) {
-			game->bonus = 0;
-			game->score += CONESHOT_BONUS;
-		}
-
-		for (i = 0; i < NUMBER_OF_BARRELS; i++) {
-
-			if (collide(game->car->body, game->barrels[i]->body)) {
-				updateGameState(TERMINATE);
-				game->scancode = ESC_BREAK;
-			}
-
-			//if barrel out of game screen re-calculate coordinates
-			if (game->barrels[i]->y > vg_getVRES()) {
-				recalculateBarrelPos(game->barrels[i]);
-			}
-
-		}
-
-		for (i = 0; i < NUMBER_OF_CONES; i++) {
-
-			if (collide(game->car->body, game->cones[i]->body)) {
-				updateGameState(TERMINATE);
-				game->scancode = ESC_BREAK;
-			}
-
-			//shot cone
-			if (clicked(game->cones[i]->body, m)) {
-				game->bonus = 1;
-				game->conesShot++;
-
-				//Cone shot + bonus animation
-				startConeShotAnimations(game->cones[i]->x, game->cones[i]->y);
-
-				recalculateConePos(game->cones[i]);
-			}
-
-			//if cone out of game screen re-calculate coordinates
-			if (game->cones[i]->y > vg_getVRES()) {
-				recalculateConePos(game->cones[i]);
-			}
-		}
-
+		handleGameScreenEvents();
 		break;
 
 	case STATS_MENU:
-
-		if (game->scancode != ESC_BREAK) {
-			startNewGame();
-		}
-
+		handleStatsMenuEvents();
 		break;
 
 	case OVER:
 		game->done = 1;
 		break;
 
+	}
+}
+
+void handleMainMenuEvents() {
+	MinixVice* game = getGame();
+	Mouse* m = getMouse();
+
+	if (clicked(game->main_menu->playBtn->button, m)) {
+		updateGameState(SELECT_CAR);
+	}
+
+	if (clicked(game->main_menu->quitBtn->button, m)) {
+		updateGameState(TERMINATE);
+	}
+
+	if (game->scancode == H_BREAK)
+		updateGameState(HELP);
+}
+
+void handleHelpMenuEvents() {
+	MinixVice* game = getGame();
+
+	if (game->scancode == ESC_BREAK)
+		updateGameState(MAIN);
+}
+
+void handleSelectMenuEvents() {
+	MinixVice* game = getGame();
+	Mouse* m = getMouse();
+
+	if (clicked(game->select_menu->select_red->button, m)) {
+		loadCarBitmaps(SELECTED_RED);
+		initPlayer();
+
+		updateMouseState(TARGET);
+		updateGameState(PLAY);
+	}
+
+	if (clicked(game->select_menu->select_lamb->button, m)) {
+		loadCarBitmaps(SELECTED_LAMB);
+		initPlayer();
+
+		updateMouseState(TARGET);
+		updateGameState(PLAY);
+	}
+
+	if (clicked(game->select_menu->select_mercedes->button, m)) {
+		loadCarBitmaps(SELECTED_MERCEDES);
+		initPlayer();
+
+		updateMouseState(TARGET);
+		updateGameState(PLAY);
+	}
+}
+
+void handleGameScreenEvents() {
+	MinixVice* game = getGame();
+	Mouse* m = getMouse();
+
+	if (game->timer->ticked) {
+		calculateScore();
+		updateBarrelsPos();
+		updateConesPos();
+		updateAnimations();
+	}
+
+	if (game->bonus) {
+		game->bonus = 0;
+		game->score += CONESHOT_BONUS;
+	}
+
+	checkCollisions();
+}
+
+void handleStatsMenuEvents() {
+	MinixVice* game = getGame();
+
+	if (game->scancode != ESC_BREAK) {
+		startNewGame();
+	}
+}
+
+void checkCollisions() {
+	checkBarrelsCollisions();
+	checkConesCollisions();
+}
+
+void checkBarrelsCollisions() {
+	MinixVice* game = getGame();
+	int i;
+
+	for (i = 0; i < NUMBER_OF_BARRELS; i++) {
+
+		if (collide(game->car->body, game->barrels[i]->body)) {
+			updateGameState(TERMINATE);
+			game->scancode = ESC_BREAK;
+		}
+
+		//if barrel out of game screen re-calculate coordinates
+		if (game->barrels[i]->y > vg_getVRES()) {
+			recalculateBarrelPos(game->barrels[i]);
+		}
+
+	}
+}
+
+void checkConesCollisions() {
+	MinixVice* game = getGame();
+	Mouse* m = getMouse();
+	int i;
+
+	for (i = 0; i < NUMBER_OF_CONES; i++) {
+
+		if (collide(game->car->body, game->cones[i]->body)) {
+			updateGameState(TERMINATE);
+			game->scancode = ESC_BREAK;
+		}
+
+		//shot cone
+		if (clicked(game->cones[i]->body, m)) {
+			game->bonus = 1;
+			game->conesShot++;
+
+			//Cone shot + bonus animation
+			startConeShotAnimations(game->cones[i]->x, game->cones[i]->y);
+
+			recalculateConePos(game->cones[i]);
+		}
+
+		//if cone out of game screen re-calculate coordinates
+		if (game->cones[i]->y > vg_getVRES()) {
+			recalculateConePos(game->cones[i]);
+		}
 	}
 }
 
@@ -255,12 +294,12 @@ void updateConesPos() {
 	}
 }
 
-void startConeShotAnimations(int x, int y){
-	startBonusAnimation(x,y);
-	startShotAnimation(x,y);
+void startConeShotAnimations(int x, int y) {
+	startBonusAnimation(x, y);
+	startShotAnimation(x, y);
 }
 
-void startBonusAnimation(int x, int y){
+void startBonusAnimation(int x, int y) {
 	MinixVice* game = getGame();
 
 	int i;
@@ -276,7 +315,7 @@ void startBonusAnimation(int x, int y){
 	}
 }
 
-void startShotAnimation(int x, int y){
+void startShotAnimation(int x, int y) {
 	MinixVice* game = getGame();
 
 	int i;
@@ -292,7 +331,7 @@ void startShotAnimation(int x, int y){
 	}
 }
 
-void updateAnimations(){
+void updateAnimations() {
 	updateShotAnimations();
 	updateBonusAnimations();
 }
@@ -321,7 +360,7 @@ void updateBonusAnimations() {
 		if (game->bonusAnimations[i]->useAnimation != 0) {
 			if (game->bonusAnimations[i]->frame == BONUS_FRAMES_DISPLAY)
 				game->bonusAnimations[i]->useAnimation = 0;
-			else{
+			else {
 				game->bonusAnimations[i]->frame++;
 				game->bonusAnimations[i]->y++;
 			}

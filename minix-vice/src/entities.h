@@ -11,7 +11,7 @@
 /** @defgroup entities entities
  * @{
  *
- * Definition of game entities and functions to operate on them
+ * Definition of game entities and basic functions to operate with them
  */
 
 typedef struct{
@@ -123,6 +123,24 @@ void createCones();
 
 
 /**
+ * @brief Creates animations
+ */
+void createAnimations();
+
+
+/**
+ * @brief Creates bonus animations
+ */
+void createBonusAnimations();
+
+
+/**
+ * @brief Creates shot animations
+ */
+void createShotAnimations();
+
+
+/**
  * @brief Initializes player variables
  */
 void initPlayer();
@@ -168,12 +186,6 @@ void freeBarrels();
  * @brief Frees the cone entities
  */
 void freeCones();
-
-void createAnimations();
-
-void createBonusAnimations();
-
-void createShotAnimations();
 
 
 

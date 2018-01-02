@@ -2,11 +2,17 @@
 #define UTILS_H
 
 
+/** @defgroup utils utils
+ * @{
+ *
+ * Constants for MinixVice and basic auxiliary functions.
+ */
+
 #define SCORE_INCREASE(s) (0.1 + (s*s)/10000)
 #define CONVERT2DECIMAL(x) ((x ^= 0xFF) + 1)
 
 
-#define GRAPHIC_MODE 279
+#define GRAPHIC_MODE 0x0117 /* 16-bit (RGB 5:6:5) 1024*768 */
 
 #define NUMBER_OF_BARRELS 4
 #define NUMBER_OF_CONES   3
@@ -91,17 +97,10 @@
 #define BYTE_MINUS1	    0xFF
 
 
-/** @defgroup utils utils
- * @{
- *
- * Useful project functions
- */
-
-
 /**
- * @brief Checks if a file exists or not
+ * @brief Checks if a file exists or not.
  *
- * @param filename a C string with filename
+ * @param filename a "C string" (char pointer) with filename
  *
  * @return 1 if exists 0 otherwise
  */
@@ -109,22 +108,22 @@ int fileExists(const char* filename);
 
 
 /**
- * @brief Returns the image path
+ * @brief Returns the image path.
  *
  * @param img image name to create the path
  *
- * @return pointer to C string with the full image path
+ * @return pointer to "C string" with the full image path
  */
 const char* getImgPath(const char* img);
 
 
 /**
- * @brief Returns a random number between 2 limits
+ * @brief Returns a random number between 2 limits.
  *
  * @param lowerBound lower limit of the number generated
  * @param higherBound upper limit of the number generated
  *
- * @return a random number
+ * @return a random number between lower bound and higher bound
  */
 int generateRandomPos(int lowerBound, int higherBound);
 

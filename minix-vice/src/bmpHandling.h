@@ -4,6 +4,11 @@
 #include "MinixVice.h"
 
 
+/** @defgroup bmpHandling bmpHandling
+ * @{
+ * Functions for manipulating the bitmaps used in the game. Loading and deleting of said bitmaps.
+ */
+
 /* BITMAP LOADING */
 
 /**
@@ -38,8 +43,43 @@ void loadDigitBitmaps();
 void loadCarBitmaps(int selectedCar);
 
 
-/* BITMAP DELETING */
+/**
+ * @brief Loads animations bitmaps
+ */
+void loadAnimations();
 
+
+/**
+ * @brief Loads shot animations bitmaps
+ */
+void loadShotAnimations();
+
+
+/**
+ * @brief Loads bonus animations bitmaps
+ */
+void loadBonusAnimations();
+
+
+/**
+ * @brief Loads main menu bitmaps
+ */
+void loadMainMenuBitmaps();
+
+
+/**
+ * @brief Loads select menu bitmaps
+ */
+void loadSelectMenuBitmaps();
+
+
+/**
+ * @brief Loads remaining needed bitmaps like screens and other util bmps.
+ */
+void loadOtherBitmaps();
+
+
+/* BITMAP DELETING */
 
 /**
  * @brief Deletes bitmaps
@@ -63,5 +103,7 @@ void deleteBarrelsBitmaps();
  * @brief Deletes cone entities bitmaps
  */
 void deleteConesBitmaps();
+
+
 
 #endif /* BMPHAND_H */

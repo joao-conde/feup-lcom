@@ -4,8 +4,11 @@ ColliderBox* newColliderBox(int x1, int y1, int x2, int y2) {
 
 	ColliderBox* collider = (ColliderBox*) malloc(sizeof(ColliderBox));
 
+	//top left corner of box
 	collider->x1 = x1;
 	collider->y1 = y1;
+
+	//right bottom corner of box
 	collider->x2 = x2;
 	collider->y2 = y2;
 

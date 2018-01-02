@@ -1,5 +1,25 @@
 #include "bmpHandling.h"
 
+
+void loadBitmaps() {
+	MinixVice* game = getGame();
+
+	loadMainMenuBitmaps();
+
+	loadSelectMenuBitmaps();
+
+	loadOtherBitmaps();
+
+	loadDigitBitmaps();
+
+	loadBarrelsBitmaps();
+
+	loadConesBitmaps();
+
+	loadAnimations();
+}
+
+
 void loadBarrelsBitmaps() {
 	MinixVice* game = getGame();
 
@@ -62,6 +82,11 @@ void loadCarBitmaps(int selectedCar) {
 
 }
 
+void loadAnimations() {
+	loadShotAnimations();
+	loadBonusAnimations();
+}
+
 void loadShotAnimations() {
 	MinixVice* game = getGame();
 
@@ -86,18 +111,17 @@ void loadShotAnimations() {
 	}
 }
 
-void loadBonusAnimations(){
+void loadBonusAnimations() {
 	MinixVice* game = getGame();
 
 	int i = 0;
-	for (i = 0; i < MAX_CONESHOT_ANIM; i++){
+	for (i = 0; i < MAX_CONESHOT_ANIM; i++) {
 		game->bonusAnimations[i]->bonusBmp = loadBitmap(getImgPath("+10"));
 	}
 }
-void loadBitmaps() {
-	MinixVice* game = getGame();
 
-	game->background = loadBitmap(getImgPath("road"));
+void loadMainMenuBitmaps() {
+	MinixVice* game = getGame();
 
 	game->main_menu->menu_background = loadBitmap(getImgPath("main-menu"));
 	game->main_menu->playBtn->normal = loadBitmap(getImgPath("playbtn"));
@@ -105,6 +129,11 @@ void loadBitmaps() {
 
 	game->main_menu->playBtn->hover = loadBitmap(getImgPath("playbtnhover"));
 	game->main_menu->quitBtn->hover = loadBitmap(getImgPath("quitbtnhover"));
+
+}
+
+void loadSelectMenuBitmaps() {
+	MinixVice* game = getGame();
 
 	game->select_menu->select_background = loadBitmap(getImgPath("carselect"));
 	game->select_menu->select_lamb->normal = loadBitmap(
@@ -121,23 +150,38 @@ void loadBitmaps() {
 			getImgPath("mercedesbtn-normal"));
 	game->select_menu->select_mercedes->hover = loadBitmap(
 			getImgPath("mercedesbtn-hover"));
+}
+
+
+void loadOtherBitmaps(){
+	MinixVice* game = getGame();
+
+	game->background = loadBitmap(getImgPath("road"));
 
 	game->help_screen = loadBitmap(getImgPath("help"));
 	game->stats_screen = loadBitmap(getImgPath("stats"));
+	game->score_tag = loadBitmap(getImgPath("score-display"));
 
 	game->utils[0] = loadBitmap(getImgPath("slash")); // '/'
 	game->utils[1] = loadBitmap(getImgPath("points")); // ':'
+}
 
-	game->score_tag = loadBitmap(getImgPath("score-display"));
 
-	loadDigitBitmaps();
 
-	loadBarrelsBitmaps();
-	loadConesBitmaps();
+void deleteBitmaps() {
+	MinixVice* game = getGame();
 
-	loadShotAnimations();
-	loadBonusAnimations();
+//	deleteBitmap(game->background);
+//	deleteBitmap(game->main_menu->menu_background);
+//	deleteBitmap(game->select_menu->select_background);
 
+	deleteDigitBitmaps();
+//	deleteBarrelsBitmaps();
+//	deleteConesBitmaps();
+
+	deleteBitmap(game->car->bmpForward);
+	deleteBitmap(game->car->bmpTLeft);
+	deleteBitmap(game->car->bmpTRight);
 }
 
 void deleteDigitBitmaps() {
@@ -171,20 +215,4 @@ void deleteConesBitmaps() {
 	for (i = 0; i < NUMBER_OF_CONES; i++) {
 		deleteBitmap(game->cones[i]->bitmap);
 	}
-}
-
-void deleteBitmaps() {
-	MinixVice* game = getGame();
-//
-//	deleteBitmap(game->background);
-//	deleteBitmap(game->main_menu->menu_background);
-//	deleteBitmap(game->select_menu->select_background);
-
-	deleteDigitBitmaps();
-//	deleteBarrelsBitmaps();
-//	deleteConesBitmaps();
-
-	deleteBitmap(game->car->bmpForward);
-	deleteBitmap(game->car->bmpTLeft);
-	deleteBitmap(game->car->bmpTRight);
 }

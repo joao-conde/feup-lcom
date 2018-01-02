@@ -1,102 +1,32 @@
 #include "graphics.h"
 
-/* OBSTACLES METHODS */
 
 extern st_game gameState;
+extern st_player playerState;
 
 void drawMinixVice() {
-
 	MinixVice* game = getGame();
-	Mouse* m = getMouse();
 
 	switch (gameState) {
 
 	case MAIN_MENU:
-		drawBackgroundBitmap(game->main_menu->menu_background, 0, 0,
-				ALIGN_LEFT);
-
-		if (hovered(game->main_menu->playBtn->button, m))
-			drawBitmap(game->main_menu->playBtn->hover,
-					game->main_menu->playBtn->button->x1,
-					game->main_menu->playBtn->button->y1, ALIGN_LEFT);
-		else
-			drawBitmap(game->main_menu->playBtn->normal,
-					game->main_menu->playBtn->button->x1,
-					game->main_menu->playBtn->button->y1, ALIGN_LEFT);
-
-		if (hovered(game->main_menu->quitBtn->button, m))
-			drawBitmap(game->main_menu->quitBtn->hover,
-					game->main_menu->quitBtn->button->x1,
-					game->main_menu->quitBtn->button->y1, ALIGN_LEFT);
-		else
-			drawBitmap(game->main_menu->quitBtn->normal,
-					game->main_menu->quitBtn->button->x1,
-					game->main_menu->quitBtn->button->y1, ALIGN_LEFT);
-
+		drawMainMenu();
 		break;
 
 	case SELECT_MENU:
-		drawBackgroundBitmap(game->select_menu->select_background, 0, 0,
-				ALIGN_LEFT);
-
-		if (hovered(game->select_menu->select_lamb->button, m))
-			drawBitmap(game->select_menu->select_lamb->hover,
-					game->select_menu->select_lamb->button->x1,
-					game->select_menu->select_lamb->button->y1, ALIGN_LEFT);
-		else
-			drawBitmap(game->select_menu->select_lamb->normal,
-					game->select_menu->select_lamb->button->x1,
-					game->select_menu->select_lamb->button->y1, ALIGN_LEFT);
-
-		if (hovered(game->select_menu->select_red->button, m))
-			drawBitmap(game->select_menu->select_red->hover,
-					game->select_menu->select_red->button->x1,
-					game->select_menu->select_red->button->y1, ALIGN_LEFT);
-		else
-			drawBitmap(game->select_menu->select_red->normal,
-					game->select_menu->select_red->button->x1,
-					game->select_menu->select_red->button->y1, ALIGN_LEFT);
-
-		if (hovered(game->select_menu->select_mercedes->button, m))
-			drawBitmap(game->select_menu->select_mercedes->hover,
-					game->select_menu->select_mercedes->button->x1,
-					game->select_menu->select_mercedes->button->y1, ALIGN_LEFT);
-		else
-			drawBitmap(game->select_menu->select_mercedes->normal,
-					game->select_menu->select_mercedes->button->x1,
-					game->select_menu->select_mercedes->button->y1, ALIGN_LEFT);
-
+		drawSelectMenu();
 		break;
 
 	case HELP_MENU:
-		drawBackgroundBitmap(game->help_screen, 0, 0, ALIGN_LEFT);
+		drawBackgroundBitmap(game->help_screen, 0, 0);
 		break;
 
 	case GAME:
-
-		if (game->timer->ticked) {
-			drawMovingBackground();
-			drawPlayer(game->car);
-			drawBarrels();
-			drawCones();
-			drawAnimations();
-
-			//score game 'tag'
-			drawBitmap(game->score_tag, SCOREX_DISPLAY, SCOREY_DISPLAY,
-					ALIGN_LEFT);
-
-			displayScore(SCOREX_OFFSET, SCOREY_OFFSET);
-
-		}
-
+		drawGameScreen();
 		break;
 
 	case STATS_MENU:
-		drawBackgroundBitmap(game->stats_screen, 0, 0, ALIGN_LEFT);
-		displayConesShot();
-		displayDate();
-		displayHour();
-		displayScore(FINALSCOREX_OFFSET, FINALSCOREY_OFFSET);
+		drawStatsMenu();
 		break;
 
 	}
@@ -109,50 +39,152 @@ void drawMinixVice() {
 
 }
 
+void drawMainMenu() {
+	MinixVice* game = getGame();
+	Mouse* m = getMouse();
+
+	drawBackgroundBitmap(game->main_menu->menu_background, 0, 0);
+
+	if (hovered(game->main_menu->playBtn->button, m))
+		drawBitmap(game->main_menu->playBtn->hover,
+				game->main_menu->playBtn->button->x1,
+				game->main_menu->playBtn->button->y1);
+	else
+		drawBitmap(game->main_menu->playBtn->normal,
+				game->main_menu->playBtn->button->x1,
+				game->main_menu->playBtn->button->y1);
+
+	if (hovered(game->main_menu->quitBtn->button, m))
+		drawBitmap(game->main_menu->quitBtn->hover,
+				game->main_menu->quitBtn->button->x1,
+				game->main_menu->quitBtn->button->y1);
+	else
+		drawBitmap(game->main_menu->quitBtn->normal,
+				game->main_menu->quitBtn->button->x1,
+				game->main_menu->quitBtn->button->y1);
+}
+
+void drawSelectMenu() {
+	MinixVice* game = getGame();
+	Mouse* m = getMouse();
+
+	drawBackgroundBitmap(game->select_menu->select_background, 0, 0);
+
+	if (hovered(game->select_menu->select_lamb->button, m))
+		drawBitmap(game->select_menu->select_lamb->hover,
+				game->select_menu->select_lamb->button->x1,
+				game->select_menu->select_lamb->button->y1);
+	else
+		drawBitmap(game->select_menu->select_lamb->normal,
+				game->select_menu->select_lamb->button->x1,
+				game->select_menu->select_lamb->button->y1);
+
+	if (hovered(game->select_menu->select_red->button, m))
+		drawBitmap(game->select_menu->select_red->hover,
+				game->select_menu->select_red->button->x1,
+				game->select_menu->select_red->button->y1);
+	else
+		drawBitmap(game->select_menu->select_red->normal,
+				game->select_menu->select_red->button->x1,
+				game->select_menu->select_red->button->y1);
+
+	if (hovered(game->select_menu->select_mercedes->button, m))
+		drawBitmap(game->select_menu->select_mercedes->hover,
+				game->select_menu->select_mercedes->button->x1,
+				game->select_menu->select_mercedes->button->y1);
+	else
+		drawBitmap(game->select_menu->select_mercedes->normal,
+				game->select_menu->select_mercedes->button->x1,
+				game->select_menu->select_mercedes->button->y1);
+}
+
+void drawGameScreen() {
+	MinixVice* game = getGame();
+
+	if (game->timer->ticked) {
+		drawMovingBackground();
+		drawPlayer(game->car);
+		drawBarrels();
+		drawCones();
+		drawAnimations();
+
+		//score game 'tag'
+		drawBitmap(game->score_tag, SCOREX_DISPLAY, SCOREY_DISPLAY);
+
+		displayScore(SCOREX_OFFSET, SCOREY_OFFSET);
+
+	}
+}
+
+void drawStatsMenu() {
+	MinixVice* game = getGame();
+
+	drawBackgroundBitmap(game->stats_screen, 0, 0);
+	displayConesShot();
+	displayDate();
+	displayHour();
+	displayScore(FINALSCOREX_OFFSET, FINALSCOREY_OFFSET);
+}
+
 void drawAnimations() {
 	drawShotAnimations();
 	drawBonusAnimations();
 }
 
-void drawBonusAnimations(){
+void drawBonusAnimations() {
 	MinixVice* game = getGame();
 
 	int i, x, y;
 
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < MAX_CONESHOT_ANIM; i++) {
 		if (game->bonusAnimations[i]->useAnimation != 0) {
 			x = game->bonusAnimations[i]->x;
 			y = game->bonusAnimations[i]->y;
-			drawBitmap(game->bonusAnimations[i]->bonusBmp, x, y,
-					ALIGN_LEFT);
+			drawBitmap(game->bonusAnimations[i]->bonusBmp, x, y);
 
 		}
 	}
 }
 
-
-void drawShotAnimations(){
+void drawShotAnimations() {
 	MinixVice* game = getGame();
 
 	int i, x, y, index;
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < MAX_CONESHOT_ANIM; i++) {
 		if (game->shotAnimations[i]->useAnimation != 0) {
 			x = game->shotAnimations[i]->x;
 			y = game->shotAnimations[i]->y;
 			index = game->shotAnimations[i]->bmpIndex;
-			drawBitmap(game->shotAnimations[i]->sprites[index], x, y,
-					ALIGN_LEFT);
+			drawBitmap(game->shotAnimations[i]->sprites[index], x, y);
 
 		}
 	}
 }
 
+void drawPlayer() {
+
+	MinixVice* game = getGame();
+
+	switch (playerState) {
+	case TLEFT:
+		drawBitmap(game->car->bmpTLeft, game->car->x, game->car->y);
+		break;
+	case TRIGHT:
+		drawBitmap(game->car->bmpTRight, game->car->x, game->car->y);
+		break;
+	default:
+		drawBitmap(game->car->bmpForward, game->car->x, game->car->y);
+		break;
+	}
+
+}
+
 void drawBarrel(Barrel* barrel) {
-	drawBitmap(barrel->bitmap, barrel->x, barrel->y, ALIGN_LEFT);
+	drawBitmap(barrel->bitmap, barrel->x, barrel->y);
 }
 
 void drawCone(Cone* cone) {
-	drawBitmap(cone->bitmap, cone->x, cone->y, ALIGN_LEFT);
+	drawBitmap(cone->bitmap, cone->x, cone->y);
 }
 
 void drawBarrels() {
@@ -175,6 +207,44 @@ void drawCones() {
 
 }
 
+int drawInfo(int info, int startX, int startY, int offsetX, Bitmap* div,
+		int lastElem) {
+	MinixVice* game = getGame();
+
+	int timesOffset = offsetX;
+
+	if (info < 10) {
+
+		drawBitmap(game->digits[info % 10], startX - CHAR_DISTANCE * offsetX,
+				startY);
+
+		offsetX++;
+		timesOffset++;
+
+		drawBitmap(game->digits[0], startX - CHAR_DISTANCE * offsetX, startY);
+
+		offsetX++;
+		timesOffset++;
+
+	} else {
+
+		while (info > 0) {
+			drawBitmap(game->digits[info % 10],
+					startX - CHAR_DISTANCE * offsetX, startY);
+			info /= 10;
+			offsetX++;
+			timesOffset++;
+		}
+	}
+
+	if (!lastElem) {
+		drawBitmap(div, startX - CHAR_DISTANCE * offsetX, startY);
+		timesOffset++;
+	}
+
+	return timesOffset;
+}
+
 void displayScore(int offsetX, int offsetY) {
 	MinixVice* game = getGame();
 
@@ -185,44 +255,6 @@ void displayScore(int offsetX, int offsetY) {
 
 	drawInfo(score, startX, startY, i, NULL, TRUE);
 
-}
-
-
-int drawInfo(int info, int startX, int startY, int offsetX, Bitmap* div, int lastElem){
-	MinixVice* game = getGame();
-
-	int timesOffset = offsetX;
-
-	if (info < 10) {
-
-		drawBitmap(game->digits[info % 10], startX - CHAR_DISTANCE * offsetX, startY,
-				ALIGN_LEFT);
-
-		offsetX++;
-		timesOffset++;
-
-		drawBitmap(game->digits[0], startX - CHAR_DISTANCE * offsetX, startY,
-				ALIGN_LEFT);
-		offsetX++;
-		timesOffset++;
-
-	} else {
-
-		while (info > 0) {
-			drawBitmap(game->digits[info % 10], startX - CHAR_DISTANCE * offsetX,
-					startY, ALIGN_LEFT);
-			info /= 10;
-			offsetX++;
-			timesOffset++;
-		}
-	}
-
-	if(!lastElem){
-		drawBitmap(div, startX - CHAR_DISTANCE * offsetX, startY, ALIGN_LEFT);
-		timesOffset++;
-	}
-
-	return timesOffset;
 }
 
 void displayDate() {
@@ -239,11 +271,9 @@ void displayDate() {
 	startY = vg_getVRES() / 2 + DATEY_OFFSET;
 
 	offsetX = drawInfo(year, startX, startY, offsetX, div, FALSE);
-	offsetX = drawInfo(month, startX, startY,offsetX, div, FALSE);
+	offsetX = drawInfo(month, startX, startY, offsetX, div, FALSE);
 	offsetX = drawInfo(day, startX, startY, offsetX, div, TRUE);
 }
-
-
 
 void displayHour() {
 	MinixVice* game = getGame();
@@ -259,7 +289,7 @@ void displayHour() {
 	startY = vg_getVRES() / 2 + HOURY_OFFSET;
 
 	offsetX = drawInfo(seconds, startX, startY, offsetX, div, FALSE);
-	offsetX = drawInfo(minutes, startX, startY,offsetX, div, FALSE);
+	offsetX = drawInfo(minutes, startX, startY, offsetX, div, FALSE);
 	offsetX = drawInfo(hours, startX, startY, offsetX, div, TRUE);
 
 }
@@ -285,7 +315,7 @@ void drawMovingBackground() {
 	if (backgroundY >= vg_getVRES())
 		backgroundY = ORIGIN_COORDS;
 
-	drawBackgroundBitmap(game->background, ORIGIN_COORDS, backgroundY, ALIGN_LEFT);
-	drawBackgroundBitmap(game->background, ORIGIN_COORDS, backgroundY - vg_getVRES(),
-			ALIGN_LEFT);
+	drawBackgroundBitmap(game->background, ORIGIN_COORDS, backgroundY);
+	drawBackgroundBitmap(game->background, ORIGIN_COORDS,
+			backgroundY - vg_getVRES());
 }

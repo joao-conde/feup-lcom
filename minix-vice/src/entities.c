@@ -31,25 +31,6 @@ void movePlayerRight() {
 		game->car->x = (RIGHT_ROAD_LIMIT - carWidth);
 }
 
-void drawPlayer() {
-
-	MinixVice* game = getGame();
-
-	switch (playerState) {
-	case TLEFT:
-		drawBitmap(game->car->bmpTLeft, game->car->x, game->car->y, ALIGN_LEFT);
-		break;
-	case TRIGHT:
-		drawBitmap(game->car->bmpTRight, game->car->x, game->car->y, ALIGN_LEFT);
-		break;
-	default:
-		drawBitmap(game->car->bmpForward, game->car->x, game->car->y, ALIGN_LEFT);
-		break;
-	}
-
-}
-
-
 
 
 void createEntities() {
@@ -180,7 +161,7 @@ void initBarrels() {
 		game->barrels[i]->x = generateRandomPos(LEFT_ROAD_LIMIT,
 		RIGHT_ROAD_LIMIT - barrelWidth);
 
-		game->barrels[i]->y = -generateRandomPos(50, 600);
+		game->barrels[i]->y = -generateRandomPos(RANDOM_LOWERB, RANDOM_UPPERB);
 
 		game->barrels[i]->body = newColliderBox(game->barrels[i]->x,
 				game->barrels[i]->y, game->barrels[i]->x + barrelWidth,
@@ -202,7 +183,7 @@ void initCones() {
 		game->cones[i]->x = generateRandomPos(LEFT_ROAD_LIMIT,
 		RIGHT_ROAD_LIMIT - coneWidth);
 
-		game->cones[i]->y = -generateRandomPos(50, 600);
+		game->cones[i]->y = -generateRandomPos(RANDOM_LOWERB, RANDOM_UPPERB);
 
 		game->cones[i]->body = newColliderBox(game->cones[i]->x,
 				game->cones[i]->y, game->cones[i]->x + coneWidth,

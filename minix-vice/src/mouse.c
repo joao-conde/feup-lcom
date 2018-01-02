@@ -55,11 +55,11 @@ void drawMouse() {
 	switch (mouseState) {
 
 	case MENU:
-		drawBitmap(m->cursor, m->x, m->y, ALIGN_LEFT);
+		drawBitmap(m->cursor, m->x, m->y);
 		break;
 
 	case TARGET:
-		drawBitmap(m->target, m->x, m->y, ALIGN_LEFT);
+		drawBitmap(m->target, m->x, m->y);
 		break;
 	}
 
@@ -217,33 +217,6 @@ void synch_packet(long byte) {
 	}
 }
 
-void display_packet(unsigned long *g_packet) {
-
-	//print of the 3 bytes of the g_packet
-	printf("B1=0x%02x ", *g_packet);
-	printf("B2=0x%02x ", *(g_packet + 1));
-	printf("B3=0x%02x ", *(g_packet + 2));
-
-	//analyze of each g_packet
-	printf("LB=%u ", (*g_packet & BIT(0)) ? 1 : 0);
-	printf("MB=%u ", (*g_packet & BIT(2)) ? 1 : 0);
-	printf("RB=%u ", (*g_packet & BIT(1)) ? 1 : 0);
-
-	printf("XOVF=%u ", (*g_packet & BIT(6)) ? 1 : 0);
-	printf("YOVF=%u ", (*g_packet & BIT(7)) ? 1 : 0);
-
-	if (*g_packet & BIT(4))
-		printf("X=-%u ", (*(g_packet + 1) ^= BYTE_MINUS1) + 1);
-	else
-		printf("X=%u ", *(g_packet + 1));
-
-	if (*g_packet & BIT(5))
-		printf("Y=-%u\n", (*(g_packet + 2) ^= BYTE_MINUS1) + 1);
-	else
-		printf("Y=%u\n", *(g_packet + 2));
-
-}
-
 int kbc_write(unsigned long port, unsigned long word) {
 
 	unsigned long status;
@@ -309,19 +282,6 @@ int enable_mouse() {
 	return OK;
 }
 
-int disable_DataReporting() {
-	if (mouse_write_cmd(WRITE_BYTE, DISABLE_DATAREPORT) != OK)
-		return FAIL_WRITE_CMD;
-
-	return OK;
-}
-
-int setRemoteMode() {
-	if (mouse_write_cmd(WRITE_BYTE, ENABLE_REMOTE) != OK)
-		return FAIL_WRITE_CMD;
-
-	return OK;
-}
 
 int setStreamMode() {
 	if (mouse_write_cmd(WRITE_BYTE, ENABLE_STREAM) != OK)

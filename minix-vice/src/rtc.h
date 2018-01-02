@@ -4,6 +4,12 @@
 #define BIT(n) (0x01<<(n))
 
 
+/** @defgroup RTC RTC
+ * @{
+ *
+ * Basic functions to operate via polling mode on the Real-Time Clock (RTC).
+ */
+
 /* Access to RTC */
 
 #define RTC_ADDR_REG 0x70
@@ -32,13 +38,6 @@
 
 /* CURENT MILLENIUM  */
 #define CURRENT_MILLENIUM 2000
-
-
-/** @defgroup rtc rtc
- * @{
- *
- * Functions interacting with the RTC (Real-Time Clock).
- */
 
 
 /**

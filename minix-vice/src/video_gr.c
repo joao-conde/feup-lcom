@@ -32,7 +32,7 @@ unsigned vg_getVRES() {
 	return v_res;
 }
 
-void *vg_init(unsigned short mode) {
+void *vg_init(unsigned long mode) {
 
 	vbe_mode_info_t vbe_mode;
 	vbe_get_mode_info(mode, &vbe_mode);
