@@ -17,7 +17,7 @@ static int g_synched = FALSE;
 extern st_mouse mouseState;
 
 /* SINGLETON MOUSE IMPLEMENTATION */
-Mouse* mouse = NULL;
+static Mouse* mouse = NULL;
 
 Mouse* newMouse() {
 	Mouse* mouse = (Mouse*) malloc(sizeof(Mouse));
