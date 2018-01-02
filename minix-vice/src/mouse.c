@@ -61,6 +61,10 @@ void drawMouse() {
 	case TARGET:
 		drawBitmap(m->target, m->x, m->y);
 		break;
+
+	case INVISIBLE:
+		//do nothing
+		break;
 	}
 
 }

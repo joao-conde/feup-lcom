@@ -25,7 +25,7 @@ typedef enum {
 
 
 typedef enum {
-	MENU, TARGET
+	MENU, TARGET, INVISIBLE
 } st_mouse;
 
 
