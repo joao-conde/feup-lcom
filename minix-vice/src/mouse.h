@@ -12,6 +12,8 @@
  */
 
 
+ /// Represents the mouse holding it's information
+
 typedef struct {
     int x, y;
     int deltaX, deltaY;

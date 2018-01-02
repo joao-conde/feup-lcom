@@ -7,6 +7,7 @@
  * Functions for using the i8254 timers
  */
 
+ /// Represents a Timer entity with timer information
 
 typedef struct{
 	int counter;

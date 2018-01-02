@@ -14,6 +14,8 @@
  * Definition of game entities and basic functions to operate with them
  */
 
+
+ /// Represents a bonus score gain animation
 typedef struct{
 	int x, y;
 	int frame;
@@ -22,6 +24,8 @@ typedef struct{
 	Bitmap* bonusBmp;
 }Bonus;
 
+
+/// Represents a cone shot with small explosion animation
 
 typedef struct{
 	int x, y; //shot location
@@ -32,6 +36,9 @@ typedef struct{
 
 }Shot;
 
+
+/// Represents a button
+
 typedef struct{
 
 	ColliderBox* button;
@@ -39,6 +46,9 @@ typedef struct{
 	Bitmap* hover;
 
 }Button;
+
+
+/// Represents the main menu
 
 typedef struct{
 
@@ -48,6 +58,9 @@ typedef struct{
 
 }MainMenu;
 
+
+/// Represents the select car menu
+
 typedef struct{
 
 	Button* select_lamb;
@@ -56,6 +69,9 @@ typedef struct{
 	Bitmap* select_background;
 
 }SelectMenu;
+
+
+/// Represents the player
 
 typedef struct{
 
@@ -70,6 +86,8 @@ typedef struct{
 }Player;
 
 
+/// Represents a barrel obstacle
+
 typedef struct{
 
 	int x,y;
@@ -79,6 +97,7 @@ typedef struct{
 
 }Barrel;
 
+/// Represents a cone obstacle
 
 typedef struct{
 

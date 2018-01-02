@@ -15,9 +15,12 @@
  */
 
 
+
 /**
- * @brief Program entry point, calls the methods to begin game, loops in it, exits it
- */
+  * @brief Program entry point, calls the methods to begin game, loops in it, exits it.
+  *
+  * @return a pointer to the game created
+  */
 void play();
 
 

@@ -23,6 +23,8 @@
  * Game manager and methods
  */
 
+ /// Represents the main game entity managing all game properties
+
 typedef struct {
 
 	int irq_kbd, irq_timer, irq_mouse;
