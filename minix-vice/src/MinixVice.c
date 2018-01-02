@@ -3,7 +3,7 @@
 //extern st_game gameState;
 
 /* SINGLETON GAME IMPLEMENTATION */
-MinixVice* game = NULL;
+static MinixVice* game = NULL;
 
 MinixVice* initMinixVice() {
 
