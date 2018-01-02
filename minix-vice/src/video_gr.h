@@ -26,7 +26,7 @@ enum direction {
  * 
  * @param mode 16-bit VBE mode to set
  */
-void *vg_init(unsigned short mode);
+void *vg_init(unsigned long mode);
 
  /**
  * @brief Returns to default Minix 3 text mode (0x03: 25 x 80, 16 colors)

@@ -121,9 +121,6 @@ long mouse_readOBF();
 void mouseIntHandler();
 
 
-void display_packet(unsigned long *packet);
-
-
 /**
  * @brief Enables data reporting
  *
@@ -133,26 +130,12 @@ int enable_DataReporting();
 
 
 /**
- * @brief Disables data reporting
- *
- * @return Returns 0 upon success and non-zero otherwise
- */
-int disable_DataReporting();
-
-/**
  * @brief Enables the mouse
  *
  * @return Returns 0 upon success and non-zero otherwise
  */
 int enable_mouse();
 
-
-/**
- * @brief Set mouse remote mode
- *
- * @return Returns 0 upon success and non-zero otherwise
- */
-int setRemoteMode();
 
 
 /**

@@ -6,7 +6,7 @@
 /** @defgroup ColliderBox ColliderBox
  * @{
  *
- * Basic functions to operate with collider boxes of game entities
+ * Basic functions to operate with collider boxes of game entities.
  */
 
 typedef struct{
@@ -15,8 +15,7 @@ typedef struct{
 
 
 /**
- * @brief Creates a ColliderBox struct with top left corner at (x1,y1)
- * and bottom right corner at (x2,y2)
+ * @brief Creates a ColliderBox struct with top left corner at (x1,y1) and bottom right corner at (x2,y2)
  *
  * @param x1 top left corner X
  * @param y1 top left corner Y
@@ -29,8 +28,7 @@ ColliderBox* newColliderBox(int x1, int y1, int x2, int y2);
 
 
 /**
- * @brief Checks if a ColliderBox was "clicked" which means a mouse
- * click occurred in the box area
+ * @brief Checks if a ColliderBox was "clicked" which means a left mouse click occurred in the box area
  *
  * @param collider a ColliderBox pointer
  * @param mouse a Mouse pointer (contains mouse information)
@@ -38,6 +36,7 @@ ColliderBox* newColliderBox(int x1, int y1, int x2, int y2);
  * @return 1 if clicked, 0 if not
  */
 int clicked(ColliderBox* collider, Mouse* mouse);
+
 
 /**
  * @brief Checks if a ColliderBox is being mouse 'hovered' (mouse on it)

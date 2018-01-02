@@ -1,14 +1,14 @@
 #ifndef BITMAP_H
 #define BITMAP_H
 
+
+#define TRANSPARENCY 0xFFFFFFF8
+
 /** @defgroup Bitmap Bitmap
  * @{
  * Functions for manipulating bitmaps - export images as a 16-bit 5:6:5 .bmp image.
+ * Changed original module developed by Henrique Ferrolho (https://github.com/ferrolho) to fit the game needs.
  */
-
-typedef enum {
-    ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT
-} Alignment;
 
 typedef struct {
     unsigned short type; // specifies the file type
@@ -38,7 +38,7 @@ typedef struct {
 } Bitmap;
 
 /**
- * @brief Loads a bmp image
+ * @brief Loads a bmp image.
  *
  * @param filename Path of the image to load
  * @return Non NULL pointer to the image buffer
@@ -46,16 +46,23 @@ typedef struct {
 Bitmap* loadBitmap(const char* filename);
 
 /**
- * @brief Draws an unscaled, unrotated bitmap at the given position
+ * @brief Draws an unscaled, unrotated bitmap at the given position. Checks if pixel is transparent or not.
  *
  * @param bitmap bitmap to be drawn
  * @param x destiny x coord
  * @param y destiny y coord
- * @param alignment image alignment
  */
-void drawBitmap(Bitmap* bitmap, int x, int y, Alignment alignment);
+void drawBitmap(Bitmap* bitmap, int x, int y);
 
-void drawBackgroundBitmap(Bitmap* bmp, int x, int y, Alignment alignment);
+
+/**
+ * @brief Draws an unscaled, unrotated bitmap at the given position. Does not check for transparency (more efficient).
+ *
+ * @param bitmap bitmap to be drawn
+ * @param x destiny x coord
+ * @param y destiny y coord
+ */
+void drawBackgroundBitmap(Bitmap* bmp, int x, int y);
 
 
 /**

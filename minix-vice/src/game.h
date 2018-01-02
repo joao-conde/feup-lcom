@@ -11,7 +11,7 @@
 /** @defgroup game game
  * @{
  *
- * Program execution functions
+ * Program execution functions. Start, game loop and ending.
  */
 
 
@@ -32,7 +32,7 @@ MinixVice* startGame();
 /**
  * @brief Loops through the game
  *
- * @param game a pointer to the game created
+ * @param game a pointer to the game
  */
 void gameLoop(MinixVice* game);
 
@@ -40,7 +40,7 @@ void gameLoop(MinixVice* game);
 /**
  * @brief Exits the game
  *
- * @param game a pointer to the game created
+ * @param game a pointer to the game
  */
 void endGame(MinixVice* game);
 

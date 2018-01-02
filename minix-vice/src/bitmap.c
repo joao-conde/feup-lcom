@@ -75,7 +75,7 @@ Bitmap* loadBitmap(const char* filename) {
 	return bmp;
 }
 
-void drawBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
+void drawBitmap(Bitmap* bmp, int x, int y) {
 
 	if (bmp == NULL)
 		return;
@@ -87,10 +87,6 @@ void drawBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 	int drawWidth = width;
 	int height = bmp->bitmapInfoHeader.height;
 
-	if (alignment == ALIGN_CENTER)
-		x -= width / 2;
-	else if (alignment == ALIGN_RIGHT)
-		x -= width;
 
 	if (x + width < 0 || x > horizontalRes || y + height < 0 || y > verticalRes)
 		return;
@@ -126,7 +122,7 @@ void drawBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 		int j;
 		for (j = 0; j < drawWidth * 2; j = j + 2) {
 
-			if (imgStartPos[j + 1] != 0xFFFFFFF8) {
+			if (imgStartPos[j + 1] != TRANSPARENCY) {
 				bufferStartPos[j] = imgStartPos[j];
 				bufferStartPos[j + 1] = imgStartPos[j + 1];
 			}
@@ -136,7 +132,7 @@ void drawBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 }
 
 
-void drawBackgroundBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
+void drawBackgroundBitmap(Bitmap* bmp, int x, int y) {
 
 	if (bmp == NULL)
 		return;
@@ -148,10 +144,6 @@ void drawBackgroundBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 	int drawWidth = width;
 	int height = bmp->bitmapInfoHeader.height;
 
-	if (alignment == ALIGN_CENTER)
-		x -= width / 2;
-	else if (alignment == ALIGN_RIGHT)
-		x -= width;
 
 	if (x + width < 0 || x > horizontalRes || y + height < 0 || y > verticalRes)
 		return;

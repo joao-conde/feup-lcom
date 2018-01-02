@@ -29,6 +29,10 @@ typedef enum {
 } st_mouse;
 
 
+/*
+ * Mouse and player can go from any of their states to another one, therefore no event required, just a change of state.
+ */
+
 /**
  * @brief Changes player state to a new one
  *

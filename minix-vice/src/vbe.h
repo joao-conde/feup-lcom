@@ -78,26 +78,6 @@ typedef struct {
 
 /** @} end of vbe_mode_info_t*/
 
-/** @name VBE Info Block */
-/**@{
- *
- * Packed VBE Info Block
- */
-typedef struct{
-	char VESASignature[4];  /* 'VESA' 4 byte signature */
-	short  VBEVersion;		/* VBE version number */
-	phys_bytes  *OEMStringPtr; /* Pointer to OEM string */
-	long   Capabilities;   /* Capabilities of video card */
-	phys_bytes *VideoModePtr;  /* Pointer to supported modes */
-	short  TotalMemory;	/* Number of 64kb memory blocks */
-	short OEMSoftWareRev;
-	char *OEMVendorNamePtr;
-	char *OEMProductNamePtr;
-	char * OEMProductRevPtr;
-	short reserved[222]; /* Pad to 256 byte block size */
-	char OEMData[256];
-} __attribute__((packed)) vbe_info_t;
-
 
 /**
  * @brief Returns information on the input VBE mode, including screen dimensions, color depth and VRAM physical address
@@ -112,19 +92,6 @@ typedef struct{
  * @return 0 on success, non-zero otherwise
  */
 int vbe_get_mode_info(unsigned short mode, vbe_mode_info_t *vmi_p);
-
-
-/**
- * @brief Returns information on the VBE
- *
- *  Initializes unpacked vbe_info_t structure passed as an address with
- *  the information of the VBE mode, by calling VBE function 0x00
- *
- * @param vmi_p address of vbe_info_t structure to be initialized
- * @return 0 on success, non-zero otherwise
- */
-int vbe_get_info(vbe_info_t *vmi_p);
-
 
 
  /** @} end of vbe */

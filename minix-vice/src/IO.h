@@ -4,7 +4,11 @@
 #include "MinixVice.h"
 #include "state_machines.h"
 
-
+/** @defgroup IO IO
+ * @{
+ *
+ * Input/Output basic functions. Interrupt handling for mouse, keyboard and timer and polling for Real-Time Clock (RTC).
+ */
 
 /**
  * @brief Subscribes all interrupts (keyboard, timer, mouse)
@@ -31,15 +35,14 @@ void timerIH();
  */
 void kbdIH();
 
+/**
+ * @brief Read date and hour from the RTC (Real-Time Clock) via polling.
+ */
+void readRTC();
 
 /**
  * @brief All interrupts handler. Calls appropriate handler for each interrupt.
  */
 void interruptsHandler();
-
-/**
- * @brief Read date and hour from the RTC (Real-Time Clock)
- */
-void readRTC();
 
 #endif /* IO_H */
