@@ -10,6 +10,7 @@
  * Changed original module developed by Henrique Ferrolho (https://github.com/ferrolho) to fit the game needs.
  */
 
+ /// Holds bitmap file information
 typedef struct {
     unsigned short type; // specifies the file type
     unsigned int size; // specifies the size in bytes of the bitmap file
@@ -17,6 +18,8 @@ typedef struct {
     unsigned int offset; // specifies the offset in bytes from the bitmapfileheader to the bitmap bits
 } BitmapFileHeader;
 
+
+/// Holds bitmap image information
 typedef struct {
     unsigned int size; // specifies the number of bytes required by the struct
     int width; // specifies width in pixels

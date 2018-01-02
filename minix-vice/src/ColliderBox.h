@@ -9,6 +9,9 @@
  * Basic functions to operate with collider boxes of game entities.
  */
 
+
+ /// Represents a envolving collider box for game entities and menu buttons
+
 typedef struct{
 	int x1,y1,x2,y2;
 } ColliderBox;
