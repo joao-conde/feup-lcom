@@ -10,6 +10,7 @@
 
 #define SCORE_INCREASE(s) (0.1 + (s*s)/10000)
 #define CONVERT2DECIMAL(x) ((x ^= 0xFF) + 1)
+#define SECONDS_TO_TICKS(t) (t * TIMER0_DEFAULT_FREQ)
 
 
 #define GRAPHIC_MODE 0x0117 /* 16-bit (RGB 5:6:5) 1024*768 */
@@ -34,6 +35,8 @@
 #define BRAKE_SPEED 1
 #define ACCELERATE_SPEED 0.5
 #define MIN_SPEED  2
+
+#define GAMEOVERSCREEN_WAIT 2
 
 #define CONESHOT_BONUS     10
 

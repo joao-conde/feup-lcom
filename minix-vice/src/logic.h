@@ -40,7 +40,8 @@ void handleSelectMenuEvents();
 void handleGameScreenEvents();
 
 /**
- * @brief Handles stats(gameover) menu events. Any keyboard key to return to main menu.
+ * @brief Handles stats(gameover) menu events. Forces display for an amount of seconds.
+ * After that any keyboard key returns to main menu.
  */
 void handleStatsMenuEvents();
 
@@ -146,5 +147,12 @@ void updateShotAnimations();
  * @brief Updates bonus animations in progress. Terminates those who are over.
  */
 void updateBonusAnimations();
+
+/**
+ * @brief Updates bonus animations in progress. Terminates those who are over.
+ *
+ * @param seconds seconds where user is forced to see gameover screen
+ */
+void forceDisplay(int seconds);
 
 #endif /* LOGIC_H */

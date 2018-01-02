@@ -124,9 +124,7 @@ void handleGameScreenEvents() {
 void handleStatsMenuEvents() {
 	MinixVice* game = getGame();
 
-	if (game->scancode != ESC_BREAK) {
-		startNewGame();
-	}
+	forceDisplay(GAMEOVERSCREEN_WAIT);
 }
 
 void checkCollisions() {
@@ -142,7 +140,7 @@ void checkBarrelsCollisions() {
 
 		if (collide(game->car->body, game->barrels[i]->body)) {
 			updateGameState(TERMINATE);
-			game->scancode = ESC_BREAK;
+			updateMouseState(INVISIBLE);
 		}
 
 		//if barrel out of game screen re-calculate coordinates
@@ -162,7 +160,7 @@ void checkConesCollisions() {
 
 		if (collide(game->car->body, game->cones[i]->body)) {
 			updateGameState(TERMINATE);
-			game->scancode = ESC_BREAK;
+			updateMouseState(INVISIBLE);
 		}
 
 		//shot cone
@@ -364,6 +362,27 @@ void updateBonusAnimations() {
 				game->bonusAnimations[i]->frame++;
 				game->bonusAnimations[i]->y++;
 			}
+		}
+	}
+}
+
+
+void forceDisplay(int seconds){
+	MinixVice* game = getGame();
+
+	//blocks user for an amount of seconds specified so he can see the gameover screen.
+	static int ticks = 0;
+
+	if(game->timer->ticked){
+		ticks++;
+		game->scancode = ESC_BREAK;
+	}
+
+	if (ticks > SECONDS_TO_TICKS(seconds)) {
+
+		if (game->scancode != ESC_BREAK) {
+			ticks = 0;
+			startNewGame();
 		}
 	}
 }
