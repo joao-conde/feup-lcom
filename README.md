@@ -1,20 +1,15 @@
 # feup-lcom
-Projects for the Computer Laboratory (LCOM) class of the Master in Informatics and Computer Engineering (MIEIC) at the Faculty of Engineering of the University of Porto (FEUP).
 
-**Disclaimer:** The UC of LCOM is by far a challenge, so I'll leave here all my work, it might help you.<br>
-Be careful with using code that ain't yours! *Good luck!*
-<br><br>
-Made in colaboration with [Julieta Frade](https://github.com/julietafrade97).<br>
-**Completed in 02/01/2017.**
-<br><br>
+All the work done for the Computers Laboratory course at FEUP.
+
 
 Lab 2 - Timer
 ----------
-> Grade: 96/100
+> Grade: 99/100
 
 Lab 3 - Keyboard
 ----------
-> Grade: 90/100
+> Grade: 91/100
 
 Lab 4 - Mouse
 ----------
@@ -27,7 +22,7 @@ Lab 5 - Graphics (VBE)
 Project
 ----------
 
-**Christmas Run** <br>
+**Minix Vice** <br>
 > Inspired in *Running T-Rex* by Google <br>
 > Grade: 18/20 <br>
 
