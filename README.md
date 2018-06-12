@@ -13,11 +13,11 @@ Lab 3 - Keyboard
 
 Lab 4 - Mouse
 ----------
-> Grade: 92/100
+> Grade: 75/100
 
 Lab 5 - Graphics (VBE)
 ----------
-> Grade: 74/100
+> Grade: 90/100
 
 Project
 ----------
