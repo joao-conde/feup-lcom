@@ -29,11 +29,14 @@ Project
 <img src="https://github.com/joao-conde/feup-lcom/blob/master/minix-vice/doc/screenshots/mainmenu.png" width="500"><br>
 **Fig. 1: Main menu** <br><br>
 
-<img src="https://github.com/joao-conde/feup-lcom/blob/master/minix-vice/doc/screenshots/game.png" width="500"><br>
-**Fig. 2: Game** <br><br>
+<img src="https://github.com/joao-conde/feup-lcom/blob/master/minix-vice/doc/screenshots/helpmenu.png" width="500"><br>
+**Fig. 2: Help menu** <br><br>
 
 <img src="https://github.com/joao-conde/feup-lcom/blob/master/minix-vice/doc/screenshots/selectmenu.png" width="500"><br>
-**Fig. 3: Choose Character menu** <br><br>
+**Fig. 3: Choose Car menu** <br><br>
+
+<img src="https://github.com/joao-conde/feup-lcom/blob/master/minix-vice/doc/screenshots/game.png" width="500"><br>
+**Fig. 4: Game** <br><br>
 
 <img src="https://github.com/joao-conde/feup-lcom/blob/master/minix-vice/doc/screenshots/stats.png" width="500"><br>
-**Fig. 4: Game Over menu**
+**Fig. 5: Stats/Game Over menu**
